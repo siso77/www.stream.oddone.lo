@@ -1,0 +1,10 @@
+<?php
+$text = array(
+		'username' => 'Email',
+		'username_help' => '(obbligatorio, almeno 2 caratteri)',
+		'pwd' => 'Password',
+		'invia' => 'Login',
+		'registrati' => 'Registrati',
+		'lbl_error_login' => 'Attenzione Username o Password errati!',
+	);
+?>

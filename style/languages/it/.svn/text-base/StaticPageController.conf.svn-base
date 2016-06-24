@@ -1,0 +1,31 @@
+<?php
+$text = array(
+		'filosofia_title' => 'La Filosofia',
+		'filosofia_paragraph_title' => "Leader nell'import export di fiori e piante",
+		'filosofia_body' => "
+				Krupy, leader da anni nella commercializzazione, vendita all'ingrosso e produzione di fiori e piante, opera da diversi anni in provincia di Ragusa. <br><br>
+				Qualità ed efficenza, sono i punti cardine su cui si basa l'attività dell’azienda che negli anni è diventata un punto di riferimento per chi opera nella commercilizzazione di fiori e piante.<br><br> 
+				Krupy ha saputo consolidare ottime sinergie con i fornitori che consegnano puntualmente bellissime varietà di fiori freschi e piante da tutto il mondo. <br><br>
+				I successi dell'azienda nell'import export vengono raggiunti ancora oggi grazie all’organizzazione della squadra di collaboratori, competenti e sempre attenti a fornire servizi di qualità",
+		'filosofia_body_2' => 'La Filosofia di Krupy è...',
+		'filosofia_body_evidence' => '',
+
+		'radici_title' => 'Le Nostre Radici',
+		'radici_paragraph_title' => "",
+		'radici_body' => 'Le Nostre Radici...',
+		'radici_body_2' => 'Le Nostre Radici...',
+		'radici_body_evidence' => '',
+
+		'organizzazione_title' => "L'organizzazione...",
+		'organizzazione_paragraph_title' => "",
+		'organizzazione_body' => "L'organizzazione...",
+		'organizzazione_body_2' => "L'organizzazione...",
+		'organizzazione_body_evidence' => "",
+
+		'novita_title' => "Le nostre novit&aacute;...",
+		'novita_paragraph_title' => "",
+		'novita_body' => "Le nostre novit&aacute;...",
+		'novita_body_2' => "Le nostre novit&aacute;...",
+		'novita_body_evidence' => "",
+	);
+?>

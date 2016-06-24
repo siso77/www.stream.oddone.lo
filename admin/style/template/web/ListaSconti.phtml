@@ -1,0 +1,90 @@
+<?php $_tplvar = $this->getVars();?>
+
+<article class="module width_full" style="width:100%">
+		<header><h3 class="tabs_involved">Lista Sconti</h3></header>
+
+		<div class="tab_container">
+
+			
+<!-- APERTURA FORM DI RICERCA -->
+<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=<?php echo $_tplvar['action_class_name']?>" method="post">
+<input type="hidden" name="search" value="1" />
+</form>
+
+<!-- CHIUSURA FORM DI RICERCA -->
+<script type="text/javascript">
+function showConfirmDelete(id)
+{
+	var el = document.getElementById(id);
+	if(el.style.visibility == 'hidden')
+	{
+		el.style.visibility = 'visible';
+		//el.style.position = 'relative';
+	}
+	else
+	{
+		el.style.visibility = 'hidden';
+		//el.style.position = 'absolute';
+	}
+}
+</script>
+
+					<table class="tablesorter" cellspacing="0" cellpadding="0">
+					<thead>
+						<tr>
+							<td width="100">
+							<?php
+							$assign['key_session'] = $_tplvar['action_class_name'];
+							$assign['order_by'] = 'nome';
+							$assign['action'] = $_tplvar['action_class_name'];
+							$assign['field_name'] = 'Nome';							
+							$this->getPartial('shared/SortField', $assign);
+							?>
+							</td>
+							<td width="100">
+							<?php
+							$assign['key_session'] = $_tplvar['action_class_name'];
+							$assign['order_by'] = 'percentuale';
+							$assign['action'] = $_tplvar['action_class_name'];
+							$assign['field_name'] = 'Percentuale';							
+							$this->getPartial('shared/SortField', $assign);
+							?>
+							</td>
+							<td width="100">
+							<?php
+							$assign['key_session'] = $_tplvar['action_class_name'];
+							$assign['order_by'] = 'colore';
+							$assign['action'] = $_tplvar['action_class_name'];
+							$assign['field_name'] = 'Colore';							
+							$this->getPartial('shared/SortField', $assign);
+							?>
+							</td>
+                           <td width="100">MODIFICA</td>
+                           <td width="100">CANCELLA</td>
+						</tr>
+					</thead>
+					<tbody>
+					<?php foreach ($_tplvar['list'] as $value):?>
+					<tr>
+						<td width="100" nowrap="nowrap"><?php echo $value['nome'];?></td>
+						<td width="100" nowrap="nowrap"><?php echo $value['percentuale'];?></td>
+						<td width="100" nowrap="nowrap"><?php echo $value['colore'];?></td>
+						<td width="100"><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=NuovoSconto&edit=1&id=<?php echo $value['id']?>">MODIFICA</a></td>
+						<td width="100"><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=<?php echo $_tplvar['action_class_name']?>&delete=1&id=<?php echo $value['id']?>">CANCELLA</a></td>
+					</tr>
+					<?php endforeach;?>
+					</tbody>
+				</table>
+
+
+                <!-- Page Navigation -->
+				<?php echo $this->getPartial('shared/Paging');?>
+				<!-- /Page Navigation -->
+                
+                <!-- Export Excel -->
+                <?php //$assign['url'] = $_tplvar['WWW_ROOT'].'?act='.$_REQUEST['act'].'&export=1';?>
+				<?php //echo $this->getPartial('shared/ButtonExcelExport', $assign);?>
+				<!-- /Export Excel -->
+                
+</div>
+</article>

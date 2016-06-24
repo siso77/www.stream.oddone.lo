@@ -1,0 +1,37 @@
+<?php $_tplvar = $this->getVars();?>
+
+<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/jscolor/jscolor.js"></script>
+
+<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=<?php echo $_tplvar['action_class_name']?>" method="post">
+<?php if(!empty($_tplvar['data']['id']))?>
+	<input type="hidden" name="id" value="<?php echo $_tplvar['data']['id']?>">
+
+		<article class="module width_full">
+			<header><h3 class="tabs_involved">Caricamento Sconti</h3></header>
+			<div class="tab_container">
+				<div class="module_content">
+					<fieldset>
+						<label>Percentuale Sconto &nbsp;&nbsp;&nbsp;&nbsp;</label>
+						<input name="percentuale" id="percentuale" type="text" value="<?php echo $_tplvar['data']['percentuale']?>"> %
+					</fieldset>
+					<fieldset>
+						<label>Nome &nbsp;&nbsp;&nbsp;&nbsp;</label>
+						<input name="nome" id="nome" type="text" value="<?php echo $_tplvar['data']['nome']?>">
+					</fieldset>
+					<fieldset>
+						<label>Colore &nbsp;&nbsp;&nbsp;&nbsp;</label>
+						<input name="colore" id="colore" type="text" value="<?php echo $_tplvar['data']['colore']?>" class="color">
+					</fieldset>
+				</div>
+			</div>
+			
+			<footer>
+				<div class="submit_link">
+					<input type="submit" value="Salva" class="alt_btn">
+					<input type="reset" class="submit" name="cancel" value="Cancella">
+				</div>
+			</footer>
+
+		</article>
+	
+</form>

@@ -1,0 +1,27 @@
+<?php $_tplvar = $this->getVars();?>
+
+<table>
+<tr>
+	<th>Attenzione ci sono <?php echo count($_tplvar['new_users'])?> <?php if(count($_tplvar['new_users']) > 1):?>Nuovi Utenti<?php else:?>Nuovo Utente<?php endif;?></th>
+</tr>
+<tr>
+	<td>
+		<table>
+		<tr>
+			<td><b>Username</td>
+			<td><b>Email</td>
+			<td><b>Data Registrazione</td>
+			<td><b>Attiva Account</td>
+		</tr>
+		<?php foreach ($_tplvar['new_users'] as $value):?>
+		<tr>
+			<td><?php echo $value['username']?></td>
+			<td><?php echo $value['username']?></td>
+			<td><?php echo $this->getFormatDate($value['data_inserimento_riga'])?></td>
+			<td><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=Home&activate_account=1&id_user=<?php echo $value['id']?>">Attiva Account</a></td>
+		</tr>
+		<?php endforeach;?>
+		</table>
+	</td>
+</tr>
+</table>

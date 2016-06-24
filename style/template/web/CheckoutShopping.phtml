@@ -1,0 +1,379 @@
+<?php 
+$_tplvar = $this->getVars();
+$this->getIntlPartial('CheckoutShopping');
+?>
+<style>
+<!--
+.selected {
+	background-color: #B00000;
+}
+.not_selected {
+	background-color: #ADADAD;
+}
+
+td {
+	padding: 9px 12px;
+}
+-->
+</style>
+
+<script>
+function checkPaymentType()
+{
+	var send = new Array();
+	var el = document.getElementById('payment_type');
+	var el_error = document.getElementById("validation_error");
+	if(el.value == '')
+	{
+		el.style.borderColor = 'red';
+		el_error.style.color = 'red';
+		el_error.innerHTML = 'Atenzione ci sono degli errori nel form!';
+		el_error.style.visibility = 'visible';
+		el_error.style.position = 'relative';
+		send.push(false);
+	}
+	else
+	{
+		el_error.style.visibility = 'hidden';
+		el_error.style.position = 'absolute';
+		send.push(true);
+	}
+
+	el = jQuery('#datepicker');
+
+	if(el.val() == '')
+	{
+		jQuery('#datepicker').css('border-color','red');
+		el_error.style.color = 'red';
+		el_error.innerHTML = 'Atenzione ci sono degli errori nel form!';
+		el_error.style.visibility = 'visible';
+		el_error.style.position = 'relative';
+		send.push(false);
+	}
+	else
+	{
+		el_error.style.visibility = 'hidden';
+		el_error.style.position = 'absolute';
+		send.push(true);
+	}
+
+	el = jQuery('.trasporto');
+	var formValid = false;
+	var i = 0;
+	while (!formValid && i < el.length) {
+        if (el[i].checked) formValid = true;
+        i++;        
+    }
+    
+	
+	
+	if(!formValid)
+	{
+		jQuery('.trasporto').parent().parent().css('background-color','red');
+		jQuery('.trasporto').parent().parent().css('color','#fff');
+		el_error.style.color = 'red';
+		el_error.innerHTML = 'Atenzione ci sono degli errori nel form!';
+		el_error.style.visibility = 'visible';
+		el_error.style.position = 'relative';
+		send.push(false);
+	}
+	else
+	{
+		jQuery('.trasporto').parent().parent().css('background-color','#fff');
+		jQuery('.trasporto').parent().parent().css('color','#000');
+		el_error.style.visibility = 'hidden';
+		el_error.style.position = 'absolute';
+		send.push(true);
+	}
+
+	for (i=0; i<send.length; i++) 
+	{
+		if(send[i]==false)
+		{
+			el_error.style.visibility = 'visible';
+			el_error.style.position = 'relative';
+			return false;
+		}
+	}
+
+	jQuery.fancybox('<img src=/img/web/Loading_icon.gif oncontextmenu=\'return false;\' />',{closeBtn    : false, closeClick  : false,helpers     : { overlay : {closeClick: false} },keys : {close  : null}});
+	
+	if(substr($_SERVER['HTTP_USER_AGENT'], 0, 7) != 'Mozilla'){
+		var btn = '<button id="btn-send-order" onclick="return false;" style="border-radius:4px;" value="<?php echo $this->getText('send_order')?>"><span><span style="vertical-align:middle;font-size:16px;"><img src="<?php echo $_tplvar['WWW_ROOT']?>img/web/4cb4aqMcg.png" style="width:30px;vertical-align: inherit;" width="30"><?php echo $this->getText('send_order')?></span></span>';
+		jQuery('#btn-send-order').css('display', 'none');
+		jQuery('#div-btn-send-order').html(btn);
+	}
+
+	return true;
+}
+				
+function choicePaymentType(obj)
+{
+	//var val = obj.options[obj.selectedIndex].value;
+	var payment_type = document.getElementById('payment_type');				
+	var el_error = document.getElementById("validation_error");
+	el_error.style.visibility = 'hidden';
+	el_error.style.position = 'absolute';
+	payment_type.style.borderColor = 'grey';
+	
+	var el = document.getElementById('iban');
+	if(obj.value == 'bonifico' || obj.value == 'BONIFICO')
+	{
+		if(el.style.visibility == 'visible')
+		{
+			el.style.visibility = 'hidden';
+			el.style.position = 'absolute';
+		}
+		else
+		{
+			el.style.visibility = 'visible';
+			el.style.position = 'relative';
+		}
+	}
+	else
+	{
+		el.style.visibility = 'hidden';
+		el.style.position = 'absolute';
+	}
+}
+
+
+</script>	
+<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=CheckoutPayment" method="post" onsubmit="return checkPaymentType()" id="shopping-cart">
+<input type="hidden" name="id_user" value="<?php echo $_tplvar['id_user']?>">
+<?php if(!empty($_tplvar['params_banking'])):?>
+<input type="hidden" name="params" value="<?php echo $_tplvar['params_banking']?>">
+<?php endif;?>
+
+<?php if(!empty($_REQUEST['error_partenza'])):?>
+<script>jQuery(document).ready(function(){ jQuery.fancybox('<div style="padding:20px;font-size:12px"><?php echo $this->getText('error_msg_partenza')?></div>'); });</script>
+<?php endif;?>
+<?php if(!empty($_REQUEST['error_partenza_fornitori_1'])):?>
+<script>jQuery(document).ready(function(){ jQuery.fancybox('<div style="padding:20px;"><?php echo $this->getText('error_msg_for_1')?></div>'); });</script>
+<?php endif;?>
+<?php if(!empty($_REQUEST['error_partenza_fornitori_2'])):?>
+<script>jQuery(document).ready(function(){ jQuery.fancybox('<div style="padding:20px;"><?php echo $this->getText('error_msg_for_2')?></div>'); });</script>
+<?php endif;?>
+<?php 
+$month = array('Jan' => 'Gennaio', 'Feb' => 'Febbraio', 'Mar' => 'Marzo', 'Apr' => 'Aprile', 'May' => 'Maggio', 'Jun' => 'Giugno', 'Jul' => 'Luglio', 'Aug' => 'Agosto', 'Sep' => 'Settembre', 'Oct' => 'Ottobre', 'Nov' => 'Novembre','Dec' => 'Dicembre');
+$days  = array('Sunday' => 'domenica','Monday' => 'luned&igrave;', 'Tuesday' => 'marted&igrave;', 'Wednesday' => 'mercoled&igrave;', 'Thursday' => 'gioved&igrave;', 'Friday' => 'venerd&igrave;', 'Saturday' => 'sabato');
+$mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d'), date('Y'));
+$mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+1, date('Y'));
+$mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+2, date('Y'));
+$mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+3, date('Y'));
+$mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+4, date('Y'));
+$mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+5, date('Y'));
+$mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+6, date('Y'));
+
+$mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+7, date('Y'));
+$mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+8, date('Y'));
+$mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+9, date('Y'));
+$mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+10, date('Y'));
+$mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+11, date('Y'));
+$mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+12, date('Y'));
+// $mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+13, date('Y'));
+// $mapCurrentWeek[] = mktime('00', '00', '00', date('m'), date('d')+14, date('Y'));
+?>
+
+<div style="margin-left: 70px;">
+<div id="page-content" style="padding-left: 20px;padding-right: 20px;margin-top: 100px;">
+	<div id="page-content-header">
+		<div id="page-title">
+			<h2><?php echo $this->getText('step_one')?></h2>
+		</div>
+	</div>
+	
+	<br><br>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<script>
+	jQuery(function() {
+		jQuery( "#datepicker" ).datepicker({
+	      numberOfMonths: 2,
+	      showOn: "button",
+	      minDate: 0, 
+	      dateFormat: "dd/mm/yy",
+	      /*maxDate: "4D",*/
+	      buttonImage: "<?php echo $_tplvar['WWW_ROOT']?>img/web/calendario.png",
+	      buttonImageOnly: true,
+	      showButtonPanel: true
+	    });
+	});
+	</script>
+	<?php echo $this->getText('delivery_date')?>:
+	<?php echo $this->getText('confirm')?> 
+	<input type="text" id="datepicker" style="postition:absolute;" onchange="
+	jQuery.ajax({
+		  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=SetCalendar',
+		  type: 'POST',
+		  dataType: 'html',
+		  cache: false,
+		  data: 'date='+jQuery(this).val(),
+		  success: function(html){
+			  jQuery.fancybox('<div style=width:200px>Data aggiunta correttamente</div>');
+			  setTimeout( function() {jQuery.fancybox.close(); },2000);
+		  }
+		});">
+	
+	<br><br>
+	
+	<table style="width:100%">
+	<tr>
+		<td style="width:20px;padding: 0px;"><input type="radio" class="trasporto" name="trasporto" value="CONSEGNA CON VETTORE" onclick="showDestinazioni('destinazioni');"></td>
+		<td><?php echo $this->getText('delivery_carrier')?></td>
+		<td style="width:20px;padding: 0px;"><input type="radio" class="trasporto" name="trasporto" value="RITIRO IN SEDE - CASH&CARRY - ALBENGA" onclick="jQuery('#destinazioni').hide(1000);jQuery('#nuova-destinazione').hide(1000);"></td>
+		<td><?php echo $this->getText('office_albenga')?></td>
+		<td style="width:20px;padding: 0px;"><input type="radio" class="trasporto" name="trasporto" value="RITIRO IN SEDE - CASH&CARRY - PADERNO DUGNANO" onclick="jQuery('#destinazioni').hide(1000);jQuery('#nuova-destinazione').hide(1000);"></td>
+		<td><?php echo $this->getText('office_dugnano')?></td>
+	</tr>
+	</table>
+	
+	<div id="destinazioni" style="display:none;">
+		Destinazione Merce
+		<select name="destinazione">
+		<?php foreach($_SESSION['LoggedUser']['destinazioni'] as $destinazioni):?>
+			<?php if($destinazioni['codice_etiflor'] != $_SESSION['LoggedUser']['customer_data']['customer_code']):?>
+				<?php 
+				$desintazione = $destinazioni['codice_etiflor'];
+				if(empty($desintazione))
+					$desintazione = '';
+				?>
+				<?php if($destinazioni['customer_code'] != $_SESSION['LoggedUser']['customer_data']['customer_code']):?>
+				<option value="<?php echo $desintazione ?>"><?php echo $destinazioni['customer_code'].' '.$destinazioni['ragione_sociale'].' '.$destinazioni['indirizzo'].' '.$destinazioni['citta'].' '.$destinazioni['provincia']?></option>
+				<?php endif;?>
+			<?php endif;?>
+		<?php endforeach;?>
+		</select>
+		<br><br>
+		<button value="<?php echo $this->getText('new_destination')?>" class="button btn-cart" onclick="return showNuovaDestinazioni('nuova-destinazione', 'destinazioni');"><span><span>Aggiungi Nuova Destinazione</span></span></button>
+	</div>
+
+	<div id="nuova-destinazione" style="display:none;">
+	
+		<table style="width:100%">
+		<tr>
+			<td><?php echo $this->getText('destination_name')?></td>
+			<td><input type="text" name="codice_nuova_destinazione" value="" style="width: 300px;"></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->getText('province')?></td>
+			<td><input type="text" name="provincia_nuova_destinazione" style="width: 300px;" value="<?php echo $_SESSION['LoggedUser']['destinazioni'][0]['provincia']?>"></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->getText('resort')?></td>
+			<td><input type="text" name="localita_nuova_destinazione" style="width: 300px;" value="<?php echo $_SESSION['LoggedUser']['destinazioni'][0]['citta']?>"></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->getText('address')?></td>
+			<td><input type="text" name="indirizzo_nuova_destinazione" style="width: 300px;" value="<?php echo $_SESSION['LoggedUser']['destinazioni'][0]['indirizzo']?>"></td>
+		</tr>
+		</table>	
+	
+	</div>
+	<br><br>
+	
+	<div id="page-content-header">
+		<div id="page-title">
+			<h2><?php echo $this->getText('step_two')?></h2>
+		</div>
+	</div>
+	<br><br>
+	<table style="width:100%">
+	<tr>
+		<td><?php echo $this->getText('add_note')?></td>
+	</tr>
+	<tr>
+		<td><textarea name="final_note" rows="6" style="width:100%"></textarea></td>
+	</tr>
+	</table>	
+
+	<br><br>
+	<table style="width:60%">
+	<tr>
+		<td><?php echo $this->getText('payment_method')?></td>
+		<td>
+				<?php if(!empty($_SESSION['LoggedUser']['tipo_pagamento'])):?>
+					<select name="payment_type" id="payment_type" onchange="javascript:choicePaymentType(this)">
+						<option value="<?php echo $_SESSION['LoggedUser']['tipo_pagamento']?>"><?php echo $_SESSION['LoggedUser']['tipo_pagamento']?></option>
+					</select>
+				<?php else:?>
+					<select name="payment_type" id="payment_type" onchange="javascript:choicePaymentType(this)">
+							<option value="<?php echo $this->getText('payment_1')?>"><?php echo $this->getText('payment_1')?></option>
+							<option value="<?php echo $this->getText('payment_2')?>"><?php echo $this->getText('payment_2')?></option>
+					</select>
+				<?php endif;?>
+		</td>
+	</tr>
+	</table>	
+	
+	<br><br>
+	<table style="width:100%">
+	<tr>
+		<td align="left" colspan="2">
+		<?php $this->getText('push_button')?> <a href="javascript:void(0);" onclick="jQuery.fancybox('Condizioni di vendita');"><?php $this->getText('shopping_condition')?></a>	
+		</td>
+	</tr>
+	
+	<tr>
+	
+		<td nowrap="nowrap" align="left">
+			<div class="actions">
+				<button value="<< <?php echo $this->getText('back_to')?>" class="button btn-cart" onclick="javascript:document.location.href='<?php echo $_tplvar['WWW_ROOT']?>Magazzino-Online/Lista-Prodotti.html<?php if(!empty($_tplvar['params_banking'])):?>&params=<?php echo $_tplvar['params_banking']?><?php endif;?>';return false;"><span><span><< <?php echo $this->getText('back_to')?></span></span></button>
+			</div>
+		</td>
+<script>
+function sendOrder()
+{
+	jQuery('#shopping-cart').submit();
+}
+</script>
+		<td nowrap="nowrap" align="right" style="padding:0px;">
+			<div class="actions" id="div-btn-send-order">
+				<button id="btn-send-order" value="<?php echo $this->getText('send_order')?>" class="button btn-cart" onclick="javascript:sendOrder();">
+				<span>
+					<span style="vertical-align:middle;font-size:16px;"><img src="<?php echo $_tplvar['WWW_ROOT']?>img/web/4cb4aqMcg.png" style="width:30px;vertical-align: inherit;" width="30"><?php echo $this->getText('send_order')?></span>
+				</span>
+				</button>
+				<!-- 
+				<button value="<?php echo $this->getText('updated')?>" class="button btn-cart" onclick="jQuery('#shopping-cart').submit();"><span><span><?php echo $this->getText('updated')?></span></span></button>
+				<button value="<?php echo $this->getText('print_cart')?>" class="button btn-cart" onclick="javascript: window.open('<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart&print_orders=1', '', '');"><span><span><?php echo $this->getText('print_cart')?></span></span></button>
+				 -->
+			</div>
+			<div id="validation_error"></div>
+		</td>
+	</tr>
+	<tr>
+		<td nowrap="nowrap" align="left" colspan="10" style="height:30px;">&nbsp;<br><br><br><br><br></td>
+	</tr>	
+	</table>	
+</div>
+</form>
+<script>
+function showNuovaDestinazioni(div, div2)
+{
+	if(jQuery('#'+div).css('display') == 'none')
+		jQuery('#'+div).show(1000);
+	else
+		jQuery('#'+div).hide(1000);
+
+	if(jQuery('#'+div2).css('display') == 'none')
+		jQuery('#'+div2).show(1000);
+	else
+		jQuery('#'+div2).hide(1000);
+	
+	return false;
+}
+	
+function showDestinazioni(div)
+{
+	if(jQuery('#'+div).css('display') == 'none')
+	{
+		jQuery('#'+div).show(1000);
+	}
+	else
+	{
+		jQuery('#'+div).hide(1000);
+	}
+	return false;
+}
+</script>

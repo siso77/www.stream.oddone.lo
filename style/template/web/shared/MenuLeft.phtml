@@ -1,0 +1,270 @@
+<?php
+$_tplvar = $this->getVars();
+$this->getIntlPartial('MenuLeft');
+?>
+
+		<div class="col-right sidebar">               
+			<script type="text/javascript">
+			//<![CDATA[
+			function toggleMenu(el, over)
+			{
+			        if (over) {
+			                Element.addClassName(el, 'over');
+			        }
+			        else {
+			                Element.removeClassName(el, 'over');
+			        }
+			}
+			//]]>
+			</script>
+			<div class="block block-category">
+    			<div class="block-title"><?php echo $this->getText('category');?></div>  
+				<div>
+					<ul>
+						<li>
+							<h3 style="padding:10px;border-bottom: 1px #ddd solid; <?php if(empty($_tplvar['menu_gm_selected'])):?>background-color: #ff0103;<?php endif;?>">
+								<a class="lnk-gruppi-merceologici" style="font-weight:bold;font-size:12px; <?php if(empty($_tplvar['menu_gm_selected'])):?>color:#fff;<?php endif;?>" href="/?act=Search&reset=1"><?php echo $this->getText('all');?></a>
+							</h3>
+						</li>
+
+					<?php foreach ($_tplvar['cmb_gm'] as $key => $value):?>
+					<?php if($value['sub_category'] == array()) continue;?>
+					
+					<?php
+					if($_SESSION['lang'] == 'it') 
+						$nome = $value['name'];
+					elseif($_SESSION['lang'] == 'en')
+						$nome = $value['name_en'];
+					elseif($_SESSION['lang'] == 'fr')
+						$nome = $value['name_fr'];
+					?>
+						<?php if(!empty($nome)):?>	
+							<li>
+								<h3 onclick="document.location.href='<?php echo $_tplvar['WWW_ROOT']?>?act=Search&gm=<?php echo $value['id']?>';" style="cursor:pointer;padding:10px;border-bottom: 1px #ddd solid;background: transparent url(/skin/frontend/default/akoha/images/arrow.png) no-repeat 92% 50%;<?php if($_tplvar['search']['gm'] == $value['id']):?>background-color: #ff0103;<?php endif;?><?php foreach ($value['sub_category'] as $v):?><?php if($_tplvar['menu_gm_selected'] == $v['id']):?><?php echo 'background-color: #ff0103;';break;?><?php endif;?><?php endforeach;?>">
+									<a class="lnk-gruppi-merceologici" style="font-weight:bold;font-size:12px;<?php if($_tplvar['search']['gm'] == $value['id']):?>color:#fff;<?php endif;?><?php foreach ($value['sub_category'] as $v):?><?php if($_tplvar['menu_gm_selected'] == $v['id']):?><?php echo 'color:#fff;';break;?><?php endif;?><?php endforeach;?>" href="<?php echo $_tplvar['WWW_ROOT']?>?act=Search&gm=<?php echo $value['id']?>">
+									
+										<?php //echo $this->getTranslation($value['gruppo']);?>
+										<?php echo $nome;?>
+									</a>
+								</h3>
+						<?php endif;?>
+							<?php if($_tplvar['menu_gm_selected'] == $value['id']):?>							
+								<?php if(!empty($value['sub_category'])):?>
+									
+									<?php foreach ($value['sub_category'] as $v):?>
+									<?php
+									if($_SESSION['lang'] == 'it') 
+										$nome_sub = $v['name'];
+									elseif($_SESSION['lang'] == 'en')
+										$nome_sub = $v['name_en'];
+									elseif($_SESSION['lang'] == 'fr')
+										$nome_sub = $v['name_fr'];
+									?>
+									<?php if(!empty($nome_sub)):?>
+										<?php if($_tplvar['menu_gm_selected'] == $v['id']):?>
+											<?php 
+												$class = 'class="active"';
+												break;
+											?>
+										<?php else:?>
+											<?php $class = ' class="level0"';?>
+										<?php endif;?>
+										<?php endif;?>
+									<?php endforeach;?>
+	
+									<ul <?php echo $class;?>>
+									<?php foreach ($value['sub_category'] as $v):?>
+									<?php
+									if($_SESSION['lang'] == 'it') 
+										$nome_sub_cat = $v['name'];
+									elseif($_SESSION['lang'] == 'en')
+										$nome_sub_cat = $v['name_en'];
+									elseif($_SESSION['lang'] == 'fr')
+										$nome_sub_cat = $v['name_fr'];
+									?>
+									<?php if(!empty($nome_sub_cat)):?>
+										<li style="padding:8px;border-bottom: 1px #ddd solid;<?php if($_tplvar['menu_gm_selected'] == $v['id']):?>background-color: #ff0103;<?php endif;?>">
+											<a href="<?php echo $_tplvar['WWW_ROOT']?>?act=Search&gm=<?php echo $v['id']?>"><span style="margin-left: 10px;<?php if($_tplvar['menu_gm_selected'] == $v['id']):?>color:#fff;<?php else:?>color:#ff0103;<?php endif;?>">
+
+									- <?php
+									if($_SESSION['lang'] == 'it') 
+										echo $v['name'];
+									elseif($_SESSION['lang'] == 'en')
+										echo $v['name_en'];
+									elseif($_SESSION['lang'] == 'fr')
+										echo $v['name_fr'];
+									?>
+											
+											
+											</span></a>
+										</li>
+									<?php endif;?>
+									<?php endforeach;?>
+									</ul>
+								<?php endif;?>
+							<?php else:?>
+								<?php if(!empty($value['sub_category'])):?>
+									<?php foreach ($value['sub_category'] as $v):?>
+										<?php if($_tplvar['menu_gm_selected'] == $v['id']):?>
+											<?php 
+												$class = 'class="active"';
+											?>
+											<ul <?php echo $class;?>>
+											<?php foreach ($value['sub_category'] as $v):?>
+												<li style="padding:8px;border-bottom: 1px #ddd solid;<?php if($_tplvar['menu_gm_selected'] == $v['id']):?>background-color: #ff0103;<?php endif;?>">
+													<a href="<?php echo $_tplvar['WWW_ROOT']?>?act=Search&gm=<?php echo $v['id']?>">
+													<span style="margin-left: 10px;<?php if($_tplvar['menu_gm_selected'] == $v['id']):?>color:#fff;<?php else:?>color:#ff0103;<?php endif;?>">- 
+														<?php
+														if($_SESSION['lang'] == 'it') 
+															echo $v['name'];
+														elseif($_SESSION['lang'] == 'en')
+															echo $v['name_en'];
+														elseif($_SESSION['lang'] == 'fr')
+															echo $v['name_fr'];
+														?>
+													</span></a>
+												</li>
+											<?php endforeach;?>
+											</ul>
+										<?php endif;?>
+									<?php endforeach;?>
+								<?php endif;?>
+							<?php endif;?>
+						</li>
+						<?php endforeach;?>		
+					</ul>
+				</div>
+				<script>
+				/*jQuery time*/
+				jQuery(document).ready(function(){
+					jQuery("#accordian ul ul").slideUp();
+
+					jQuery(".active").slideDown();
+					
+					jQuery("#accordian h3").click(function(){
+						//slide up all the link lists
+						jQuery("#accordian ul ul").slideUp();
+						//slide down the link list below the h3 clicked - only if its closed
+						if(!jQuery(this).next().is(":visible"))
+						{
+							jQuery(this).next().slideDown();
+						}
+					})
+				})
+				</script>
+
+			</div> <!--block block-category-->
+
+						<div class="block block-category">
+			<?php if(empty($_SESSION['LoggedUser']['username'])):?>
+    			<div class="block-title">Login</div>
+					<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=Login" method="post">
+						<div class="content">                                    
+		                    <ul class="form-list">
+		                        <li>
+		                            <label for="email"><?php echo $this->getText('username');?><em class="required">*</em></label>
+		                            <div class="input-box">
+		                                <input type="text" name="username" value="" id="email" class="input-text required-entry validate-email" title="Username" style="width:166px; margin-left:2px;">
+		                            </div>
+		                        </li>
+		                        <li>
+		                            <label for="pass">Password<em class="required">*</em></label>
+		                            <div class="input-box">
+		                                <input type="password" name="password" class="input-text required-entry validate-password" id="pass" title="Password" style="width:166px; margin-left:2px;">
+		                            </div>
+		                        </li>
+							</ul>
+		                    <p class="required"><?php echo $this->getText('required_field');?></p>
+		                    <div class="buttons-set">                                                      
+		                       <button type="submit" class="button" title="Login" name="send" id="send2"><span>Login</span></button><br>
+		                       <a href="<?php echo $_tplvar['WWW_ROOT']?>?act=ForgotPassword"><?php echo $this->getText('forgot_password');?></a>
+		                                                                             
+		                    </div> <!--buttons-set-->
+		                </div> <!--content-->     					
+					</form>    			  
+			<?php endif;?>				
+			</div>
+			
+			<div class="block block-list block-cart">
+			<?php if(!empty($_SESSION['LoggedUser']['username'])):?>
+				<div class="block-title"><?php echo $this->getText('cart');?></div>
+			    <div class="block-content">
+			    <?php 
+			    $tmpSess = $_SESSION[session_id()]['basket'];
+			    unset($tmpSess['n_carrelli']);
+			    unset($tmpSess['perc_occupazione']);
+			    ?>
+			    <?php if(empty($tmpSess) || $tmpSess == array()):?>
+			    	<p class="empty"><?php echo $this->getText('cart_empty');?></p>
+			    <?php else:?>
+			    	<table>
+			    	<?php if($_SESSION[session_id()]['basket']['n_carrelli'] == 1):?>
+					<tr>
+						<td>
+							<?php $count = $_SESSION[session_id()]['basket']['n_carrelli'];?>
+							
+							<?php for($i = 1;$i <= $_SESSION[session_id()]['basket']['n_carrelli'];$i++):?>
+								<?php if($i < $count):?>
+									<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_full.png" width="20">
+								<?php else:?>
+									<?php if($_tplvar['perc_occupazione'] <= 20):?>
+										<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_low.png" width="20">
+									<?php elseif($_tplvar['perc_occupazione'] <= 40):?>
+										<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_low_2.png" width="20">
+									<?php elseif($_tplvar['perc_occupazione'] <= 55):?>
+										<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_low_3.png" width="20">
+									<?php elseif($_tplvar['perc_occupazione'] <= 75):?>
+										<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_medium.png" width="20">
+									<?php elseif($_tplvar['perc_occupazione'] <= 90):?>
+										<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_medium_2.png" width="20">
+									<?php else:?>
+										<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_full.png" width="20">
+									<?php endif;?>
+								<?php endif;?>
+							<?php endfor;?>
+						</td>
+						<td style="font-size: 20px;padding:10px;"><?php echo $_SESSION[session_id()]['basket']['n_carrelli'];?></td>
+						<td style="font-size:10px"><?php echo $this->getText('in_progress');?> <?php echo $_tplvar['perc_occupazione']?>%</td>
+					</tr>
+					<?php else:?>
+					<tr>
+						<td>
+							<?php $count = $_SESSION[session_id()]['basket']['n_carrelli'];?>
+							<?php $count = $_SESSION[session_id()]['basket']['n_carrelli'];?>
+							<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_full.png" width="20">
+						</td>
+						<td style="font-size: 20px;padding:10px;"><?php echo $_SESSION[session_id()]['basket']['n_carrelli']-1;?></td>
+						<td style="font-size:12px"><?php echo $this->getText('full');?></td>
+					</tr>
+					<tr>
+						<td>
+							<?php if($_tplvar['perc_occupazione'] <= 20):?>
+								<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_low.png" width="20">
+							<?php elseif($_tplvar['perc_occupazione'] <= 40):?>
+								<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_low_2.png" width="20">
+							<?php elseif($_tplvar['perc_occupazione'] <= 55):?>
+								<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_low_3.png" width="20">
+							<?php elseif($_tplvar['perc_occupazione'] <= 75):?>
+								<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_medium.png" width="20">
+							<?php elseif($_tplvar['perc_occupazione'] <= 90):?>
+								<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_medium_2.png" width="20">
+							<?php else:?>
+								<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_full.png" width="20">
+							<?php endif;?>
+						</td>
+						<td style="font-size: 20px;padding:10px;">1</td>
+						<td style="font-size:10px"><?php echo $this->getText('in_progress');?> <?php echo $_tplvar['perc_occupazione']?>%</td>
+					</tr>
+					<?php endif;?>
+					<tr>
+						<td colspan="3" align="center">
+							<button value="<?php echo $this->getText('go_to_cart')?>" class="button btn-cart" onclick="javascript:document.location.href='<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart';return false;"><span><span><?php echo $this->getText('go_to_cart');?></span></span></button>						
+						</td>
+					</tr>
+			    	</table>
+			    <?php endif;?>
+			    <?php endif;?>
+			    </div>
+			</div>
+
+		</div> <!--col-right sidebar-->

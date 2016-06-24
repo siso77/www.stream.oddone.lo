@@ -1,0 +1,31 @@
+<?php
+$text = array(
+		'header_table_fields' => 'Seleziona i Campi da visualizzare',
+		'immagine' => 'Immagine',
+		'bar_code' => 'Codice a Barre',
+		'product_code' => 'Codice Prodotto',
+		'product_description' => 'Descrizione Prodotto',
+		'variety' => 'Variet&aacute;',
+		'family' => 'Famiglia',
+		'color' => 'Colore',
+		'height' => 'Altezza',
+		'vase' => 'Vaso',
+		'disponibility' => 'Disponibilit&aacute;',
+		'qty_paking' => 'Qty Imballo',
+		'price' => 'Prezzo',
+		'vat' => 'IVA',
+		'send_field' => 'Seleziona',
+		'box_filter_nome' => 'Testo',
+		'box_filter_categoria' => 'Categoria',
+		'box_filter_categoria_first_option' => 'Tutte le categorie',
+		'box_filter_colori' => 'Colori',
+		'box_filter_colori_first_option' => 'Tutti i colori',
+		'box_filter_prezzo_da' => 'Prezzo da ',
+		'box_filter_prezzo_a' => ' a ',
+
+		'box_filter_misure' => 'Misura',
+		'box_filter_misure_first_option' => 'Tutte le misure',
+
+		'search_error_message' => 'Attenzione devi valorizzare almeno un campo',
+		);
+?>

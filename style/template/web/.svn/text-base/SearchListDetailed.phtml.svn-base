@@ -1,0 +1,298 @@
+<?php 
+$_tplvar = $this->getVars();
+$this->getIntlPartial('Login');
+?>
+
+						<?php if(empty($_SESSION['LoggedUser'])):?>
+						<?php endif;?>
+						
+						<div class="category-products">
+							<!-- Begin ToolBarButton -->
+						    <?php 
+						    $assign['url'] = $_tplvar['WWW_ROOT'].'?act=Search';
+						    $assign['layout_active'] = $_SESSION['Search']['layout'];
+						    $assign['show_switch_layout'] = true;
+						    $this->getPartial('shared/ToolBarButton', $assign);?>
+							<!-- End ToolBarButton -->
+							<br>
+							<!-- Begin Product Listing -->
+							<ol class="products-list" id="products-list">
+								<li class="item" style="margin-left:0px;">
+									<br>
+									<table class="list-table-detailed">
+									<tr class="header-row-detailed">
+										<td class="header-cell-detailed" style="width:14px;" colspan="2"><a href="#">Img</a></td>
+										<td class="header-cell-detailed"><a href="#">Barcode</a></td>
+										<td class="header-cell-detailed">
+										<?php
+										$assign['key_session'] = 'Search';
+										$assign['order_by'] = 'vbn';
+										$assign['action'] = 'Search';
+										$assign['field_name'] = 'VBN';							
+										$this->getPartial('shared/SortField', $assign);
+										?>										
+										</td>
+										
+										<td class="header-cell-detailed">
+										<?php
+										$assign['key_session'] = 'Search';
+										$assign['order_by'] = 'nome_it';
+										$assign['action'] = 'Search';
+										$assign['field_name'] = 'Descrizione';							
+										$this->getPartial('shared/SortField', $assign);
+										?>
+										</td>
+										<td class="header-cell-detailed">
+										<?php
+										$assign['key_session'] = 'Search';
+										$assign['order_by'] = 'nome_it';
+										$assign['action'] = 'Search';
+										$assign['field_name'] = 'Variet&aacute;';							
+										$this->getPartial('shared/SortField', $assign);
+										?>
+										</td>
+										<td class="header-cell-detailed">
+										<?php
+										$assign['key_session'] = 'Search';
+										$assign['order_by'] = 'C3';
+										$assign['action'] = 'Search';
+										$assign['field_name'] = 'Colore';							
+										$this->getPartial('shared/SortField', $assign);
+										?>
+										</td>
+										<td class="header-cell-detailed">
+										<?php
+										$assign['key_session'] = 'Search';
+										$assign['order_by'] = 'C5';
+										$assign['action'] = 'Search';
+										$assign['field_name'] = 'Provenienza';							
+										$this->getPartial('shared/SortField', $assign);
+										?>
+										</td>
+
+										<td class="header-cell-detailed">
+										<?php
+										$assign['key_session'] = 'Search';
+										$assign['order_by'] = 'C4';
+										$assign['action'] = 'Search';
+										$assign['field_name'] = 'Dimensione';							
+										$this->getPartial('shared/SortField', $assign);
+										?>
+										</td>
+ 										<td class="header-cell-detailed">
+										<?php
+										$assign['key_session'] = 'Search';
+										$assign['order_by'] = $_tplvar['key_prezzo'];
+										$assign['action'] = 'Search';
+										$assign['field_name'] = 'Prezzo';							
+										$this->getPartial('shared/SortField', $assign);
+										?>
+ 										</td> 
+										<td class="header-cell-detailed"><a href="#">Disponibilit&aacute;</a></td>
+										<!-- <td class="header-cell-detailed"><a href="#">Quantit&aacute;</a></td> -->
+										<td class="header-cell-detailed">&nbsp;</td>
+
+									</tr>
+
+								<?php foreach ($_tplvar['content'] as $key => $value):?>
+									<?php $giacenza = $this->getGiacenzaByIdContent($value['id']);?>
+									
+									<?php if(!empty($_tplvar['only_disp'])):?>
+										<?php 
+											if(empty($giacenza))
+												continue;
+										?>
+									<?php endif;?>
+									<tr class="list-row-detailed" 
+										id="row-<?php echo $value['id']?>" 
+										<?php foreach ($_SESSION[session_id()]['cart']['contenuto'] as $content):?>
+										<?php if($value['id'] == $content['id']):?> style="background-color:#B6E9B8;"<?php endif;?>
+										<?php endforeach;?>
+										onclick="javascript:swapClass(this, 'list-row-detailed', 'list-row-detailed active');">
+
+									  <td class="list-cell-detailed" style="padding-left:5px;">
+										<?php $image = $this->getImageFromVbn($value['vbn']);?>
+										<?php if(!empty($image)):?>
+											<!-- <img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/repertorio.gif" width="14" height="14" alt="" />-->
+											<!-- 
+											<a style="width:14px;" href="javascript:void();" class="lightbox" onclick="jQuery.fancybox('<img src=data:image/png;base64,<?php echo $image?> oncontextmenu=\'return false;\' />');" title="" class="lightbox">
+												<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/repertorio.gif" width="14" height="14" alt="" onmouseout="jQuery('#zoom-vbn-image').hide();" onmouseover="jQuery('#zoom-vbn-image').html('<img src=\'data:image/png;base64,<?php echo $image?>\' oncontextmenu=\'return false;\'>');centra('#zoom-vbn-image');jQuery('#zoom-vbn-image').show('slow');"/>
+											</a>
+											-->
+											<a style="width:14px;" href="javascript:void();" class="lightbox" onclick="jQuery.fancybox('<img src=<?php echo $image?> oncontextmenu=\'return false;\' />');" title="" class="lightbox">
+												<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/repertorio.gif" width="14" height="14" alt="" onmouseout="jQuery('#zoom-vbn-image').hide();" onmouseover="jQuery('#zoom-vbn-image').html('<img src=\'<?php echo $image?>\' oncontextmenu=\'return false;\'>');centra('#zoom-vbn-image');jQuery('#zoom-vbn-image').show('slow');"/>
+											</a>
+										<?php else:?>
+												<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/image.gif" width="14" height="14" oncontextmenu="return false;" alt="" />
+										<?php endif;?>
+									  </td>
+
+										<td class="list-cell-detailed" style="padding-left:5px;">
+											<?php //if($giacenza['id_content'] == 1):?>
+											<?php if($key == 0):?>
+												<?php
+													$d = dir($_tplvar['APP_ROOT'].'/email_images/');
+													while (false !== ($entry = $d->read())) {
+														if($entry != '.' && $entry != '..')
+// 															$filename = $_tplvar['APP_ROOT'].'/email_images/'.$entry;
+// 															$handle = fopen($filename, "r");
+// 															$contents = fread($handle, filesize($filename));
+// 															fclose($handle);
+															//$image = base64_encode($contents);
+															if(!empty($entry))
+																$image = $_tplvar['WWW_ROOT'].'email_images/'.$entry;
+													}
+													$d->close();	
+												?>
+											<?php else:?>
+											<?php $image = null;?>
+											<?php endif;?>
+
+											<?php if(!empty($image)):?>
+											<!-- 
+												<a style="width:14px;" href="javascript:void();" onclick="jQuery.fancybox('<img src=data:image/png;base64,<?php echo $image?> oncontextmenu=\'return false;\' />');" title="" class="lightbox">
+													<img id="image_custom" src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/foto-camera.gif" alt="" width="14" height="14" oncontextmenu="return false;"  onmouseout="jQuery('#zoom-vbn-image').hide();" onmouseover="jQuery('#zoom-vbn-image').html('<img src=\'data:image/png;base64,<?php echo $image?>\' oncontextmenu=\'return false;\'>');centra('#zoom-vbn-image');jQuery('#zoom-vbn-image').show('slow');"/>
+												</a>
+											-->
+												<a style="width:14px;" href="javascript:void();" onclick="jQuery.fancybox('<img src=<?php echo $image?> oncontextmenu=\'return false;\' />');" title="" class="lightbox">
+													<img id="image_custom" src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/foto-camera.gif" alt="" width="14" height="14" oncontextmenu="return false;"  onmouseout="jQuery('#zoom-vbn-image').hide();" onmouseover="jQuery('#zoom-vbn-image').html('<img src=\'<?php echo $image?>\' oncontextmenu=\'return false;\'>');centra('#zoom-vbn-image');jQuery('#zoom-vbn-image').show('slow');"/>
+												</a>
+											<?php else:?>
+													<img  src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/image.gif" alt="" width="14" height="14" />
+											<?php endif;?>	
+										</td>
+							          <td class="list-cell-detailed">
+							          
+									  <?php if(!empty($giacenza['bar_code'])):?>
+							          	<?php echo $giacenza['bar_code']?>
+							          <?php endif;?>
+							          </td>
+							          <td class="list-cell-detailed">
+							          <?php if(empty($value['vbn'])):?>
+							          	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							          <?php else:?>
+							          	<?php echo $value['vbn']?>
+							          <?php endif;?>
+							          </td>
+							          <td class="list-cell-detailed"><?php echo $value['nome_it']?></td>
+							          <td class="list-cell-detailed"><?php echo $value['C1']?></td>
+							          <td class="list-cell-detailed"><?php echo $value['C3']?> <?php echo $value['tipo_colore']?></td>
+							          <td class="list-cell-detailed"><?php echo $value['C5']?></div>
+							          <td class="list-cell-detailed"><?php echo $value['C4']?></td>
+							          <td class="list-cell-detailed"> 
+							          	<?php if(!empty($value[$_tplvar['key_prezzo']])):?>
+							          		<?php echo Currency::FormatEuro($value[$_tplvar['key_prezzo']])?>
+							          	<?php endif;?>
+							          </td>
+									  <td class="list-cell-detailed">
+									  	<?php if(!empty($giacenza) && $giacenza['disponibilita'] > 0):?>
+										  	<?php if($giacenza['disponibilita'] > 10):?>
+										  		<img title="Disponibilità <?php echo $giacenza['disponibilita']?>" alt="<?php echo $giacenza['disponibilita']?>" src="<?php echo $_tplvar['WWW_ROOT']?>css/images/full_stock_level.gif" width="30" style="margin-top:3px">
+										  	<?php elseif($giacenza['disponibilita'] < 10 && $giacenza['disponibilita'] >= 5):?>
+										  		<img title="Disponibilità <?php echo $giacenza['disponibilita']?>" alt="<?php echo $giacenza['disponibilita']?>" src="<?php echo $_tplvar['WWW_ROOT']?>css/images/medium_stock_level.gif" width="30" style="margin-top:3px">
+										  	<?php elseif($giacenza['disponibilita'] < 5):?>
+										  		<img title="Disponibilità <?php echo $giacenza['disponibilita']?>" alt="<?php echo $giacenza['disponibilita']?>" src="<?php echo $_tplvar['WWW_ROOT']?>css/images/low_stock_level.gif" width="30" style="margin-top:3px">
+										  	<?php endif;?>
+							          	<?php else:?>
+							          		<img alt="Non Disponibile" title="Non Disponibile" src="<?php echo $_tplvar['WWW_ROOT']?>css/images/low_stock_level.gif" width="30" style="margin-top:3px">
+							          	<?php endif;?>
+							          </td>
+							          <td class="list-cell-detailed" style="width:50px;">
+							          <?php if(!empty($giacenza) && $giacenza['disponibilita'] > 0 && $giacenza['quantita'] < $giacenza['disponibilita']):?>
+							          	
+							          	<?php foreach ($_SESSION[session_id()]['basket'] as $v):?>
+							          	<?php 
+							          		$input_value = '';
+							          		if($giacenza['id'] == $v['id'])
+							          		{
+							          			$input_value = $v['sel_quantita'];
+							          			break;
+							          		}
+							          	?>
+							          	<?php endforeach;?>
+							          	<input value="<?php echo $input_value;?>" type="text" name="quantita_<?php echo $value['id'];?>" id="quantita_<?php echo $value['id'];?>" style="width:20px" 
+							          	onblur="javascript:addProductCart('<?php echo $value['id'];?>', this.value, '<?php echo $giacenza['id']?>');"> x <?php echo $giacenza['quantita']?>
+									  <?php else:?>
+									   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; x <?php echo $giacenza['quantita']?>
+									  <?php endif;?>
+									  </td>
+								    </tr>
+								<?php endforeach;?>
+								<tr>
+									<td>&nbsp;</td>
+								</tr>
+								</table>
+								</li>
+							</ol>
+							<!-- End Product Listing -->
+							<!-- 
+							<script type="text/javascript">decorateList('products-list', 'none-recursive')</script>
+						 	-->
+							<!-- Begin ToolBarButton -->
+						    <?php 
+						    $assign['show_paging'] = true;
+						    $assign['show_switch_layout'] = false;
+						    $this->getPartial('shared/ToolBarButton', $assign);?>
+							<!-- End ToolBarButton -->
+						</div>
+<script>
+function addProductCart(id, qty, id_mag)
+{
+	if(!qty.match('^(0|[1-9][0-9]*)$'))
+	{
+		jQuery.fancybox( '<div style="padding:20px">Attenzione sono ammessi solo caratteri numerici!</div>' );
+		jQuery('#quantita_'+id).val('');
+		jQuery.ajax({
+			  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+			  type: 'POST',
+			  dataType: 'html',
+			  cache: false,
+			  data: 'delete=1&id_content='+id+'&id_magazzino='+id_mag+'&is_ajax=1',
+			  success: function(html){
+				jQuery('#row-'+id).attr('class', 'list-row-detailed');
+				jQuery('#row-'+id).css('background-color', '');
+				jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+			  	jQuery('#box-cart').html( html );
+			  }
+			});
+
+	}
+	else if(qty != '' && qty > 0)
+	{
+		jQuery.fancybox.showActivity();
+		jQuery.ajax({
+			  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+			  type: 'POST',
+			  dataType: 'html',
+			  cache: false,
+			  data: 'id_mag='+id_mag+'&id='+id+'&quantita='+qty+'&is_ajax=1',
+			  success: function(html){
+				//jQuery.fancybox( html );
+			  	jQuery.fancybox.hideActivity();
+			  	jQuery('#box-cart').html( html );
+				jQuery('#row-'+id).attr('class', '');
+				jQuery('#row-'+id).css('background-color', '#B6E9B8');
+				jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+			  }
+			});	
+	}
+	else if(qty == 0)
+	{
+		jQuery.fancybox.showActivity();
+		jQuery.ajax({
+			  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+			  type: 'POST',
+			  dataType: 'html',
+			  cache: false,
+			  data: 'delete=1&id_content='+id+'&id_magazzino='+id_mag+'&is_ajax=1',
+			  success: function(html){
+				jQuery('#row-'+id).attr('class', 'list-row-detailed');
+				jQuery('#row-'+id).css('background-color', '');
+				jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+			  	jQuery('#box-cart').html( html );
+			  	jQuery.fancybox.hideActivity();
+			  }
+			});	
+	}
+}
+</script>

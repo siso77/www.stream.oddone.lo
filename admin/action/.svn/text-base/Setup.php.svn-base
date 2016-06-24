@@ -1,0 +1,158 @@
+<?php
+include_once(APP_ROOT.'/beans/ApplicationSetup.php');
+//include_once(APP_ROOT."/beans/tipo_presa_carico.php");
+//include_once(APP_ROOT."/beans/contenuti_tipo.php");
+include_once(APP_ROOT."/beans/users_type.php");
+			
+class Setup extends DBSmartyAction
+{
+	function Setup()
+	{
+		parent::DBSmartyAction();
+
+		if(!empty($_REQUEST['reset']))	
+			unset($_SESSION['Setup']);
+					
+		if($_SERVER['REQUEST_METHOD'] == 'POST')
+		{
+//			$this->storeContentTypeByKey('content_type', 'id_content_type');
+//			$this->storePresaCaricoByKey('presa_carico', 'id_presa_carico');
+
+			$this->storeSetupByKey('payment_type', 'id_payment_type', 'payment_type');
+			
+			$this->storeSetupByKey('percent_sale', 'id_percent_sale', 'percentuale_sconto');
+			
+			$this->storeSetupByKey('spese_spedizione', 'id_spese_spedizione', 'spese_spedizione');
+			
+			$this->storeUserTypeByKey('user_type', 'id_user_type');
+			
+			$this->storeSetupByKey('iva', 'iva');
+
+			unset($_SESSION['Setup']);
+			$this->_redirect('?act=Setup');
+		}
+		else 
+		{
+			if(!empty($_REQUEST['delete_ut']))
+			{
+				$BeanUserType = new users_type();
+				$BeanUserType->dbDelete($this->conn, array($_REQUEST['id']),false);
+			}
+
+			$BeanUserType = new users_type();
+			$userType = $BeanUserType->dbGetAll($this->conn);
+			$this->getElemendByKey($userType, 'user_type', 'ut', $BeanUserType);
+
+			$BeanApplicationSetup 	= new ApplicationSetup();
+			$percentSale 			= $BeanApplicationSetup->dbGetAllByField($this->conn, 'percentuale_sconto');
+			$this->getElemendByKey($percentSale, 'percent_sale', 'ps', $BeanApplicationSetup);
+			
+			$BeanApplicationSetup 	= new ApplicationSetup();
+			$speseSpedizione 			= $BeanApplicationSetup->dbGetAllByField($this->conn, 'spese_spedizione');
+			$this->getElemendByKey($speseSpedizione, 'spese_spedizione', 'ss', $BeanApplicationSetup);
+
+			$paymentType 			= $BeanApplicationSetup->dbGetAllByField($this->conn, 'payment_type');
+			$this->getElemendByKey($paymentType, 'payment_type', 'pt', $BeanApplicationSetup);
+		}
+		
+		$this->tEngine->assign('tpl_action', 'Setup');
+		$this->tEngine->display('Index');
+	}
+	
+	function storeUserTypeByKey($requestNameKey, $requestIdKey)
+	{
+		foreach ($_REQUEST[$requestNameKey] as $key => $val)
+		{
+			if(key_exists($key, $_REQUEST[$requestIdKey]))
+			{
+				$BeanUserType = new users_type($this->conn, $_REQUEST[$requestIdKey][$key]);
+				$BeanUserType->setName($val);
+				$BeanUserType->setDescription($val);
+				$BeanUserType->dbStore($this->conn);
+			}
+			else 
+			{
+				$BeanUserType = new users_type();
+				$BeanUserType->setName($val);
+				$BeanUserType->setDescription($val);
+				$BeanUserType->dbStore($this->conn);
+			}
+		}
+	}	
+
+	function storeSetupByKey($requestNameKey, $requestIdKey, $dbFieldName)
+	{
+		if(!empty($_REQUEST['iva']))
+		{
+				$BeanApplicationSetup = new ApplicationSetup($this->conn, $_REQUEST['id_iva']);
+				$BeanApplicationSetup->setName($_REQUEST['iva']);
+				$BeanApplicationSetup->setField_name('iva');
+				$BeanApplicationSetup->setIs_active(1);
+				$BeanApplicationSetup->setOperatore($_SESSION['LoggedUser']['username']);
+				$BeanApplicationSetup->dbStore($this->conn);
+		}
+		
+		if(!empty($_REQUEST['spese_spedizione']))
+		{
+				$BeanApplicationSetup = new ApplicationSetup($this->conn, $_REQUEST['id_spese_spedizione']);
+				$BeanApplicationSetup->setName($_REQUEST['spese_spedizione']);
+				$BeanApplicationSetup->setField_name('spese_spedizione');
+				$BeanApplicationSetup->setIs_active(1);
+				$BeanApplicationSetup->setOperatore($_SESSION['LoggedUser']['username']);
+				$BeanApplicationSetup->dbStore($this->conn);
+		}
+		
+		foreach ($_REQUEST[$requestNameKey] as $key => $val)
+		{
+			if(key_exists($key, $_REQUEST[$requestIdKey]))
+			{
+				$BeanApplicationSetup = new ApplicationSetup($this->conn, $_REQUEST[$requestIdKey][$key]);
+				$BeanApplicationSetup->setName($val);
+				if(!empty($_REQUEST[$requestNameKey.'_description'][$key]))
+					$BeanApplicationSetup->setDescription($_REQUEST[$requestNameKey.'_description'][$key]);
+				$BeanApplicationSetup->setField_name($dbFieldName);
+				$BeanApplicationSetup->setIs_active(1);
+				$BeanApplicationSetup->setOperatore($_SESSION['LoggedUser']['username']);
+				$BeanApplicationSetup->dbStore($this->conn);
+			}
+			else 
+			{
+				$BeanApplicationSetup = new ApplicationSetup();
+				$BeanApplicationSetup->setName($val);
+				if(!empty($_REQUEST[$requestNameKey.'_description'][$key]))
+					$BeanApplicationSetup->setDescription($_REQUEST[$requestNameKey.'_description'][$key]);
+				$BeanApplicationSetup->setField_name($dbFieldName);
+				$BeanApplicationSetup->setIs_active(1);
+				$BeanApplicationSetup->setOperatore($_SESSION['LoggedUser']['username']);
+				$BeanApplicationSetup->dbStore($this->conn);	
+			}
+		}
+	}
+	
+	function getElemendByKey($value, $element, $suffixRequestKey, $BeanApplicationSetup)
+	{
+		if(empty($_SESSION['Setup'][$element]))
+			$_SESSION['Setup'][$element] = $value;
+		if(!empty($_REQUEST['add_'.$suffixRequestKey]))
+			$_SESSION['Setup'][$element][ count($_SESSION['Setup'][$element]) ]['name'] = '';
+		if(!empty($_REQUEST['rem_'.$suffixRequestKey]))
+		{
+			$elToRemove = $_SESSION['Setup'][$element][ count($_SESSION['Setup'][$element]) - 1 ];
+			if(key_exists('id', $elToRemove))
+			{
+				$BeanApplicationSetup->dbDelete($this->conn, array($elToRemove['id']), true);
+			}
+			unset($_SESSION['Setup'][$element][ count($_SESSION['Setup'][$element]) - 1 ]);
+		}
+		if(!empty($_REQUEST['delete_'.$suffixRequestKey]))
+		{
+			if($suffixRequestKey != 'ut')
+				$BeanApplicationSetup->dbDelete($this->conn, array($_REQUEST['id']), true);
+			unset($_SESSION['Setup']);
+			$this->_redirect('?act=Setup');
+		}
+		
+		$this->tEngine->assign($element, $_SESSION['Setup'][$element]);		
+	}
+}
+?>

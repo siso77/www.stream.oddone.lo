@@ -1,0 +1,351 @@
+<?php
+$_tplvar = $this->getVars();
+?>
+
+<!-- INCLUSIONE TEXTAREA JS -->
+	<script src="<?php echo $_tplvar['WWW_ROOT'];?>javascript/ckeditor/ckeditor.js"></script>
+	<link rel="stylesheet" href="<?php echo $_tplvar['WWW_ROOT'];?>javascript/ckeditor/samples/sample.css">
+<!-- INCLUSIONE TEXTAREA JS -->
+
+<!-- INCLUSIONE CALENDARIO -->
+<link rel="stylesheet" media="screen" type="text/css" href="<?php echo $_tplvar['WWW_ROOT'];?>calendar/css/datepicker.css" />
+<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT'];?>calendar/js/datepicker.js"></script>
+ <!-- INCLUSIONE CALENDARIO -->
+ 
+<script>window.dhx_globalImgPath = "<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/dhtmlxSuite/dhtmlxCombo/codebase/imgs/";</script>
+<link rel="STYLESHEET" type="text/css" href="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/dhtmlxSuite/dhtmlxCombo/codebase/dhtmlxcombo.css">
+<script  src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/dhtmlxSuite/dhtmlxCombo/codebase/dhtmlxcommon.js"></script>
+<script  src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/dhtmlxSuite/dhtmlxCombo/codebase/dhtmlxcombo.js"></script>
+
+<?php if(!empty($_tplvar['error_contenuto_precaricato'])):?>
+<b style="color:red"><?php echo $this->getText('code_not_found');?></b>
+<?php endif;?>	
+
+<?php if($_tplvar['confirm_insert']):?>
+<b style="color:red"><?php echo $this->getText('insert_succesfull');?></b>
+<?php endif;?>	
+
+<script type="text/javascript">
+<!--
+function validateForm()
+{
+	var ret = true;
+	var qty = document.getElementById('quantita');
+	var name_it = document.getElementById('name_it');
+	var description_it = document.getElementById('description_it');
+	var id_size_type = document.getElementById('id_size_type');
+	var id_fornitore = document.getElementsByName('id_fornitore');
+	var id_category = document.getElementById('id_category');
+	var id_brand = document.getElementById('id_brand');
+	var id_color = document.getElementById('id_color');
+	
+	var err_quantita = document.getElementById('err_quantita');
+	var err_name_it = document.getElementById('err_name_it');
+	var err_description_it = document.getElementById('err_description_it');
+	var err_id_size_type = document.getElementById('err_id_size_type');
+	var err_id_fornitore = document.getElementById('err_id_fornitore');
+	var err_id_category = document.getElementById('err_id_category');
+	var err_id_brand = document.getElementById('err_id_brand');
+	var err_id_color = document.getElementById('err_id_color');
+	
+	if(id_brand.value == '')
+	{		
+		err_id_brand.innerHTML = '(*) Campo obbligatorio';
+		ret = false;
+	}
+	else
+		err_id_brand.innerHTML = '';
+	
+	if(id_category.value == '')
+	{		
+		err_id_category.innerHTML = '(*) Campo obbligatorio';
+		ret = false;
+	}
+	else
+		err_id_category.innerHTML = '';
+
+	if(description_it.value == '')
+	{		
+		err_description_it.innerHTML = '(*) Campo obbligatorio';
+		ret = false;
+	}
+	else
+		err_description_it.innerHTML = '';
+
+	if(name_it.value == '')
+	{		
+		err_name_it.innerHTML = '(*) Campo obbligatorio';
+		ret = false;
+	}
+	else
+		err_name_it.innerHTML = '';
+
+	return ret;
+}
+//-->
+</script>		
+<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=<?php echo $_tplvar['action_class_name']?>" method="post" enctype="multipart/form-data"> <!-- onsubmit="javascript:return validateForm()"> -->
+<?php if(!empty($_tplvar['content']['giacenza']['id'])):?>
+	<input type="hidden" name="id_giacenza" value="<?php echo $_tplvar['content']['giacenza']['id']?>">
+<?php endif;?>
+<?php if(!empty($_tplvar['content']['content']['id'])):?>
+	<input type="hidden" name="id_content" value="<?php echo $_tplvar['content']['content']['id']?>">
+<?php endif;?>
+
+		<article class="module width_full">
+			<header><h3 class="tabs_involved">Caricamento Prodotti</h3>
+			<ul class="tabs">
+	   			<li class="active"><a href="#tab1">Prodotti</a></li>
+	    		<li><a href="#tab2">Immagini</a></li>
+	    		<li><a href="#tab3">Traduzioni</a></li>
+			</ul>
+			</header>
+			<div class="tab_container">
+				<div id="tab1" class="tab_content">
+	
+					<div class="module_content">
+						<fieldset>
+							<label>Codice</label>
+							<input name="codice" id="codice" type="text" value="<?php echo $_tplvar['content']['giacenza']['bar_code']?>">
+						</fieldset>
+						<fieldset>
+							<label>Barcode</label>
+							<input name="vbn" id="vbn" type="text" value="<?php echo $_tplvar['content']['content']['vbn']?>">
+						</fieldset>
+						<fieldset>
+							<label>Nome &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/it.jpg" style="width:15px"></label>
+							<input name="nome" id="nome" type="text" value="<?php echo $_tplvar['content']['content']['nome_it']?>">
+						</fieldset>
+						<fieldset>
+							<label>Descrizione &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/it.jpg" style="width:15px"></label>
+						</fieldset>
+						<textarea class="ckeditor" name="descrizione" rows="12"><?php echo $_tplvar['content']['content']['descrizione_it']?></textarea>
+<?php 
+$perc_ricarico = $_tplvar[perc_ricarico][name]/100;
+$ricarico = $_tplvar['content']['giacenza']['prezzo_acquisto']*$perc_ricarico;
+if(empty($_tplvar['content']['giacenza']['prezzo_0']))
+	$_tplvar['content']['giacenza']['prezzo_0'] = $_tplvar['content']['giacenza']['prezzo_acquisto']+$ricarico;
+?>							
+<script type="text/javascript">
+function setPrezzoVendita()
+{
+	<?php if(!empty($_tplvar['content']['giacenza']['prezzo_acquisto'])):?>
+		jQuery('#prezzo').val('<?php echo str_replace(',', '.', $this->getFormatPrice($_tplvar['content']['giacenza']['prezzo_acquisto']+$ricarico))?>');
+	<?php else:?>
+		jQuery('#prezzo').val( parseFloat(jQuery('#prezzo_acquisto').val())+(parseFloat(jQuery('#prezzo_acquisto').val())*parseFloat(<?php echo $perc_ricarico?>)) );
+	<?php endif;?>
+}
+</script>
+						<fieldset>
+							<label><a href="javascript:void(0);" onclick="setPrezzoVendita();">Prezzo</a></label>
+							<input name="prezzo" id="prezzo" type="text" value="<?php echo $_tplvar['content']['giacenza']['prezzo_0']?>">
+						</fieldset>
+						<fieldset>
+							<label>Prezzo Acquisto</label>
+							<input name="prezzo_acquisto" id="prezzo_acquisto" type="text" value="<?php echo $_tplvar['content']['giacenza']['prezzo_acquisto']?>">
+						</fieldset>
+						
+						
+						<fieldset>
+							<label>Visibile in negozio</label>
+							<input name="visibile" type="checkbox" <?php if($_tplvar['content']['giacenza']['visibile']):?>checked="checked"<?php endif;?>">
+						</fieldset>
+<!--						<fieldset>-->
+<!--							<label>Visibile in negozio EN</label>-->
+<!--							<input name="visibile_en" type="checkbox" <?php if($_tplvar['content']['giacenza']['visibile_en']):?>checked="checked"<?php endif;?>">-->
+<!--						</fieldset>-->
+<!--						<fieldset>-->
+<!--							<label>Visibile in negozio FR</label>-->
+<!--							<input name="visibile_fr" type="checkbox" <?php if($_tplvar['content']['giacenza']['visibile_fr']):?>checked="checked"<?php endif;?>">-->
+<!--						</fieldset>-->
+<!--						<fieldset>-->
+<!--							<label>Visibile in negozio DE</label>-->
+<!--							<input name="visibile_de" type="checkbox" <?php if($_tplvar['content']['giacenza']['visibile_de']):?>checked="checked"<?php endif;?>">-->
+<!--						</fieldset>-->
+						<fieldset>
+							<label>In evidenza nella home page</label>
+							<input name="in_home" type="checkbox" <?php if($_tplvar['content']['giacenza']['in_home']):?>checked="checked"<?php endif;?>">
+						</fieldset>
+						<fieldset>
+							<label>Stato Novita'</label>
+							<input name="stato" value="novita" type="radio" <?php if($_tplvar['content']['giacenza']['stato'] == 'N'):?>checked="checked"<?php endif;?>">
+						</fieldset>
+						<fieldset>
+							<label>Stato Offerta</label>
+							<input name="stato" value="offerta" type="radio" <?php if($_tplvar['content']['giacenza']['stato'] == 'O'):?>checked="checked"<?php endif;?>">
+						</fieldset>
+						<fieldset>
+							<label>Stato Nessuno</label>
+							<input name="stato" value="E" type="radio" <?php if($_tplvar['content']['giacenza']['stato'] == 'E'):?>checked="checked"<?php endif;?>">
+						</fieldset>
+						
+						<fieldset>
+							<label>Quantita' Confezione</label>
+							<input name="qta_minima" id="qta_minima" type="text" value="<?php echo $_tplvar['content']['giacenza']['qta_minima']?>">
+						</fieldset>
+						<fieldset>
+							<label>Quantita' x Pianale</label>
+							<input name="qta_pianale" id="qta_pianale" type="text" value="<?php echo $_tplvar['content']['giacenza']['qta_pianale']?>">
+						</fieldset>
+						<fieldset>
+							<label>Quantita' x Carrello</label>
+							<input name="qta_carrello" id="qta_carrello" type="text" value="<?php echo $_tplvar['content']['giacenza']['qta_carrello']?>">
+						</fieldset>
+						<fieldset>
+							<label style="width:300px;">Quantita' Min. Orine (confezione)</label>
+							<input name="qta_min_ordine" id="qta_min_ordine" type="text" value="<?php echo $_tplvar['content']['giacenza']['qta_min_ordine']?>">
+						</fieldset>
+						<fieldset>
+							<label>Produttore</label>
+							<input name="id_produttore" id="id_produttore" type="text" value="<?php echo $_tplvar['content']['giacenza']['produttore']?>">
+						</fieldset>
+						
+						<fieldset>
+							<label>Fornitore Preferenziale</label>
+							<select name="id_fornitore" style="width:92%;">
+								<?php foreach ($_tplvar['fornitori'] as $for):?>
+									<option value="<?php echo $for['id']?>" <?php if($_tplvar['content']['giacenza']['id_fornitore'] == $for['id']):?>selected="selected"<?php endif;?>><?php echo $for['nome']?></option>
+								<?php endforeach;?>
+							</select>
+						</fieldset>
+						<fieldset>
+							<label>Categoria</label>
+							<select name="id_categoria" style="width:92%;">
+								<?php foreach ($_tplvar['categories'] as $cat):?>
+									<option value="<?php echo $cat['id']?>" <?php if($_tplvar['content']['giacenza']['id_gm'] == $cat['id']):?>selected="selected"<?php endif;?>><?php echo $cat['name']?></option>
+									<?php if(!empty($cat['sub_category'])):?>
+										<?php foreach ($cat['sub_category'] as $c):?>
+											<option value="<?php echo $c['id']?>" <?php if($_tplvar['content']['giacenza']['id_gm'] == $c['id']):?>selected="selected"<?php endif;?>> - <?php echo $c['name']?></option>
+										<?php endforeach;?>
+									<?php endif;?>
+								<?php endforeach;?>
+							</select>
+						</fieldset>
+						<!--  
+						<fieldset>
+							<label>Produttore</label>
+							<select name="id_produttore" style="width:92%;">
+								<option value="Abbruzzo" <?php if($_tplvar['content']['giacenza']['produttore'] == 'Abbruzzo'):?>selected="selected"<?php endif;?>">Abbruzzo</option>
+								<option value="Liguria" <?php if($_tplvar['content']['giacenza']['produttore'] == 'Liguria'):?>selected="selected"<?php endif;?>">Liguria</option>
+								<option value="Lazio" <?php if($_tplvar['content']['giacenza']['produttore'] == 'Lazio'):?>selected="selected"<?php endif;?>">Lazio</option>
+							</select>
+						</fieldset>
+						-->
+						<!-- VISUALIZZARE L'IVA -->
+						
+						<fieldset>
+							<label>IVA</label>
+							<!-- <select name="iva" style="width:92%;">
+									<option value="<?php echo $iva['name']?>" <?php if($_tplvar['content']['content']['cod_iva'] == $iva['name']):?>selected="selected"<?php endif;?>"><?php echo $iva['name']?>%</option>
+								</select> 
+							-->
+							<?php foreach ($_tplvar['cmb_iva'] as $iva):?>
+								<?php if($_tplvar['content']['content']['cod_iva'] == $iva['name']):?>
+									<input type="hidden" name="iva" value="<?php echo $iva['name']?>">
+									<?php echo $iva['name']?>%
+								<?php endif;?>
+							<?php endforeach;?>
+							
+						</fieldset>
+
+					</div>
+
+				</div>
+				<div id="tab2" class="tab_content">
+					<div class="module_content">
+						<fieldset>
+							<label>Immagine 1</label>
+							<input name="img_1" id="img_1" type="file">
+						</fieldset>
+						<fieldset>
+							<label>Immagine 2</label>
+							<input name="img_2" id="img_2" type="file">
+						</fieldset>
+						<fieldset>
+							<label>Immagine 3</label>
+							<input name="img_3" id="img_3" type="file">
+						</fieldset>
+						<fieldset>
+							<label>Immagine 4</label>
+							<input name="img_4" id="img_4" type="file">
+						</fieldset>
+
+						<fieldset>
+							<label>Immagini Caricate</label>
+							<?php foreach ($_tplvar['content']['images'] as $k => $img):?>
+							<div style="border:1px solid #000;width:120px;float:left;margin:10px;padding:5px;">
+								<div style="position:relative;float:right">
+									<a href="<?php echo WWW_ROOT.'?act='.$_tplvar['action_class_name']?>&rem_image=1&id_image=<?php echo $img['id']?>&id_content=<?php echo $_tplvar['content']['content']['id']?>">
+										<img src="<?php echo str_replace('/admin','',WWW_ROOT).'img/web/image.gif';?>">
+									</a>
+								</div>
+								<img src="<?php echo $img['www_path'].'Medium_'.$img['name'].$img['ext']?>">
+							</div>
+							<?php endforeach;?>
+							
+						</fieldset>
+					</div>
+				</div>
+				
+				
+				<?php 
+				if(empty($_tplvar['content']['content']['nome_en']))
+					$_tplvar['content']['content']['nome_en'] = $_tplvar['content']['content']['nome_it'];
+				if(empty($_tplvar['content']['content']['descrizione_en']))
+					$_tplvar['content']['content']['descrizione_en'] = $_tplvar['content']['content']['descrizione_it'];
+				
+				if(empty($_tplvar['content']['content']['nome_fr']))
+					$_tplvar['content']['content']['nome_fr'] = $_tplvar['content']['content']['nome_it'];
+				if(empty($_tplvar['content']['content']['descrizione_fr']))
+					$_tplvar['content']['content']['descrizione_fr'] = $_tplvar['content']['content']['descrizione_it'];
+				
+				if(empty($_tplvar['content']['content']['nome_de']))
+					$_tplvar['content']['content']['nome_de'] = $_tplvar['content']['content']['nome_it'];
+				if(empty($_tplvar['content']['content']['descrizione_de']))
+					$_tplvar['content']['content']['descrizione_de'] = $_tplvar['content']['content']['descrizione_it'];
+				
+				?>
+				<div id="tab3" class="tab_content">
+					<div class="module_content">
+						<fieldset>
+							<label>Nome &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/en.jpg" style="width:15px"></label>
+							<input name="nome_en" id="nome" type="text" value="<?php echo $_tplvar['content']['content']['nome_en']?>">
+						</fieldset>
+						<fieldset>
+							<label>Descrizione &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/en.jpg" style="width:15px"></label>
+						</fieldset>
+						<textarea class="ckeditor" name="descrizione_en" rows="12"><?php echo $_tplvar['content']['content']['descrizione_en']?></textarea>
+					
+						<fieldset>
+							<label>Nome &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/fr.png" style="width:15px"></label>
+							<input name="nome_fr" id="nome_fr" type="text" value="<?php echo $_tplvar['content']['content']['nome_fr']?>">
+						</fieldset>
+						<fieldset>
+							<label>Descrizione &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/fr.png" style="width:15px"></label>
+						</fieldset>
+						<textarea class="ckeditor" name="descrizione_fr" rows="12"><?php echo $_tplvar['content']['content']['descrizione_fr']?></textarea>
+						
+						<fieldset>
+							<label>Nome &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/de.png" style="width:15px"></label>
+							<input name="nome_de" id="nome_de" type="text" value="<?php echo $_tplvar['content']['content']['nome_de']?>">
+						</fieldset>
+						<fieldset>
+							<label>Descrizione &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/de.png" style="width:15px"></label>
+						</fieldset>
+						<textarea class="ckeditor" name="descrizione_de" rows="12"><?php echo $_tplvar['content']['content']['descrizione_de']?></textarea>
+					</div>
+				</div>
+				
+				
+				
+			</div>
+				
+			<footer>
+				<div class="submit_link">
+					<input type="submit" value="Salva" class="alt_btn">
+					<input type="reset" class="submit" value="Reset">
+				</div>
+			</footer>
+		</article><!-- end of post new article -->
+
+</form>

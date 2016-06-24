@@ -1,0 +1,144 @@
+<?php $_tplvar = $this->getVars();?>
+
+	<div class="header-container">
+		  <div class="header-top"> 
+		  </div> <!--header-top-->
+		  <div class="header-inner">
+			<a class="logo" href="/" title="Oddone"><img src="<?php echo $_tplvar['WWW_ROOT']?>img/web/custom_logo/logo.png" alt="Oddone" width="200" /></a>
+			<div class="header-inner-right">
+		      <div class="toplinks">
+		        
+				<ul class="links">
+					<li class="first"><a href="<?php echo $_tplvar['WWW_ROOT']?>">Home</a></li>
+					<li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart" title="Carrello" class="top-link-checkout" style="color:#ff0103"><?php echo $this->getTranslation('Ordine in corso');?></a></li>
+					<li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=Orders&user_id=<?php echo $_SESSION['LoggedUser']['id'];?>" title="Odrini" class="my-wishlist"><?php echo $this->getTranslation('Storico Ordini');?></a></li>
+					<li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=MyAccount" title="My Account"><?php echo $this->getTranslation('Il tuo Account');?></a></li>
+					<li><a href="<?php echo $_tplvar['WWW_ROOT']?>Contatti.html"><?php echo $this->getTranslation('Contatti');?></a></li>
+					<li class=" last">
+						<?php if(!empty($_SESSION['LoggedUser']['id'])):?>
+							<a href="<?php echo $_tplvar['WWW_ROOT']?>?act=Logout" title="Log In">Log Out</a>
+						<?php else:?>
+							<a href="<?php echo $_tplvar['WWW_ROOT']?>?act=Login" title="Log In">Log In</a>
+						<?php endif;?>									
+					</li>
+				</ul>
+								
+
+		      </div> <!--toplinks-->
+		      <div class="phone" style="color:#fa6405;font-weight:normal;"><?php if(!empty($_SESSION['LoggedUser'])):?><?php echo $this->getTranslation('Benvenuto,');?> <?php echo $_SESSION['LoggedUser']['user_anag']['name'].' '.$_SESSION['LoggedUser']['user_anag']['surname']?>! <!-- (Il tuo sconto &egrave;: --> <?php //echo $_SESSION['LoggedUser']['sconto'][0]['percentuale']?><?php endif;?></div>
+
+		    </div> <!--header-inner-right-->
+		    <div class="header">
+				<div class="quick-access">
+					<!--review_bg-->
+					<div id="mini-cart">
+					   <div id="mini-cart-container" style="display:none;" class="button dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" title="Visualizza Carrello" onclick="document.location.href='<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart'"> 
+						<!-- <div id="mini-cart-container" class="button dropdown-toggle" onmouseover="jQuery('#dropdown-cart').css('display', 'block');" onmouseout="jQuery('#dropdown-cart').css('display', 'none');" title="Visualizza Carrello"> -->
+					       <i class="icon-cart"></i> 
+					       <span class="cart-items" onclick="document.location.href='<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart'">
+										
+							<?php 
+							$basket = $_SESSION[session_id()]['basket'];
+							unset($basket['n_carrelli']);
+							unset($basket['perc_occupazione']);
+							?>
+							(<?php echo count($basket)?>)
+							<?php echo $this->getTranslation('prodotto/i');?>
+					       </span>
+					       
+					    </div> <!--button dropdown-toggle-->
+					    <div class="dropdown-menu" id="dropdown-cart">
+							<?php echo $this->getPartial('shared/BoxCart');?>					    
+					    </div> <!--dropdown-menu-->
+					</div> <!--#mini-cart-->                         
+					<form id="search_mini_form" action="<?php echo $_tplvar['WWW_ROOT']?>?act=Search" method="post">
+						<input type="hidden" name="reset" value="1" />
+					    <div class="form-search">    
+					        <div class="search_all" onmouseover="jQuery(this).css('cursor','pointer');"><span><?php echo $this->getTranslation('CERCA');?></span></div>
+					        <input id="search" type="text" name="key_search" value="<?php echo $_tplvar['key_search']?>" class="input-text" maxlength="128"/>
+					        <?php if(!empty($_tplvar['key_search'])):?>
+						        <button type="button" title="reset" class="button" onclick="jQuery('#search').val('');jQuery('#search_mini_form').submit();return false;" style="margin-left: 16px;width: 50px; margin-top: 4px;"><span style="font-size: 9px">RESET</span></button>
+					        <?php else:?>
+						        <button type="button" title="go" class="button" onclick="jQuery('#search_mini_form').submit();" style="margin-left: 94px;width: 50px; margin-top: 4px;"><span>GO</span></button>
+					        <?php endif;?>
+					        <div id="search_autocomplete" class="search-autocomplete"></div>
+					        <script type="text/javascript">
+					        //<![CDATA[
+					            var searchForm = new Varien.searchForm('search_mini_form', 'search', 'Cerca in tutto lo store...');
+					        //]]>
+					        </script>
+					        
+					    </div> <!--form-search-->
+					    
+					</form>
+		       </div> <!--quick-access-->
+		    </div> <!--header-->
+		  </div> <!--header-inner-->
+	</div> <!--header-container-->
+
+	<div class="nav-container">
+		<script type="text/javascript">
+		jQuery(document).ready(function() {
+		          jQuery('.toggle').click(function() {
+		               if (jQuery('.submenu').is(":hidden"))
+		               {
+		                    jQuery('.submenu').slideDown("fast");
+		               } else {
+		                    jQuery('.submenu').slideUp("fast");
+		               }
+		               return false;
+		          });
+		});
+		
+		/*Phone Menu*/
+		jQuery(document).ready(function() {
+		        jQuery(".topnav").accordion({
+		                accordion:false,
+		                speed: 300,
+		                closedSign: '[+]',
+		                openedSign: '[-]'
+		        });
+		});
+		
+		</script>
+
+		<div id="menu" class="hidden-desktop">
+		  <ul class="navmenu">
+		     <li>
+		      <div class="menutop">
+		        <div class="toggle"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></div>
+		        <h2><a class="lnk-gruppi-merceologici" style="font-size:16px; color:#fff;" href="/?act=Search&amp;reset=1"><?php echo $this->getTranslation('Categorie');?></h2>        
+		       </div>
+		       <ul class="submenu" style="display:none;">
+	         <li><a></a>
+	           <ul class="topnav">
+					<?php foreach ($_tplvar['cmb_gm'] as $key => $value):?>
+					
+					<?php if(!empty($value['sub_category'])):?>
+					
+						<li class="level0 nav-1 level-top first parent">
+							<a href="<?php echo $_tplvar['WWW_ROOT']?>?act=Search&gm=<?php echo $value['id']?>" class="level-top">
+								<span><?php echo $value['gruppo']?></span>
+							</a>
+							<?php if(!empty($value['sub_category'])):?>
+							<ul class="level0">
+								<?php foreach ($value['sub_category'] as $v):?>
+								<li class="level1 nav-1-1 first">
+									<a href="<?php echo $_tplvar['WWW_ROOT']?>?act=Search&gm=<?php echo $v['id']?>">
+										<span><?php echo ucfirst(strtolower($v['gruppo']))?></span>
+									</a>
+								</li>
+								<?php endforeach;?>
+							</ul>
+							<?php endif;?>
+						</li>
+					<?php endif;?>						
+					<?php endforeach;?>		           
+					          
+				</ul>
+	         </li>
+		       </ul> 
+		     </li>
+		  </ul> <!--navmenu-->
+		</div>
+	</div> <!--nav-container-->   

@@ -1,0 +1,10 @@
+<?php $_tplvar = $this->getVars();?>
+<?php if($_REQUEST['act'] == 'Search'):?>
+<div data-role="footer" class="ui-bar">
+<!-- 	<div data-role="navbar"> -->
+    <?php $this->getPartial('shared/ToolBarButton');?>
+<!-- 	</div> -->
+</div>
+<?php else:?>
+&copy; 2012 Florsistemi. All Rights Reserved.
+<?php endif;?>

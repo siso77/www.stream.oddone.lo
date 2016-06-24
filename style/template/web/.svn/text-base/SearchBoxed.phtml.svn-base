@@ -1,0 +1,175 @@
+<?php 
+$_tplvar = $this->getVars();
+$this->getIntlPartial('Login');
+?>
+
+
+						<?php if(empty($_SESSION['LoggedUser'])):?>
+						<?php endif;?>
+
+						<div class="category-products">
+							<!-- Begin ToolBarButton -->
+						    <?php 
+						    $assign['url'] = $_tplvar['WWW_ROOT'].'?act=Search';
+						    $assign['layout_active'] = $_SESSION['Search']['layout'];
+						    $assign['show_switch_layout'] = true;
+						    $this->getPartial('shared/ToolBarButton', $assign);?>
+							<!-- End ToolBarButton -->
+<br>
+							<!-- Begin Product Listing -->
+							<ol class="products-list" id="products-list">
+
+								<li class="item" style="margin-left:0px;">
+								
+								<table class="list-table">
+								<?php foreach ($_tplvar['content'] as $key => $value):?>
+									<?php $giacenza = $this->getGiacenzaByIdContent($value['id']);?>
+									<?php $key++;?>
+									<?php if($key == 0):?>
+									<tr>
+									<?php endif;?>
+										<td class="list-row" onclick="javascript:swapClass(this, 'list-row', 'list-row active');">
+											<table class="list-table-grid">
+											<tr style="height:154px">
+												<td class="list-cell" style="margin-left:30px;width:50px">
+												<?php $image = $this->getImageFromVbn($value['vbn']);?>
+												<?php if(!empty($image)):?>
+<!--													<a style="width:84px;" href="<?php echo $image?>" title="" class="product-image lightbox grouped_elements" rel="group1">-->
+												<!-- 
+													<a style="width:84px;" href="javascript:void();" class="lightbox" onclick="jQuery.fancybox('<img src=data:image/png;base64,<?php echo $image?> oncontextmenu=\'return false;\' />');" title="" class="lightbox" rel="group1">
+														<img src="data:image/png;base64,<?php echo $image?>" width="84" height="84" alt="" />
+													</a>
+												-->
+													<a style="width:84px;" href="javascript:void();" class="lightbox" onclick="jQuery.fancybox('<img src=<?php echo $image?> oncontextmenu=\'return false;\' />');" title="" class="lightbox" rel="group1">
+														<img src="<?php echo $image?>" width="84" height="84" alt="" />
+													</a>
+												
+												<?php else:?>
+													<a style="width:84px;" href="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/image_large.gif" title="" class="product-image lightbox grouped_elements" rel="group1">
+														<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/image_large.gif" width="84" height="84" alt="" />
+													</a>
+												<?php endif;?>
+												</td>
+												<td class="list-cell" style="padding-left:20px;vertical-align:top;">
+													<table width="90%" style="margin-top:30px">
+													<tr>
+													  <td class="list-cell-boxed">Nome</td>
+											          <td class="list-cell-boxed"><?php echo $value['nome_it']?></td>
+											        </tr>
+											        <tr>
+											          <td class="list-cell-boxed">Varietà</td>
+											          <td class="list-cell-boxed"><?php echo $value['C1']?></td>
+											        </tr>
+											        <tr>
+											          <td class="list-cell-boxed">Colore</td>
+											          <td class="list-cell-boxed"><?php echo $value['C3']?> <?php echo $value['tipo_colore']?></td>
+											        </tr>
+											        </table>
+											    </td>
+											    <td class="list-cell" style="margin-left:30px;vertical-align:top;">
+											        <table width="90%" style="margin-top:30px">
+											        <tr>
+											          <td class="list-cell-boxed">Disponibilità</td>
+													  <td class="list-cell-boxed">
+													  	<?php if(!empty($giacenza) && $giacenza['disponibilita'] > 0):?>
+														  	<?php if($giacenza['disponibilita'] > 10):?>
+														  		<img title="Disponibilità <?php echo $giacenza['disponibilita']?>" alt="<?php echo $giacenza['disponibilita']?>" src="<?php echo $_tplvar['WWW_ROOT']?>css/images/full_stock_level.gif" width="30" style="margin-top:3px">
+														  	<?php elseif($giacenza['disponibilita'] < 10 && $giacenza['disponibilita'] > 5):?>
+														  		<img title="Disponibilità <?php echo $giacenza['disponibilita']?>" alt="<?php echo $giacenza['disponibilita']?>" src="<?php echo $_tplvar['WWW_ROOT']?>css/images/medium_stock_level.gif" width="30" style="margin-top:3px">
+														  	<?php elseif($giacenza['disponibilita'] < 5):?>
+														  		<img title="Disponibilità <?php echo $giacenza['disponibilita']?>" alt="<?php echo $giacenza['disponibilita']?>" src="<?php echo $_tplvar['WWW_ROOT']?>css/images/low_stock_level.gif" width="30" style="margin-top:3px">
+														  	<?php endif;?>
+													  	
+											          	<?php //echo $giacenza['disponibilita']?>
+											          	<?php else:?>
+											          		<img alt="Non Disponibile" title="Non Disponibile" src="<?php echo $_tplvar['WWW_ROOT']?>css/images/low_stock_level.gif" width="30" style="margin-top:3px">
+											          	<?php endif;?>
+											          </td>
+											        </tr>
+											        <tr>
+											          <td class="list-cell-boxed">Provenienza</td>
+											          <td class="list-cell-boxed"><?php echo $value['C5']?></td>
+											        </tr>
+											        <tr>
+											          <td class="list-cell-boxed">Codice VBN</td>
+											          <td class="list-cell-boxed">
+											          <?php if(empty($value['vbn'])):?>
+											          	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											          <?php else:?>
+											          	<?php echo $value['vbn']?>
+											          <?php endif;?>
+											          </td>
+											        </tr>
+													</table>
+												</td>
+												
+										        <td class="list-cell">
+										        <?php if(!empty($giacenza) && $giacenza['disponibilita'] > 0):?>
+										        
+													<?php 
+													$add_to_basket_url = $_tplvar['WWW_ROOT'].'ShoppingCart';
+													if(!empty($value['id_famiglia']))
+													{
+														$famiglia = $this->getFamigliById($value['id_famiglia']);
+														$add_to_basket_url .= '/'.$famiglia['famiglia'];
+													}
+													else
+														$add_to_basket_url .= '/-';
+												
+													if(!empty($value['nome_it']))
+														$add_to_basket_url .= '/'.$value['nome_it'];
+													else
+														$add_to_basket_url .= '-';
+												
+													$add_to_basket_url .= '/'.$giacenza['id'].'.html';
+													?>
+													<a class="pl-info" href="<?php echo $add_to_basket_url;?>" title="Aggiungi al Carrello" >
+														<img src="<?php echo $_tplvar['WWW_ROOT']?>theme/styles/common-images/carrello.gif" width="20">
+													</a>
+													<!-- 
+											      <a href="javascript:void(0);" class="pl-info" onclick="
+										          		  jQuery.fancybox.showActivity();
+											        	  jQuery.ajax({
+															  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=AjaxDetailGiacenza',
+															  type: 'POST',
+															  dataType: 'html',
+															  cache: false,
+															  data: 'id=<?php echo $value['id'];?>',
+															  success: function(html){		
+															  	jQuery.fancybox( html );
+															  }
+															});
+												          ">
+											          	<div id="" class="cella-info">
+															<strong>i</strong>
+													  	</div>
+												  </a>
+												   -->
+												<?php endif;?>
+											    </td>			
+
+											</tr>
+											</table>
+										</td>
+									<?php if($key % 2 == 0):?>
+									</tr>
+									<tr>
+									<?php endif;?>
+									
+								<?php endforeach;?>
+								<tr>
+									<td>&nbsp;</td>
+								</tr>
+								</table>
+								</li>
+							</ol>
+							<!-- End Product Listing -->
+							<script type="text/javascript">decorateList('products-list', 'none-recursive')</script>
+						
+							<!-- Begin ToolBarButton -->
+						    <?php 
+						    $assign['show_paging'] = true;
+						    $assign['show_switch_layout'] = false;
+						    $this->getPartial('shared/ToolBarButton', $assign);?>
+							<!-- End ToolBarButton -->
+						</div>

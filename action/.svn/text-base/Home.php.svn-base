@@ -1,0 +1,19 @@
+<?php
+
+include_once(APP_ROOT.'/beans/banner.php');
+
+class Home extends DBSmartyMailAction
+{
+	function Home()
+	{
+		parent::DBSmartyMailAction();
+
+		$BeanBanners = new banner();
+		$img_slider = $BeanBanners->dbGetAllByIdCategory($this->conn, 0);
+		$this->tEngine->assign('img_slider', $img_slider);
+
+		$this->tEngine->assign('tpl_action', 'Home');
+		$this->tEngine->display('Index');
+	}
+}
+?>

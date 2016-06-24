@@ -1,0 +1,32 @@
+<?php $_tplvar = $this->getVars();?>
+
+<div class="main-container col2-right-layout">  
+    	
+    	
+<!--     	<p class="breadcrumbs"><span class="breadcrumb_info">Ti trovi in:</span> <a href="/">Home</a><span class="breadarrow"> &raquo; </span><span class="current_crumb">Carrello</span></p> -->
+    	
+		<!-- LISTA PRODOTTI -->
+		<div id="swich_layout">
+		<?php $this->getPartial($_tplvar['tpl_action']);?>
+		</div>
+		<!-- LISTA PRODOTTI -->    	
+    	
+    	<?php 
+    	if($_REQUEST['act'] != 'Login' && $_REQUEST['act'] != 'ShoppingCart' && $_REQUEST['act'] != 'CheckoutShopping' && $_REQUEST['act'] != 'CreateAccount')
+    		echo $this->getPartial('shared/MenuLeft');
+    	?>
+    	
+		
+<!-- 		<div class="brand-logo"> -->
+<!-- 			<ul> -->
+<!-- 				<li><img src="../skin/frontend/default/akoha/images/b-logo1.png" alt="brand-logo" /></li> -->
+<!-- 				<li><img src="../skin/frontend/default/akoha/images/b-logo2.png" alt="brand-logo" /></li> -->
+<!-- 				<li><img src="../skin/frontend/default/akoha/images/b-logo3.png" alt="brand-logo" /></li> -->
+<!-- 				<li><img src="../skin/frontend/default/akoha/images/b-logo4.png" alt="brand-logo" /></li> -->
+<!-- 				<li><img src="../skin/frontend/default/akoha/images/b-logo5.png" alt="brand-logo" /></li> -->
+<!-- 				<li><img src="../skin/frontend/default/akoha/images/b-logo6.png" alt="brand-logo" /></li> -->
+<!-- 			</ul> -->
+<!-- 		</div>   -->
+		<!-- Logo Brand Block -->
+	</div> 
+	<!--main-container col2-left-layout-->

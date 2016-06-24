@@ -1,0 +1,185 @@
+<?php $_tplvar = $this->getVars();?>
+<style>
+<!--
+.selected {
+	background-color: #B00000;
+}
+.not_selected {
+	background-color: #ADADAD;
+}
+
+td {
+	padding: 9px 12px;
+}
+
+-->
+</style>
+<div class="col-main">
+	<div class="page-title">
+	<?php echo $this->getText('your_account');?>
+	</div>
+<div id="page-content" style="padding-left: 20px;padding-right: 20px;">
+	<div id="page-content-header">
+
+			<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=MyAccount" method="post">
+			<input type="hidden" name="id_user" value="<?php echo $_tplvar['id_user']?>">
+			<table cellspacing="0" cellpadding="0" style="text-align: left; width: 100%;">
+				<tbody>
+					<tr>
+						<td align="left">
+						<table cellpadding="30" style="width: 100%;">
+							<tbody>
+								<tr>
+									<td colspan="2" style="height: 10px;"></td>
+								</tr>
+								<tr>
+									<td style="padding-bottom: 5px;" colspan="2">
+									<table width="100%" cellspacing="0" cellpadding="0">
+										<tbody>
+											<tr>
+												<th align="left"><?php echo $this->getTranslation('Modifica Password: Inserisci la nuova password o lascia i campi vuoti')?></th>
+											</tr>
+										</tbody>
+									</table>
+									</td>
+								</tr>
+								<tr id="TbrVatNumber">
+									<td align="right"><span class="Label105" id="CustSetUp_LblVatNumber"><?php echo $this->getTranslation('Password')?></span></td>
+									<td>
+										<input type="text" id="password" size="20" maxlength="50" name="password">
+									</td>
+								</tr>
+								<tr id="TbrVatNumber">
+									<td align="right"><span class="Label105" id="CustSetUp_LblVatNumber"><?php echo $this->getTranslation('Conferma Password')?></span></td>
+									<td>
+										<input type="text" id="confirm_password" size="20" maxlength="50" name="confirm_password">
+									</td>
+								</tr>
+								<tr>
+									<td style="padding-bottom: 5px;" colspan="2">
+									<table width="100%" cellspacing="0" cellpadding="0">
+										<tbody>
+											<tr>
+												<th align="left"><?php echo $this->getTranslation("Dettagli dell'indirizzo di fatturazione")?></th>
+											</tr>
+										</tbody>
+									</table>
+									</td>
+								</tr>
+								<tr id="TbrVatNumber">
+									<td align="right"><span class="Label105" id="CustSetUp_LblVatNumber"><?php echo $this->getTranslation('Partita IVA')?></span></td>
+									<td>
+										<?php echo $_SESSION['LoggedUser']['customer_data']['p_iva'];?>
+										<span class="OptionalField1" id="CustSetUp_LblOptionalField3"></span>
+										<div id="err_p_iva"></div>
+										
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><span class="Label105" id="CustSetUp_LblFirstName"><?php echo $this->getTranslation('Ragione Sociale')?></span></td>
+									<td><?php echo $_SESSION['LoggedUser']['customer_data']['ragione_sociale'];?>
+										<div id="err_name"></div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><span class="Label105" id="CustSetUp_LblFirstName"><?php echo $this->getTranslation('Nome')?></span></td>
+									<td>
+										<?php echo $_tplvar['user_data']['surname']?>
+										<div id="err_name"></div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><span class="Label105" id="CustSetUp_LblSurname"><?php echo $this->getTranslation('Cognome')?></span></td>
+									<td><?php echo $_tplvar['user_data']['surname']?>
+									<div id="err_surname"></div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><span class="Label105" id="CustSetUp_LblAddressLine1"><?php echo $this->getTranslation('Indirizzo')?> </span></td>
+									<td>
+									<?php echo $_SESSION['LoggedUser']['customer_data']['indirizzo'];?>
+									<div id="err_address"></div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><span class="Label105" id="CustSetUp_LblCity"><?php echo $this->getTranslation('Citt&agrave')?></span></td>
+									<td>
+									<?php echo $_SESSION['LoggedUser']['customer_data']['citta'];?>
+									<div id="err_city"></div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><span class="Label105" id="CustSetUp_LblCountry"><?php echo $this->getTranslation('Nazione')?></span></td>
+									<td>
+									<?php echo $_SESSION['LoggedUser']['customer_data']['stato'];?>
+									<div id="err_nation"></div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><span class="Label105" id="CustSetUp_LblPostCode"><?php echo $this->getTranslation('CAP')?></span></td>
+									<td>
+									<?php echo $_SESSION['LoggedUser']['customer_data']['cap'];?>
+									<div id="err_cap"></div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><span class="Label105" id="CustSetUp_LblPostCode"><?php echo $this->getTranslation('Telefono')?></span></td>
+									<td>
+									<?php echo $_SESSION['LoggedUser']['customer_data']['fisso'];?>
+									<div id="err_cap"></div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><span class="Label105" id="CustSetUp_LblPostCode"><?php echo $this->getTranslation('Mobile')?></span></td>
+									<td>
+									<?php echo $_SESSION['LoggedUser']['customer_data']['cellulare'];?>
+									<div id="err_cap"></div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><span class="Label105" id="CustSetUp_LblPostCode"><?php echo $this->getTranslation('Fax')?></span></td>
+									<td>
+									<?php echo $_SESSION['LoggedUser']['customer_data']['fax'];?>
+									<div id="err_cap"></div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><span class="Label105" id="CustSetUp_LblPostCode"><?php echo $this->getTranslation('Email')?></span></td>
+									<td>
+									<?php echo $_SESSION['LoggedUser']['customer_data']['email'];?>
+									<div id="err_cap"></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2" style="height: 10px;"></td>
+								</tr>
+
+								<tr>
+									<td colspan="2" style="height: 10px;"></td>
+								</tr>
+							</tbody>
+						</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<tbody>
+					<tr>
+						<td width="5%"></td>
+						<td width="70%"></td>
+						<td width="5%">
+							<div class="actions">
+								<button type="submit" title="Subscribe" class="button" style="color: #ffffff;border: 1px solid black;display: inline-block;outline: none;cursor: pointer;text-align: center;text-decoration: none;font-size: 9pt;padding-top: 0px;padding-bottom: 0px;margin-left: 3px;-webkit-border-bottom-right-radius: 0;-webkit-border-top-left-radius: 0;-moz-border-bottom-right-radius: 0;border-bottom-right-radius: 0;-moz-border-top-left-radius: 0;border-top-left-radius: 0;-webkit-box-shadow: 0;-moz-box-shadow: 0;-o-box-shadow: 0;box-shadow: 0;width: 90px;">&nbsp;&nbsp;&nbsp;<span><span><?php echo $this->getTranslation('Salva')?></span></span></button>
+							</div>
+						</td>
+						<td width="1%"></td>
+						<td width="5%"></td>
+					</tr>
+				</tbody>
+			</table>
+			</form>
+			<div class="clear"></div>
+		</div>
+	</div>
+</div>		

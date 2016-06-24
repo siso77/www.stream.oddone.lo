@@ -1,0 +1,5 @@
+<?php 
+$fp = fopen('../data_'.date('Y_m_d__H_i_s').'.txt', 'w');
+fwrite($fp, 'OK');
+fclose($fp);
+?>

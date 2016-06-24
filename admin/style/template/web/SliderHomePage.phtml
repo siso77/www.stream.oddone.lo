@@ -1,0 +1,25 @@
+<?php
+$_tplvar = $this->getVars();
+// _dump($_tplvar['images']);
+?>
+<br><br><br>
+<?php foreach ($_tplvar['images'] as $key => $img):?>
+	<script>
+	var html_detail_<?php echo $key;?> = '<form action="<?php echo WWW_ROOT.'?act='.$_tplvar['action_class_name']?>" method="post" enctype="multipart/form-data"><input type="hidden" name="edit" value="1"><input type="hidden" name="id" value="<?php echo $img['id']?>"><table width="100%"><tr><td>Modifica Immagine</td><td><input type="file" name="image"></td></tr><tr><td colspan="2">Link: <input type="text" name="link_img" value="<?php echo $img['link']?>"><br><br><input type="submit" value="Invia"></td></tr></table></form>';
+	</script>
+	<div style="float:left;margin:3px;padding:10px;text-align:center;border:1px solid #49708A;">
+		<div style="float:left;padding:10px;cursor:pointer;" onclick="jQuery.fancybox(html_detail_<?php echo $key;?>)">
+			<img src="<?php echo $img['www_path'].$img['image_name']?>" style="width:200px;">
+		</div>
+		<br>
+		<a href="<?php echo WWW_ROOT.'?act='.$_tplvar['action_class_name']?>&delete=<?php echo $img['id']?>">Elimina</a>
+	</div>	
+<?php endforeach;?>
+<script>
+var html_detail_new = '<form action="<?php echo WWW_ROOT.'?act='.$_tplvar['action_class_name']?>" method="post" enctype="multipart/form-data"><table width="100%"><tr><td>Modifica Immagine</td><td><input type="file" name="image"></td></tr><tr><td colspan="2">Link: <input type="text" name="link_img" value="http:\/\/"><br><br><input type="submit" value="Invia"></td></tr></table></form>';
+</script>
+<div style="float:left;padding:10px;cursor:pointer;" onclick="jQuery.fancybox(html_detail_new)">
+	<img src="/img/web/image_large.gif" style="width:150px;"><br>
+	<a href="javascript:void(0);">Aggiungi nuova immagine</a>
+</div>
+

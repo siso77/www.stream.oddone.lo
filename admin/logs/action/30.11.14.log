@@ -1,0 +1,8 @@
+Nov 30 10:23:32|5[info]30/11/2014 10:23:32 - [UTENTE = ][REMOTE IP = 95.225.163.88][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0]
+Nov 30 10:23:37|5[info]30/11/2014 10:23:37 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][act = Home][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0]
+Nov 30 10:23:43|5[info]30/11/2014 10:23:43 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][act = ListaContenuti][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0]
+Nov 30 10:23:47|5[info]30/11/2014 10:23:47 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][act = ListaFornitori][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0]
+Nov 30 10:23:50|5[info]30/11/2014 10:23:50 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][act = ListaClienti][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0]
+Nov 30 10:23:59|5[info]30/11/2014 10:23:59 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][act = ListaFornitori][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0]
+Nov 30 10:24:03|5[info]30/11/2014 10:24:03 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][act = Setup][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0]
+Nov 30 10:24:07|5[info]30/11/2014 10:24:07 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0]

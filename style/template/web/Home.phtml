@@ -1,0 +1,194 @@
+<?php 
+$_tplvar = $this->getVars();
+$this->getIntlPartial('Home');
+$this->getIntlPartial('Login');
+$this->getIntlPartial('FilterFields');
+$templateConfig = $_tplvar['template_config']['search'];
+?>
+
+		<div class="col-main">        
+			<div class="std">
+				<div>
+					<div id="banner-slider" style="margin-top:36px;">
+					  <ul id="slideshow">
+					  <?php 
+					  if(!empty($_SESSION['LoggedUser']['username']))
+					  	$bannerLink = WWW_ROOT.'Magazzino-Online/Lista-Prodotti.html';
+					  else 
+					  	$bannerLink = WWW_ROOT.'?act=Login';
+					  ?>
+					  <?php foreach ($_tplvar['images'] as $key => $img):?>
+					    <li style="text-align:center;">
+					    	<a href="<?php echo $bannerLink?>">
+					    		<img src="<?php echo $img['thumb']?>" alt="" />
+					    	</a>
+					    </li>
+					    <?php endforeach;?>
+					  </ul> <!--#slideshow-->
+					</div> <!--#banner-slider-->
+		
+					<script type="text/javascript">
+					$bn1(document).ready(function(){
+					$bn1("#banner-slider, ul#slideshow")
+					        .css("width","760px")
+					        .css("height","375px");
+					$bn1('#slideshow').fadeSlideShow({
+					        width: 730, // default width of the slideshow
+					        height: 375, // default height of the slideshow                                         
+					        PlayPauseElement: '', // default css id for the play / pause element
+							ListElement: 'bnList', // default id for image / content controll list
+							speed: 1000, // default animation transition speed                                              
+					        interval: 4000 // default interval between image change
+					});
+					});
+					</script>
+				</div>
+				
+				<div>
+					<div class="page-title">
+						<?php echo $this->getText('this_week');?>
+					</div>
+					<div class="line"></div>				
+					<div class="slider-container">  
+					
+						<!--featured-slider-->
+						<div class="featured-slider">  
+							<div class="jcarousel-container jcarousel-container-horizontal">  
+								<div class="jcarousel-clip jcarousel-clip-horizontal"> 
+									<ul id="featuredpro-slider" class="featured-slider jcarousel-list jcarousel-list-horizontal">
+									
+										<?php foreach ($_tplvar['orizzontal_slider_1'] as $val):?>
+										<?php
+										if(!empty($val['id_content']))
+											$detail_url = $_tplvar['WWW_ROOT'].'?act=ProductInfo&id='.$val['id_content'].'';
+										else
+											$detail_url = $_tplvar['WWW_ROOT'].'?act=ProductInfo&id_giacenza='.$val['id'].'';
+										?>
+										
+										<?php $image = null;?>
+								 		<?php $image = $this->getImageFromIdContent($val['id'], 'Large_');?>
+										
+										<li class="jcarousel-item jcarousel-item-horizontal jcarousel-item-1 jcarousel-item-1-horizontal" style="width: 215px; float: left; list-style: none outside none;"> 
+											<a href="<?php echo $detail_url;?>" title="<?php echo $val['nome_it']?>" class="product-image">
+												<img src="<?php echo $image;?>" width="198" height="156" alt="<?php echo $val['nome_it']?>" />
+											</a>
+											<h2 class="product-name">
+											  <a href="<?php echo $detail_url;?>" title="<?php echo $val['nome_it']?>">
+											  	<?php echo $val['nome_it']?>
+											  </a>
+											</h2>
+										</li>
+										<?php endforeach;?>
+									</ul>
+			        				<script type="text/javascript">decorateGeneric($$('ul.products-grid'), ['odd','even','first','last'])</script>
+								</div> <!--jcarousel-clip jcarousel-clip-horizontal-->
+								<div class="jcarousel-prev jcarousel-prev-horizontal" style="display: block;" disabled="false"></div>
+								<div class="jcarousel-next jcarousel-next-horizontal" style="display: block;" disabled="false"></div>
+							</div> <!--jcarousel-container jcarousel-container-horizontal-->
+						</div> 
+						<!--featured-slider-->
+				
+						<script type="text/javascript">
+						function mycarousel_initCallback(carousel)
+						{
+						        // Disable autoscrolling if the user clicks the prev or next button.
+						        carousel.buttonNext.bind('click', function() {
+						                carousel.startAuto(0);
+						        });                                     
+						        carousel.buttonPrev.bind('click', function() {
+						                carousel.startAuto(0);
+						        });                                     
+						        // Pause autoscrolling if the user moves with the cursor over the clip.
+						        carousel.clip.hover(function() {
+						                carousel.stopAuto();
+						        }, function() {
+						                carousel.startAuto();
+						        });
+						};                                      
+						$bn1(document).ready(function() {
+						        $bn1('#featuredpro-slider').jcarousel({
+						                auto: 1,
+						                wrap: 'circular',
+						                animation: 1000,
+						                scroll: 1,
+						                initCallback: mycarousel_initCallback
+						        });
+						});
+						$bn1(".slider-container")
+						        .css("width","630px")
+						        .css("height","185px");
+						</script>
+					</div>  <!--slider-container--> 
+				</div>
+
+				<div>
+				
+					<div class="page-title">
+					<?php echo $this->getText('new_and_offer');?>
+					</div>
+					<div class="line"></div>				
+				
+					<div class="slider-container" id="slider-container-1">  
+					
+						<!--featured-slider-->
+						<div class="featured-slider">  
+							<div class="jcarousel-container jcarousel-container-horizontal">  
+								<div class="jcarousel-clip jcarousel-clip-horizontal"> 
+									<ul id="featuredpro-slider-1" class="featured-slider jcarousel-list jcarousel-list-horizontal">
+									
+										<?php foreach ($_tplvar['orizzontal_slider_2'] as $val):?>
+										<?php
+										if(!empty($val['id_content']))
+											$detail_url = $_tplvar['WWW_ROOT'].'?act=ProductInfo&id='.$val['id_content'].'';
+										else
+											$detail_url = $_tplvar['WWW_ROOT'].'?act=ProductInfo&id_giacenza='.$val['id'].'';										
+										?>
+										
+										<?php $image = null;?>
+								 		<?php $image = $this->getImageFromIdContent($val['id'], 'Large_');?>
+										
+										<li class="jcarousel-item jcarousel-item-horizontal jcarousel-item-1 jcarousel-item-1-horizontal" style="width: 215px; float: left; list-style: none outside none;"> 
+											<a href="<?php echo $detail_url;?>" title="<?php echo $val['nome_it']?>" class="product-image">
+											
+												<?php if($val['stato'] == 'N'):?>
+													<span class="sale-label sale-top-left"></span>
+												<?php elseif($val['stato'] == 'O'):?>
+													<span class="new-label new-top-left"></span>
+												<?php endif;?>
+												<img src="<?php echo $image;?>" width="198" height="156" alt="<?php echo $val['nome_it']?>" />
+											</a>
+											<h2 class="product-name">
+											  <a href="<?php echo $detail_url;?>" title="<?php echo $val['nome_it']?>">
+											  	<?php echo $val['nome_it']?>
+											  </a>
+											</h2>
+										</li>
+										<?php endforeach;?>
+									</ul>
+			        				<script type="text/javascript">decorateGeneric($$('ul.products-grid'), ['odd','even','first','last'])</script>
+								</div> <!--jcarousel-clip jcarousel-clip-horizontal-->
+								<div class="jcarousel-prev jcarousel-prev-horizontal" style="display: block;" disabled="false"></div>
+								<div class="jcarousel-next jcarousel-next-horizontal" style="display: block;" disabled="false"></div>
+							</div> <!--jcarousel-container jcarousel-container-horizontal-->
+						</div> 
+						<!--featured-slider-->
+				
+						<script type="text/javascript">
+						$bn1(document).ready(function() {
+						        $bn1('#featuredpro-slider-1').jcarousel({
+						                auto: 1,
+						                wrap: 'circular',
+						                animation: 1000,
+						                scroll: 1,
+						                initCallback: mycarousel_initCallback
+						        });
+						});
+						$bn1("#slider-container-1")
+						        .css("width","630px")
+						        .css("height","185px");
+						</script>
+					</div>  <!--slider-container--> 
+				</div>				
+				
+			</div>                   
+		</div> <!--col-main-->

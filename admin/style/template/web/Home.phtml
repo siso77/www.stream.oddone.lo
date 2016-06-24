@@ -1,0 +1,144 @@
+<?php $_tplvar = $this->getVars();?>
+<?php 
+if($_tplvar['users_online'] == array() || empty($_tplvar['users_online']))
+	$_SESSION['count_users_online'] = 0;
+
+if($_SESSION['count_users_online'] < count($_tplvar['users_online']))
+{
+	$_SESSION['count_users_online'] = count($_tplvar['users_online']);
+	?>
+	<script>alert('Si è loggato un nuovo utente!');</script>
+	<?php 
+}
+elseif($_SESSION['count_users_online'] > count($_tplvar['users_online']))
+	$_SESSION['count_users_online'] = count($_tplvar['users_online']);
+?>
+
+<article class="module width_3_quarter">
+	
+		<header><h3 class="tabs_involved">Dashboard</h3></header>
+		<div class="tab_container">
+			<div id="tab1" class="tab_content">
+			<table class="tablesorter" cellspacing="0" cellpadding="0">
+			<tr>
+				<th style="padding:10px;">Attenzione ci sono <?php echo count($_tplvar['new_users'])?> <?php if(count($_tplvar['new_users']) > 1):?>Nuovi Utenti<?php else:?>Nuovo Utente<?php endif;?></th>
+			</tr>
+			<tr>
+				<td>
+					<table style="width:100%">
+					<tr>
+						<td><b>Username</td>
+						<td><b>Email</td>
+						<td><b>Data Registrazione</td>
+						<td><b>Dettaglio</td>
+						<td><b>Attiva Account</td>
+					</tr>
+					<?php foreach ($_tplvar['new_users'] as $value):?>
+					<tr>
+						<td><?php echo $value['username']?></td>
+						<td><?php echo $value['username']?></td>
+						<td><?php echo $this->getFormatDate($value['data_inserimento_riga'])?></td>
+						<td>
+			
+							<script>
+							var html_detail_<?php echo $value['id'];?> = '<table width="100%"><tr><td>Nome</td><td>Cognome</td><td style="width:400px">Indirizzo</td><td>Telefono</td><td>Cellulare</td><td>Sesso</td></tr><tr><td><?php echo $value['user_anag']['name']?></td><td><?php echo $value['user_anag']['surname']?></td><td><?php echo $value['user_anag']['address'].' - '.$value['user_anag']['city'].' - '.$value['user_anag']['cap'].' - '.$value['user_anag']['province'].' - '.$value['user_anag']['nation']?></td><td><?php echo $value['user_anag']['phone']?></td><td><?php echo $value['user_anag']['mobile']?></td><td><?php echo $value['user_anag']['sex']?></td></tr></table>';
+							</script>
+							<a class="delete" href="javascript:void(0);" onclick="jQuery.fancybox(html_detail_<?php echo $value['id'];?>)">Dettaglio</a>							
+						</td>
+						<td><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=Home&activate_account=1&id_user=<?php echo $value['id']?>">Attiva Account</a></td>
+					</tr>
+					<?php endforeach;?>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<th style="padding:10px;">Clienti Online</th>
+			</tr>
+			<tr>
+				<td>
+				
+					<script type="text/javascript">
+					<!--
+					setTimeout('refreshUserOnline();', 10000);
+					//-->
+					function refreshUserOnline(){
+						$.ajax({
+						  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=Home',
+						  type: 'GET',
+						  dataType: 'html',
+						  data: 'get_user_online=1',
+						  success: function(html){
+						  	//$.fancybox( html );
+							$('#user-online').html(html);
+						  }
+						});
+					}
+					</script>
+					<div id="user-online">
+						<table style="width:100%">
+						<tr>
+							<td><b>User</td>
+							<td><b>Cliente</td>
+							<td><b>P.IVA</td>
+							<td><b>Data Ultimo Accesso</td>
+						</tr>
+						<?php foreach ($_tplvar['users_online'] as $value):?>
+						<tr>
+							<td><?php echo $value['username']?></td>
+							<td><?php echo $value['ragione_sociale']?></td>
+							<td><?php echo $value['p_iva']?></td>
+							<td><?php echo substr($this->getFormatDate($value['last_access']), 0, -3)?></td>
+						</tr>
+						<?php endforeach;?>
+						</table>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th style="padding:10px;">Lista Accessi Clienti</th>
+			</tr>
+			<tr>
+				<td>
+
+					<script type="text/javascript">
+					<!--
+					setTimeout('refreshAccessUser();', 10000);
+					//-->
+					function refreshAccessUser(){
+						$.ajax({
+						  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=Home',
+						  type: 'GET',
+						  dataType: 'html',
+						  data: 'get_access_user=1',
+						  success: function(html){
+						  	//$.fancybox( html );
+							$('#access-user').html(html);
+						  }
+						});
+					}
+					</script>
+					<div id="access-user">
+						<table style="width:100%">
+						<tr>
+							<td><b>User</td>
+							<td><b>Cliente</td>
+							<td><b>P.IVA</td>
+							<td><b>Data Ultimo Accesso</td>
+						</tr>
+						<?php foreach ($_tplvar['users_acces'] as $value):?>
+						<tr>
+							<td><?php echo $value['username']?></td>
+							<td><?php echo $value['ragione_sociale']?></td>
+							<td><?php echo $value['p_iva']?></td>
+							<td><?php echo substr($this->getFormatDate($value['last_access']), 0, -3)?></td>
+						</tr>
+						<?php endforeach;?>
+						</table>
+					</div>
+				</td>
+			</tr>
+			</table>
+		</div><!-- end of #tab2 -->
+
+	</div><!-- end of .tab_container -->
+</article><!-- end of content manager article -->

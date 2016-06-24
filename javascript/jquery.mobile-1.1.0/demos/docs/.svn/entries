@@ -1,0 +1,126 @@
+10
+
+dir
+2
+http://192.168.0.4/svn/gardesana/trunk/javascript/jquery.mobile-1.1.0/demos/docs
+http://192.168.0.4/svn/gardesana
+
+
+
+2013-03-04T22:52:19.820665Z
+2
+siso
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+63943108-bf6c-2345-ab5b-09b6d17420ce
+
+_assets
+dir
+
+about
+dir
+
+api
+dir
+
+buttons
+dir
+
+config
+dir
+
+content
+dir
+
+forms
+dir
+
+index.html
+file
+
+
+
+
+2013-07-26T16:07:36.000000Z
+3e69c6d3de70f8da81bdfc156e12bc37
+2013-03-04T22:52:19.820665Z
+2
+siso
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1000
+
+lists
+dir
+
+nav.html
+file
+
+
+
+
+2013-07-26T16:07:35.000000Z
+c3de5b5a6096cb8f680561c03d7f0acc
+2013-03-04T22:52:19.820665Z
+2
+siso
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+15488
+
+pages
+dir
+
+toolbars
+dir
+

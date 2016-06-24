@@ -1,0 +1,55 @@
+<?php $_tplvar = $this->getVars();?>
+<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=<?php echo $_tplvar['action_class_name']?>" method="post">
+<?php if(!empty($_tplvar['data']['id']))?>
+	<input type="hidden" name="id" value="<?php echo $_tplvar['data']['id']?>">
+	
+		<article class="module width_full">
+			<header><h3 class="tabs_involved">Caricamento Fornitore</h3></header>
+			<div class="tab_container">
+				<div id="tab1" class="tab_content">
+					<div class="module_content">
+					
+						<fieldset>
+							<label>Nome</label>
+							<input type="text" name="nome" value="<?php echo $_tplvar['data']['nome']?>">
+						</fieldset>
+						<fieldset>
+							<label>Indirizzo</label>
+							<input type="text" name="indirizzo" value="<?php echo $_tplvar['data']['indirizzo']?>">
+						</fieldset>
+						<fieldset>
+							<label>cap</label>
+							<input type="text" name="cap" value="<?php echo $_tplvar['data']['cap']?>">
+						</fieldset>
+						<fieldset>
+							<label>Provoncia</label>
+							<input type="text" name="provincia" value="<?php echo $_tplvar['data']['provincia']?>">
+						</fieldset>
+						<fieldset>
+							<label>Telefono</label>
+							<input type="text" name="telefono" value="<?php echo $_tplvar['data']['telefono']?>">
+						</fieldset>
+						<fieldset>
+							<label>Email</label>
+							<input type="text" name="email" value="<?php echo $_tplvar['data']['email']?>">
+						</fieldset>
+						<fieldset>
+							<label>P.IVA</label>
+							<input type="text" name="p_iva" value="<?php echo $_tplvar['data']['p_iva']?>">
+						</fieldset>
+						<fieldset>
+							<label>Codice Fiscale</label>
+							<input type="text" name="codice_fiscale" value="<?php echo $_tplvar['data']['codice_fiscale']?>">
+						</fieldset>
+						
+					</div>
+				</div>
+			</div>
+			<footer>
+				<div class="submit_link">
+					<input type="submit" value="Salva" class="alt_btn">
+					<input type="reset" class="submit" value="Reset">
+				</div>
+			</footer>
+		</article>
+</form>

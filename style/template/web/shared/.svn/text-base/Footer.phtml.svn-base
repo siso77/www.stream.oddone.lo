@@ -1,0 +1,47 @@
+<?php $_tplvar = $this->getVars();?>
+			<div class="page">
+				<div class="footer-row-2">
+					<div class="footer-col-left">
+						<address>&copy; 2012 Florsistemi. All Rights Reserved.</address>
+		                <div class="block-links">
+		                    <ul>
+								<li><a href="">Chi Siamo</a></li>
+								<li class="last"><a href="">Customer Service</a></li>
+							</ul>
+							<ul class="links">
+								<!--<li class="first" ><a href="" title="Site Map" >Site Map</a></li>-->
+								<li ><a href="" title="Termini e Condizioni" >Termini e Condizioni</a></li>
+								<li class=" last" ><a href="" title="Contatti" >Contatti</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="footer-col-right">
+						<ul class="social-links">
+							<li class="twitter"><a href="http://twitter.com/">&nbsp;</a></li>
+							<li class="facebook"><a href="http://www.facebook.com/">&nbsp;</a></li>
+							<li class="myspace"><a href="http://www.myspace.com/">&nbsp;</a></li>
+							<li class="linkedin"><a href="http://www.linkedin.com/">&nbsp;</a></li>
+						</ul>
+						<br class="clear" />
+						<!-- 
+		                <div class="form-language">
+							<label for="select-language">Lingua:</label>
+							<select id="select-language" title="Your Language" onchange="window.location.href=this.value">
+			                    <option value="">Original</option>
+			                    <option value="">carousel_img</option>
+			                    <option value="">carousel_prods</option>
+			                    <option value="">carousel_custominfo</option>
+			                    <option value="">pr_slider</option>
+			                    <option value="">two_columns_left_layout</option>
+			                    <option value="">grid_standard</option>
+			                    <option value="">standard_cart</option>
+			                    <option value="">footer_newsletter</option>
+			                    <option value="" selected="selected">Blue and Orange</option>
+			                    <option value="">Purple and Green</option>
+			                    <option value="">Brown and Blue</option>
+							</select>
+						</div>
+						-->
+					</div>
+				</div>
+			</div>

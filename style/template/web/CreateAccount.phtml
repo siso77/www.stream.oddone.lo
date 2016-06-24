@@ -1,0 +1,311 @@
+<?php
+$_tplvar = $this->getVars();
+?>
+<style>
+<!--
+td {
+	padding: 9px 12px;
+	color: #333;
+	border-top: 0px;
+}
+.grid_17 {
+	display: inline;
+	float: none;
+	position: relative;
+	margin-left: 0px;
+	margin-right: 90px;
+}
+-->
+</style>
+<script type="text/javascript">
+<!--
+onload = function(){
+	document.getElementById('name').focus();
+} 
+//-->
+
+function validadteText(obj)
+{
+	var error = document.getElementById('err_'+obj.name);
+	
+	if(obj.value == '')
+	{		
+		error.innerHTML = '<span style="color:red">(*) Campo obbligatorio</span>';
+		return false;
+	}
+	else
+	{
+		error.innerHTML = '';
+		return true;
+	}
+}
+function validateEmail(obj)
+{
+	var error = document.getElementById('err_'+obj.name);
+	var r = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+	if( r.test( obj.value ) )
+	{
+		error.innerHTML = '';
+	    return true;
+	}
+	else
+	{
+		error.innerHTML = '<span style="color:red">(*) Campo obbligatorio</span>';
+		return false;
+	}
+}
+function validateChekbox(obj)
+{
+	var error = document.getElementById('err_'+obj.name);
+	if(obj.checked == false)
+	{
+		error.innerHTML = '<span style="color:red">(*) Campo obbligatorio</span>';
+	    return false;
+	}
+	else
+	{
+		error.innerHTML = '';
+		return true;
+	}
+}
+
+function validateCombo(combo)
+{
+	var error = document.getElementById('err_'+combo.name);
+	
+	var i = combo.selectedIndex;
+	if(i == 0)
+	{
+		error.innerHTML = '<span style="color:red">(*) Campo obbligatorio</span>';
+	    return false;
+	}
+	else
+	{
+		error.innerHTML = '';
+		return true;
+	}
+}
+
+function validateFormAddBasket()
+{
+	var ret = new Array();
+	
+	var name = document.getElementById('name');
+	var last_name = document.getElementById('lastname');
+	var tipologia_vendita = document.getElementById('tipologia_vendita');
+	var nation = document.getElementById('nation');
+	var company_name = document.getElementById('company_name');
+	var email_address = document.getElementById('email');
+	var city = document.getElementById('city');
+	var province = document.getElementById('province');
+	var phone = document.getElementById('phone');
+	
+	ret[0] = validateEmail(email_address);
+	ret[1] = validadteText(name);
+	ret[2] = validadteText(last_name);
+	ret[3] = validadteText(company_name);
+	ret[4] = validadteText(city);
+	ret[5] = validadteText(province);
+	ret[6] = validateCombo(tipologia_vendita);
+	ret[7] = validadteText(phone);
+	ret[8] = validateCombo(nation);
+	
+	for(i=0;i<=ret.length;i++)
+	{
+		if(ret[i] == false)
+		{
+			return false;
+			break;
+		}
+	}
+	return true;
+}
+</script>
+<style>
+.form-list li input.input-text, .form-list li textarea{width:100%}
+.form-list select{width:100%;padding:10px;}
+</style>
+
+	
+		<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=CreateAccount" method="post" onsubmit="return validateFormAddBasket();">
+
+		
+<div class="main-container1 col1-layout" style="width:100%">
+                    
+                <div class="col-main" style="width:100%">
+                                        
+
+  <div class="page-title">
+  <?php echo $this->getText('request_account');?>
+  </div> <!--page-title-->
+<div class="line"></div>
+<div class="login_page">
+      <fieldset class="col2-set login-page">
+        <div class="col-1 new-users" style="width:90%">
+          <div class="content" style="margin-left: 10%;">
+            <input type="hidden" name="success_url" value="">
+            <input type="hidden" name="error_url" value="">           
+            <ul class="form-list">
+            
+				<li class="fields">
+                    
+					<div class="customer-name">
+					    <div class="field name-firstname">
+					        <label for="firstname"><?php echo $this->getText('typology');?><em class="required">*</em></label>
+<div id="err_tipologia_vendita"></div>
+					        <div class="input-box">
+								<select name="tipologia_vendita" id="tipologia_vendita">
+								      <option value="">-</option>
+								      <option value="Negozio"><?php echo $this->getText('shop');?></option><option value="Venditore Ambulante"><?php echo $this->getText('vend_amb');?></option><option value="Garden Center (punto vendita singolo)"><?php echo $this->getText('gard_sing');?></option><option value="Garden Center (gruppo di acquisto o catena)"><?php echo $this->getText('gard_gruppo');?></option><option value="Supermercato/ipermercato"><?php echo $this->getText('mrkt');?></option><option value="Grossista"><?php echo $this->getText('gross');?></option>      </select>
+					        </div>
+					    </div>
+					    <div class="field name-lastname">
+					        <label for="lastname"><?php echo $this->getText('name');?><em class="required">*</em></label>
+<div id="err_name"></div>
+					        <div class="input-box">
+					            <input type="text" id="name" name="name" value="" title="Nome" maxlength="255" class="input-text required-entry">
+					        </div>
+					    </div>
+					</div>
+					
+                </li>
+                            
+                <li class="fields">
+                    
+					<div class="customer-name">
+					    <div class="field name-firstname">
+					        <label for="firstname"><?php echo $this->getText('surname');?><em class="required">*</em></label>
+<div id="err_lastname"></div>
+					        <div class="input-box">
+					            <input type="text" id="lastname" name="lastname" value="" title="Cognome" maxlength="255" class="input-text required-entry">
+					        </div>
+					    </div>
+					    <div class="field name-lastname">
+					        <label for="lastname"><?php echo $this->getText('company_name');?><em class="required">*</em></label>
+<div id="err_company_name"></div>
+					        <div class="input-box">
+					            <input type="text" id="company_name" name="company_name" value="" title="Nome Azienda" maxlength="255" class="input-text required-entry">
+					        </div>
+					    </div>
+					</div>
+					
+                </li>
+                <li>
+                    <label for="email_address">Email<em class="required">*</em></label>
+<div id="err_email"></div>
+                    <div class="input-box">
+                        <input type="text" name="email" id="email" value="" title="Email" class="input-text validate-email required-entry">
+                    </div>
+                </li>
+                <li>
+                    <label for="email_address"><?php echo $this->getText('web_site');?></label>
+                    <div class="input-box">
+                        <input type="text" name="web_site" id="web_site" value="" title="Sito Internet" class="input-text validate-email required-entry">
+                    </div>
+                </li>
+                <li>
+                    <label for="email_address"><?php echo $this->getText('nation');?><em class="required">*</em></label>
+<div id="err_nation"></div>
+                    <div class="input-box">
+						<select name="nation" id="nation">
+						      <option value="">-</option>
+						      <option value="Italia"><?php echo $this->getText('nation_name_1');?></option><option value="Francia"><?php echo $this->getText('nation_name_2');?></option><option value="Germania"><?php echo $this->getText('nation_name_3');?></option><option value="Serbia"><?php echo $this->getText('nation_name_4');?></option><option value="Grecia"><?php echo $this->getText('nation_name_5');?></option><option value="Svizzera"><?php echo $this->getText('nation_name_6');?></option><option value="United States"><?php echo $this->getText('nation_name_7');?></option><option value="UK"><?php echo $this->getText('nation_name_8');?></option><option value="Spagna"><?php echo $this->getText('nation_name_9');?></option><option value="Altro"><?php echo $this->getText('nation_name_10');?></option>      </select>                        
+                    </div>
+                </li>
+                <li>
+                    <label for="email_address"><?php echo $this->getText('city');?><em class="required">*</em></label>
+<div id="err_city"></div>
+                    <div class="input-box">
+                        <input type="text" name="city" id="city" value="" title="Citt&agrave;" class="input-text validate-email required-entry">
+                    </div>
+                </li>
+                <li>
+                    <label for="email_address"><?php echo $this->getText('street');?><em class="required">*</em></label>
+<div id="err_street"></div>
+                    <div class="input-box">
+                        <input type="text" name="street" id="street" value="" title="Via" class="input-text validate-email required-entry">
+                    </div>
+                </li>
+                <li>
+                    <label for="email_address"><?php echo $this->getText('province');?><em class="required">*</em></label>
+<div id="err_province"></div>
+                    <div class="input-box">
+                        <input type="text" name="province" id="province" value="" title="Provincia" class="input-text validate-email required-entry">
+                    </div>
+                </li>
+                <li>
+                    <label for="email_address"><?php echo $this->getText('phone');?><em class="required">*</em></label>
+<div id="err_phone"></div>
+                    <div class="input-box">
+                        <input type="text" name="phone" id="phone" value="" title="Telefono" class="input-text validate-email required-entry">
+                    </div>
+                </li>
+                <li>
+                    <label for="email_address">Fax</label>
+                    <div class="input-box">
+                        <input type="text" name="fax" id="fax" value="" title="Fax" class="input-text validate-email required-entry">
+                    </div>
+                </li>
+                <li>
+                    <label for="email_address"><?php echo $this->getText('object');?></label>
+                    <div class="input-box">
+                        <input type="text" name="object" id="object" value="" title="Oggetto" class="input-text validate-email required-entry">
+                    </div>
+                </li>
+                <li>
+                    <label for="email_address"><?php echo $this->getText('message');?></label>
+                    <div class="input-box">
+                        <textarea name="message" id="message"></textarea>
+                    </div>
+                </li>
+                <li>
+                    <label for="email_address">Antispam</label>
+                    <div class="input-box">
+						<script type="text/javascript">
+						var RecaptchaOptions = {
+							theme : 'blackglass'
+						};
+						</script>		
+						<script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k=<?php echo GOOGLE_RECAPCHA_PUBLIC_KEY;?>"></script>
+						<noscript>
+						<iframe src="http://www.google.com/recaptcha/api/noscript?k=<?php echo GOOGLE_RECAPCHA_PUBLIC_KEY;?>" height="300" width="500" frameborder="0"></iframe><br>
+						<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+						<input type="hidden" name="recaptcha_response_field" value="manual_challenge">
+						</noscript>
+						<?php echo $this->getText('copy_text');?>
+						<?php if($_REQUEST['error_captcha']):?>
+							<br><span style="color:red;padding:6px;"><?php echo $this->getText('attention_error');?></span>
+						<?php endif;?>
+                    </div>
+                </li>
+				<li>
+                    <label for="email_address"><?php echo $this->getText('interested');?></label>
+                    <div class="input-box">
+                        <input type="checkbox" name="consegna_carrelli" title="Servizio Consegna a carrelli" value="1" id="consegna_carrelli" class="checkbox">
+                        <?php echo $this->getText('service_delivery_cart');?>
+                    </div>
+                    <div class="input-box">
+                        <input type="checkbox" name="acquisto_cc" title="Acquisti presso i nostri magazzini Cash&Carry" value="1" id="acquisto_cc" class="checkbox">
+                        <?php echo $this->getText('shop_at');?>
+                    </div>
+               </li>
+                
+                
+			</ul>
+          </div>  <!--content-->
+        </div>  <!--col-1 new-users-->
+        
+        
+        <div class="buttons-set">
+        <?php echo $this->getText('fields_asterisk');?>
+<br><br>
+            <p class="required" style="text-align:right;">* Campi Obbligatori</p>
+            <button type="submit" title="Submit" class="button"><span><?php echo $this->getText('send_request');?></span></button>
+            <button type="submit" title="Indietro" class="button" onclick="document.location.href='/?act=Login';return false;"><span><?php echo $this->getText('back');?></span></button>
+        </div>
+             </fieldset>  <!--col2-set-->
+    
+</div>  <!--login_page-->                </div> <!--col-main-->
+            </div>		
+		
+		</form>	

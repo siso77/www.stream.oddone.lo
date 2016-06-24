@@ -1,0 +1,91 @@
+<?php $_tplvar = $this->getVars();?>
+
+<!-- INCLUSIONE TEXTAREA JS -->
+	<script src="<?php echo $_tplvar['WWW_ROOT'];?>javascript/ckeditor/ckeditor.js"></script>
+	<link rel="stylesheet" href="<?php echo $_tplvar['WWW_ROOT'];?>javascript/ckeditor/samples/sample.css">
+<!-- INCLUSIONE TEXTAREA JS -->
+
+<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=<?php echo $_tplvar['action_class_name']?>" method="post">
+<?php if(!empty($_tplvar['data']['id']))?>
+	<input type="hidden" name="id" value="<?php echo $_tplvar['data']['id']?>">
+
+		<article class="module width_full">
+			<header><h3 class="tabs_involved">Caricamento Prodotti</h3>
+			<ul class="tabs">
+	   			<li class="active"><a href="#tab1">Prodotti</a></li>
+	    		<li><a href="#tab2">Immagini</a></li>
+			</ul>
+			</header>
+			<div class="tab_container">
+				<div class="module_content">
+					<fieldset>
+						<label>Categoria &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/it.jpg" style="width:15px"></label>
+						<input name="name" id="name" type="text" value="<?php echo $_tplvar['data']['name']?>">
+					</fieldset>
+					<fieldset>
+						<label>Descrizione &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/it.jpg" style="width:15px"></label>
+						<!-- <textarea name="description" rows="12"><?php echo $_tplvar['data']['description']?></textarea> -->
+					</fieldset>
+					<textarea class="ckeditor" name="description" rows="12"><?php echo $_tplvar['data']['description']?></textarea>
+					
+					<fieldset>
+						<label>Categoria &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/en.jpg" style="width:15px"></label>
+						<input name="name_en" id="name_en" type="text" value="<?php echo $_tplvar['data']['name_en']?>">
+					</fieldset>
+					<fieldset>
+						<label>Descrizione &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/en.jpg" style="width:15px"></label>
+					</fieldset>
+					<textarea class="ckeditor" name="description_en" rows="12"><?php echo $_tplvar['data']['description_en']?></textarea>
+					
+					<fieldset>
+						<label>Categoria &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/fr.png" style="width:15px"></label>
+						<input name="name_fr" id="name_fr" type="text" value="<?php echo $_tplvar['data']['name_fr']?>">
+					</fieldset>
+					<fieldset>
+						<label>Descrizione &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/fr.png" style="width:15px"></label>
+					</fieldset>
+					<textarea class="ckeditor" name="description_fr" rows="12"><?php echo $_tplvar['data']['description_fr']?></textarea>
+					
+					<fieldset>
+						<label>Categoria &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/de.png" style="width:15px"></label>
+						<input name="name_de" id="name_de" type="text" value="<?php echo $_tplvar['data']['name_de']?>">
+					</fieldset>
+					<fieldset>
+						<label>Descrizione &nbsp;&nbsp;&nbsp;&nbsp;<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/de.png" style="width:15px"></label>
+					</fieldset>
+					<textarea class="ckeditor" name="description_de" rows="12"><?php echo $_tplvar['data']['description_de']?></textarea>
+					
+						<fieldset>
+							<label>Categoria Madre</label>
+							
+							<select name="parent_id" style="width:92%;">
+								<option value="0"> Root </option>
+								<?php foreach ($_tplvar['cmb_gm'] as $value):?>
+								<option value="<?php echo $value['id']?>" <?php if($_tplvar['data']['parent_id'] == $value['id']):?>selected="selected"<?php endif;?>><?php echo $value['name']?></option>
+								<?php endforeach;?>
+							</select>							
+						</fieldset>
+						
+						<fieldset>
+							<label>IVA</label>
+							<select name="iva" style="width:92%;">
+							<?php foreach ($_tplvar['cmb_iva'] as $iva):?>
+								<option value="<?php echo $iva['name']?>" <?php if($_tplvar['data']['iva'] == $iva['name']):?>selected="selected"<?php endif;?>"><?php echo $iva['name']?>%</option>
+							<?php endforeach;?>
+							</select>
+						</fieldset>
+
+				</div>
+			</div>
+			
+			<footer>
+				<div class="submit_link">
+					<input type="submit" value="Salva" class="alt_btn">
+					<input type="button" class="submit" name="new" value="Nuova Categoria" onclick="javascript:document.location.href = '<?php echo $_tplvar['WWW_ROOT']?>?act=<?php echo $_tplvar['action_class_name']?>;return false;'">
+					<input type="reset" class="submit" name="cancel" value="Cancella">
+				</div>
+			</footer>
+
+		</article>
+	
+</form>

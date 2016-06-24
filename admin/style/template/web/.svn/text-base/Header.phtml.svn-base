@@ -1,0 +1,19 @@
+<?php $_tplvar = $this->getVars();?>
+	<div id="top-container" class="container_24">
+		<div class="clear"></div>
+		<div id="top" class="grid_24">
+			<div id="logo" class="grid_14">
+				<h1><a href="<?php echo $_tplvar['WWW_ROOT']?>" class="pngfix" style="background: transparent url( <?php echo STORE_WWW_ROOT_PATH?>theme/styles/style2/images/logo.png ) no-repeat 0 100%; width:300px; height:90px;">
+				<cufon class="cufon cufon-canvas" alt="" style="width: 93px; height: 28px;"><canvas width="124" height="30" style="width: 124px; height: 30px; top: 0px; left: -3px;"></canvas><cufontext></cufontext></cufon></a></h1>
+			</div>
+			<div id="slogan" class="grid_17" style="top:70px; left:100px;"><!-- Slogan --></div>
+			<!-- end logo slogan -->
+			<div id="search" class="grid_7 prefix_17">
+				<h2>Amministrazione</h2>
+			</div>
+			<!-- end search -->
+			<div class="phone-number grid_7 prefix_17"><!-- Call Us Free: 1-800-555-5555 --></div>
+			<!-- end top-icons -->
+		</div>
+		<!-- end top -->
+	</div>

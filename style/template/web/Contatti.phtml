@@ -1,0 +1,215 @@
+<?php $_tplvar = $this->getVars();?>
+
+
+<div class="col-main">
+<div class="category-products" style="padding:30px;width: 92%;">
+	
+					<?php echo $this->getText('contact');?>
+					<hr>
+					
+					<?php if(!empty($_REQUEST['error_captcha'])):?>
+					<script>
+						jQuery.fancybox('<h2 style="color:red;">Attenzione inserire correttamente il codice captcha!</h2>');
+					</script>
+					<?php endif;?>
+					<?php if(!empty($_REQUEST['confirm'])):?>
+					<script>
+					jQuery.fancybox('<h2 style="color:green;">Richiesta inviata correttamente!</h2>');
+					</script>	
+					<?php endif;?>
+					
+					<?php echo $this->getText('office_albenga');?>
+					<br>
+					<div class="clear"></div>
+					<div id="contactInfo">
+						<div class="grid_4 contactFieldDesc"><?php echo $this->getText('address');?> Reg. Bagnoli, 24 Albenga (SV) 17036 - ITALIA</div>
+						<div class="clear"></div>
+						<div class="grid_4 contactFieldDesc"></div>
+						<div class="grid_11 contactFieldValue"><?php echo $this->getText('coordinate')?> 44.0561539 - 8.195115100000066</div>
+						<div class="clear"></div>
+						<div class="grid_4 contactFieldDesc"><?php echo $this->getText('phone');?> (+39) 0182 555471</div>
+						<div class="clear"></div>
+						<div class="grid_4 contactFieldDesc">Fax: (+39) 0182 570014</div>
+						<div class="grid_4 contactFieldDesc">Email: albenga@oddone.biz</div>
+						<div class="clear"></div>
+					</div>
+					<div class="clear"></div>
+					<br>
+					
+					<div>
+						<?php echo $this->getText('hours_office');?>
+					</div>
+					<div class="textwidget">
+						<div style="float:left;">
+						<?php echo $this->getText('open_day');?>
+						</div>
+						<div class="clear"></div>
+					</div>							
+				    <br>
+				    
+					<div id="sidebar" class="grid_8 pull_16 sidebar-box">
+						<div id="sidebarSubnav">
+							<div id="googlemap-widget" class="substitute_widget_class">
+								<br>
+								<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2867.317411273526!2d8.1951151!3d44.0561539!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12d25ee8dc50809f%3A0xf2e541b4f829cdd7!2sRegione+Bagnoli%2C+24%2C+17031+Albenga+SV!5e0!3m2!1sit!2sit!4v1423084837584" width="100%" height="250" frameborder="0" style="border:0"></iframe>							    
+							</div>
+						</div>
+					</div>
+				    
+				    <br>
+				    <hr>
+				    <br>
+				    <?php echo $this->getText('branch_paderno_dugnano');?>
+					<br>
+					<div class="clear"></div>
+					<div id="contactInfo">
+						<div class="grid_4 contactFieldDesc"><?php echo $this->getText('address');?> Viale della repubblica, 76 Paderno Dugnano (MI) 20037 - ITALIA</div>
+						<div class="clear"></div>
+						<div class="grid_4 contactFieldDesc"></div>
+						<div class="grid_11 contactFieldValue"><?php echo $this->getText('coordinate')?> 45.5696896 - 9.171242399999983</div>
+						<div class="clear"></div>
+						<div class="grid_4 contactFieldDesc"><?php echo $this->getText('phone');?> (+39) 02 99042817</div>
+						<div class="clear"></div>
+						<div class="grid_4 contactFieldDesc">Fax: (+39) 02 9183677</div>
+						<div class="grid_4 contactFieldDesc">Email: paderno@oddone.biz</div>
+						<div class="clear"></div>
+					</div>
+					<div class="clear"></div>
+					<br>
+					
+					<div id="sidebar" class="grid_8 pull_16 sidebar-box">
+						<div id="sidebarSubnav">
+							<div id="googlemap-widget" class="substitute_widget_class">
+								<br>
+								<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2793.0366539803526!2d9.171249299999998!3d45.569701499999994!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4786bfaa0d05fbd5%3A0x29fefe9db5c5afd0!2sViale+della+Repubblica%2C+76%2C+20037+Paderno+Dugnano+MI!5e0!3m2!1sit!2sit!4v1423085298240" width="100%" height="250" frameborder="0" style="border:0"></iframe>							    
+							</div>
+						</div>
+					</div>
+					<br>
+					
+					<div>
+						<?php echo $this->getText('hours_office_paderno');?>
+					</div>
+					<div class="textwidget">
+						<div style="float:left;">
+							<?php echo $this->getText('open_day_paderno');?>
+						</div>
+						<div class="clear"></div>
+					</div>							
+				    <br>				    
+				    <br>
+				    <br>
+				    <hr>
+				    <br>
+					<div>
+						<h2>
+							<a href="<?php echo $_tplvar['WWW_ROOT']?>/?act=CreateAccount"><?php echo $this->getText('request');?></a>
+						</h2>
+					</div>
+					<div class="clear"></div>
+					<!-- 
+					<div id="contactInfo">
+						
+						<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=RequestInfo" method="post" onsubmit="javascript:return validateForm();">
+						
+						<table width="100%">
+						<tr>
+							<td width="20%" style="padding:10px">Nome:</td>
+							<td style="padding:10px"><input type="text" name="nome" style="padding:5px;width:50%" value="<?php echo $_SESSION['request_info']['customer_data']['nome']?>"></td>
+						</tr>
+						<tr>
+							<td width="20%" style="padding:10px">Cognome:</td>
+							<td style="padding:10px"><input type="text" name="cognome" style="padding:5px;width:50%" value="<?php echo $_SESSION['request_info']['customer_data']['cognome']?>"></td>
+						</tr>
+						<tr>
+							<td width="20%" style="padding:10px">Telefono:</td>
+							<td style="padding:10px"><input type="text" name="telefono" style="padding:5px;width:50%" value="<?php echo $_SESSION['request_info']['customer_data']['telefono']?>"></td>
+						</tr>
+						<tr>
+							<td width="20%" style="padding:10px">Cellulare:</td>
+							<td style="padding:10px"><input type="text" name="cellulare" style="padding:5px;width:50% value="<?php echo $_SESSION['request_info']['customer_data']['cellulare']?>""></td>
+						</tr>
+						<tr>
+							<td width="20%" style="padding:10px">Indirizzo (Via, Citt&agrave;,Provincia)&nbsp;:</td>
+							<td style="padding:10px"><input type="text" name="indirizzo" style="padding:5px;width:50%" value="<?php echo $_SESSION['request_info']['customer_data']['indirizzo']?>"></td>
+						</tr>
+						<tr>
+							<td width="20%" style="padding:10px">Email: (*)</td>
+							<td style="padding:10px"><input type="text" name="email" id="email" style="padding:5px;width:50%" value="<?php echo $_SESSION['request_info']['customer_data']['email']?>"></td>
+						</tr>
+						<tr>
+							<td width="20%" style="padding:10px">Messaggio: (*)</td>
+							<td style="padding:10px"><textarea name="note" cols="110" rows="6" style="width:50%" id="richiesta"><?php echo $_SESSION['request_info']['customer_data']['richiesta']?></textarea></td>
+						</tr>
+						
+						<tr>
+							<td>Compila il codice captcha</th>
+							<td align="left" style="padding:10px;">
+								<script type="text/javascript">
+								var RecaptchaOptions = {
+									theme : 'blackglass'
+								};
+								</script>		
+								<script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k=<?php echo GOOGLE_RECAPCHA_PUBLIC_KEY;?>"></script>
+								<noscript>
+								<iframe src="http://www.google.com/recaptcha/api/noscript?k=<?php echo GOOGLE_RECAPCHA_PUBLIC_KEY;?>" height="300" width="500" frameborder="0"></iframe><br>
+								<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+								<input type="hidden" name="recaptcha_response_field" value="manual_challenge">
+								</noscript>
+							</td>
+						</tr>
+						<?php if($_tplvar['error_captcha']):?>
+						<tr>
+							<th colspan="2" style="color:red;padding:6px;">Attenzione errore nell'inserimento del Captcha</th>
+						</tr>
+						<?php endif;?>
+						<tr>
+							<td>(*) Campi obbligatori</td>
+							<td><button type="submit" title="Invia Richiesta" class="button btn-cart"><span><span>Invia Richiesta</span> </span></button></td>
+						</tr>
+						<?php if($_tplvar['confirm']):?>
+						<tr>
+							<th colspan="2" style="color:green;padding:6px;">La tua richiesta &egrave; stata inviata correttamente</th>
+						</tr>
+						<?php endif;?>
+						
+						
+						</table>
+						
+						</form>						
+						<div class="clear"></div>
+					</div>				    
+				     -->
+					<script type="text/javascript">
+					<!--
+					function validateForm()
+					{
+						var email = jQuery('#email').val();
+						var richiesta = jQuery('#richiesta').val();
+						var captcha_code = jQuery('#captcha_code').val();
+						var ret = true;
+						
+						if(email == '')
+						{
+							jQuery('#email').css('border', '1px solid red');
+							ret = false;
+						}
+						else
+							$('#email').css('border', '#555555');
+						if(richiesta == '')
+						{
+							jQuery('#richiesta').css('border', '1px solid red');
+							ret = false;
+						}
+						else
+							jQuery('#richiesta').css('border', '#555555');
+					
+						return ret;
+					}
+					//-->
+					</script>				    
+					<!-- end sidebar -->
+				
+			</div>
+
+</div>

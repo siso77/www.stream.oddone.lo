@@ -1,0 +1,320 @@
+<?php
+$_tplvar = $this->getVars();
+$this->getIntlPartial('Index');
+//_dump($_tplvar);
+//exit();
+?>
+
+<?php if($_tplvar['tpl_action'] == 'ProductInfo' && !empty($_tplvar['fb_active'])):?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="https://www.facebook.com/2008/fbml">
+  <head>
+<?php else:?>  
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<?php endif;?>
+  
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<?php if($_tplvar['tpl_action'] == 'ProductInfo' && !empty($_tplvar['fb_active'])):?>
+		<?php $images = $this->dbGetImageFromIdContent($_tplvar['content'][0]['id'], 'Large_', '100')?>
+		<meta property="og:title" content="<?php echo $_tplvar['content'][0]['name_it']?>"/>
+		<meta property="og:type" content="product"/>
+	    <meta property="og:url" content="<?php echo $_tplvar['WWW_ROOT']?>Detail/<?php echo $_tplvar['content'][0]['name'];?>/<?php echo str_replace(' ','-',str_replace("'","", str_replace('"','', $_tplvar['content'][0]['name_it'])))?>/<?php echo $_tplvar['content'][0]['id']?>.html"/>
+	    <meta property="og:image" content="<?php echo $images[0]['www_path'].'/Large_'.$images[0]['name']?>"/>
+	    <meta property="og:site_name" content="<?php echo $_tplvar['WWW_ROOT']?>"/>
+	    <meta property="og:description" content="<?php echo substr($_tplvar['content'][0]['description_it'], 0, 300);?>"/>
+	<?php endif;?>
+
+	<!--[if IE 7]>
+	<script type="text/javascript">
+	//<![CDATA[
+	    var BLANK_URL = '<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/blank.html';
+	    var BLANK_IMG = '<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/spacer.gif';
+	//]]>
+	</script>
+	<![endif]-->
+
+	<meta name="robots" content="index,follow" />
+	
+	<link rel="stylesheet" type="text/css" href="<?php echo $_tplvar['WWW_ROOT']?>css/theme/styles.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $_tplvar['WWW_ROOT']?>css/theme/widgets.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $_tplvar['WWW_ROOT']?>css/theme/print.css" media="print" />
+	
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/jquery-1.6.3.min.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/jquery.color.js"></script>
+	
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/cufon/cufon-yui.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/cufon/helvetica_700.font.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/cufon/coronet_400.font.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/cufon/cufon-replace-helvetica.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/cufon/cufon-replace-coronet.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/jquery.fancybox-1.3.4.pack.js"></script>
+
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/cloud-zoom.1.0.2.min.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/superfish.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/jquery.easing.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/jquery.carousel.min.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/slides.min.jquery.js"></script>
+
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/script.js"></script>
+	<!-- Place this tag in your head or just before your close body tag -->
+ 	
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/apis.google.com/js/plusone.js"></script>
+	
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/prototype/prototype.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/lib/ccard.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/prototype/validation.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/scriptaculous/builder.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/scriptaculous/effects.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/scriptaculous/dragdrop.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/scriptaculous/controls.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/scriptaculous/slider.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/varien/js.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/varien/form.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/varien/menu.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/mage/translate.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/mage/cookies.js"></script>
+	<!--[if IE 8]>
+	<link rel="stylesheet" type="text/css" href="<?php echo $_tplvar['WWW_ROOT']?>css/theme/styles-ie.css" media="all" />
+	<![endif]-->
+	<!--[if IE 7]>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/lib/ds-sleight.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/ie6.js"></script>
+	<![endif]-->
+	
+	<link rel="stylesheet" type="text/css" href="<?php echo $_tplvar['WWW_ROOT']?>css/theme/custom.css" media="all" />
+	<!--[if IE 9]>
+	<link rel="stylesheet" type="text/css" href="<?php echo $_tplvar['WWW_ROOT']?>css/theme/custom-ie9.css" media="all" />
+	<![endif]-->
+	<!--[if IE 8]>
+	<link rel="stylesheet" type="text/css" href="<?php echo $_tplvar['WWW_ROOT']?>css/theme/custom-ie8.css" media="all" />
+	<![endif]-->
+	<!--[if IE 7]>
+	<link rel="stylesheet" type="text/css" href="<?php echo $_tplvar['WWW_ROOT']?>css/theme/custom-ie7.css" media="all" />
+	<![endif]-->
+	
+
+	<link media="all" href="<?php echo $_tplvar['WWW_ROOT']?>css/theme/jquery.fancybox-1.3.4.css" type="text/css" rel="stylesheet">
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT']?>javascript/theme/jscolor/jscolor.js"></script>
+	<link media="all" href="<?php echo $_tplvar['WWW_ROOT']?>css/theme/styles.css" type="text/css" rel="stylesheet">
+		
+  <link href="<?php echo $_tplvar['WWW_ROOT']?>javascript/jQuery/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="<?php echo $_tplvar['WWW_ROOT']?>javascript/jQuery/jqueryui/1.8/jquery-ui.min.js"></script>
+	
+	<?php echo $this->getEncoding();?>
+	<?php //$this->getSeoMetatag();?>
+	<?php $this->getPartial('shared/MetaTag');?>
+
+	<meta http-equiv="Cache-control" content="public">
+	<meta name="language" content="<?php echo $_SESSION['lang'];?>">
+	
+	<?php //$this->getPartial('shared/HederaPageJavascript');?>
+
+	<script type="text/javascript">
+	function goLogin(close_loading)
+	{
+		$.ajax({
+			  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=Login',
+			  type: 'POST',
+			  dataType: 'html',
+			  data: '&username='+$('#username').val()+'&password='+$('#password').val()+'&return_uri=<?php echo $_SERVER['REDIRECT_URL']?>',
+			  success: function(html){
+
+				  $('#error_login_message').html('');
+				  $('#error_login_message').css('color', 'red');
+				  
+				  if(html == 'error_login')
+				  {
+					$('#error_login_message').html('<?php echo $this->getText('error_login_generic');?>');
+					$('#password').val('');
+					$('#username').css('border', '1px solid red');
+					$('#password').css('border', '1px solid red');
+				  }
+				  else if(html == 'error_login_username')
+				  {
+					$('#error_login_message').html('<?php echo $this->getText('error_login_username');?>');
+					$('#password').val('');
+					$('#username').css('border', '1px solid red');
+				  }
+				  else if(html == 'error_login_password')
+				  {
+					$('#error_login_message').html('<?php echo $this->getText('error_login_password');?>');
+					$('#username').css('border', '2px inset');
+					$('#password').val('');
+					$('#password').css('border', '1px solid red');
+				  }
+				  else
+				  {
+					$.fancybox.close( true );
+					document.location.href = html;
+//				  	$('#debug').html(html);
+				  }
+				  if(close_loading == true)
+					  $.fancybox.close( true );
+			  }
+			});
+	}
+	
+	function swapClass(obj, class1, class2)
+	{
+		var els = document.getElementsByClassName(class2);
+		for(var i=0; i<els.length; i++){
+	        oElement = els[i];
+	        oElement.setAttribute('class', class1);
+	    }
+		if(obj.getAttribute('class') == class1)
+			obj.setAttribute('class', class2);
+		else if(obj.getAttribute('class') == class2)
+			obj.setAttribute('class', class1);
+	}
+	
+	function switchLayout(url, layout)
+	{
+		jQuery.fancybox.showActivity();
+		jQuery.ajax({
+		  url: url,
+		  type: 'POST',
+		  dataType: 'html',
+		  data: 'is_ajax=1&layout='+layout,
+		  success: function(html){
+			jQuery('#swich_layout').html( html );
+			jQuery.fancybox.hideActivity();		
+		  }
+		});
+	}
+	</script>
+	<script type="text/javascript">
+	function centra(div)
+	{
+		jQuery(document).ready(function(){
+			   
+			jQuery(window).resize(function(){
+		
+				jQuery(div).css({
+				   position:'absolute',
+				   left: (jQuery(window).width() - jQuery(div).outerWidth())/2,
+				   top: (jQuery(window).height() - jQuery(div).outerHeight())/2
+				  });
+					
+			 });
+			 
+			 jQuery(window).resize();
+			});
+	}
+	
+	/*
+	jQuery(document).ready(function(){
+		   
+		jQuery(window).resize(function(){
+
+			jQuery('#zoom-vbn-image').css({
+			   position:'absolute',
+			   left: (jQuery(window).width() - jQuery('#zoom-vbn-image').outerWidth())/2,
+			   top: (jQuery(window).height() - jQuery('#zoom-vbn-image').outerHeight())/2
+			  });
+				
+		 });
+		 
+		 jQuery(window).resize();
+		});	
+	*/
+	
+	</script>
+	<style type='text/css'>
+	.box-img-vbn{
+		position:absolute;
+		display:none;
+		background-color:#fff;
+		z-index:1000;
+		left:30%;
+		top:50%;
+	}
+	</style>
+
+</head>
+
+<body class=" cms-index-index cms-home">
+
+	<div id="zoom-vbn-image" class="box-img-vbn"></div>
+
+	<noscript>
+        <div class="noscript">
+            <div class="noscript-inner">
+                <p><strong>JavaScript seem to be disabled in your browser.</strong></p>
+                <p>You must have JavaScript enabled in your browser to utilize the functionality of this website.</p>
+            </div>
+        </div>
+    </noscript>
+	<div id="debug"></div>
+	
+	<div class="header-container">
+	    <div class="page">
+	    	<div class="header">
+			    <?php echo $this->getPartial('shared/Header');?>
+			</div>
+	    </div>
+	</div>
+
+
+			<?php //if($_tplvar['tpl_action'] == 'Home'):?>
+			    <?php //echo $this->getPartial('shared/Slider');?>
+			<?php //endif;?>
+
+		<!-- Begin Page Content -->
+        <div class="page">
+        	<div class="main-container col2-right-layout">
+	            <div class="main">
+	                <div class="col-main" style="width:970px">
+	                	<div id="swich_layout">
+	                		<?php //echo $this->getPartial('shared/Breadcrumbs');?>
+							<?php $this->getPartial($_tplvar['tpl_action']);?>
+						</div>
+					</div>
+					<!-- End Col Main -->
+					<div class="col-right sidebar">
+
+						<?php //echo $this->getPartial('shared/BoxFilter');?>
+						<!-- Begin User Data -->
+						<?php //echo $this->getPartial('shared/BoxUserData');?>
+						<!-- End User Data -->
+						<?php //echo $this->getPartial('shared/BoxPreferred');?>
+						
+
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	<br>
+	<div class="footer">
+	   	<!-- Begin Footer -->
+		<?php $this->getPartial('shared/Footer');?>
+	    <!-- End Footer -->
+	</div>
+	<?php //$this->getPartial('shared/NewsletterSubscribeHome');?>
+
+			<script type="text/javascript">
+			function goNewsletterSubscribe()
+			{
+				
+				if($('#newsletter_email').val() == '')
+					$('#newsletter_email').css('border', '1px solid red');
+				else
+				{
+					$.ajax({
+						  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=NewsletterSubscribe',
+						  type: 'POST',
+						  dataType: 'html',
+						  data: '&newsletter_email='+$('#newsletter_email').val(),
+						  success: function(html){
+				
+						  }
+						});
+				}
+			}
+			
+			html_newsletter_subscribe = '<table width="100%" style="padding:10px"><tfoot><tr><td align="center"><?php echo $this->getText('banner_newsletter_header_text');?></td></tr><tr><td align="center" style="padding:10px"><input type="text" name="newsletter_email" id="newsletter_email" value="" style="background: none repeat scroll 0 0 #ffffff;border-style: solid;border-width: 1px;color: #BBBBBB;"></td></tr><tr><td align="center" style="padding:10px"><a class="pngfix small-dark-button align-btn-right" style="margin:0 90px" href="javascript:void(0);" onclick="javascript:goNewsletterSubscribe();"><span class="pngfix"><?php echo $this->getText('banner_newsletter_invia');?></span></a></td></tr><tr><td align="left"><div style="text-align:center;position:relative;padding:10px;background: url(<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/icons/ico-facebook.png) no-repeat 205px 6px;"><?php echo $this->getText('banner_newsletter_social');?><a target="_blank" href="http://it-it.facebook.com/" style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></div></td></tr></tfoot></table></div>';
+			</script>
+</body>
+</html>

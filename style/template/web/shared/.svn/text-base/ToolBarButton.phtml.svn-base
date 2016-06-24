@@ -1,0 +1,223 @@
+<?php  
+$_tplvar = $this->getVars();
+?>
+<?php $this->getIntlPartial('Index');?>
+							
+							<?php
+							if(!empty($_tplvar['search']['colore']))
+					    		$url .= '&colore='.$_tplvar['search']['colore'];
+							if(!empty($_tplvar['search']['tipo_colore']))
+					    		$url .= '&tipo_colore='.$_tplvar['search']['tipo_colore'];
+							if(!empty($_tplvar['search']['gm']))
+					    		$url .= '&gm='.$_tplvar['search']['gm'];
+							if(!empty($_tplvar['search']['famiglia']))
+					    		$url .= '&famiglia='.$_tplvar['search']['famiglia'];
+							if(!empty($_tplvar['search']['name']))
+					    		$url .= '&name='.$_tplvar['search']['name'];
+							if(!empty($_tplvar['search']['price_from']))
+					    		$url .= '&price_from='.$_tplvar['search']['price_from'];
+							if(!empty($_tplvar['search']['price_to']))
+					    		$url .= '&price_to='.$_tplvar['search']['price_to'];
+
+							if(!empty($_REQUEST['order_by']))
+								$url .= '&order_by='.$_REQUEST['order_by'];
+							if(!empty($_REQUEST['order_type']))
+								$url .= '&order_type='.$_REQUEST['order_type'];
+
+							if(!empty($_tplvar['only_disp']))
+					    		$url .= '&only_disp=1';
+							if(!empty($_tplvar['all_disp']))
+					    		$url .= '&all_disp=1';
+
+					    	$url .= '&search=1';
+					    	$assign['keys_search'] = $url;
+					    	?>							
+							<?php if($assign['show_switch_layout']):?>
+							<div class="toolbar-bottom">
+								<div class="toolbar">
+								    <div class="sorter">
+						                <p class="view-mode">
+						                
+											<a href="javascript:void(0);" title="Griglia" class="grid" onclick="javascript:switchLayout('<?php echo $assign['url'].$url?>', 'thumb');">
+								                <?php if($_SESSION['Search']['layout'] == 'thumb'):?>
+												<strong title="Lista" class="grid">
+								                <?php endif;?>
+													<span class="grid">Griglia</span>
+								                <?php if($_SESSION['Search']['layout'] == 'thumb'):?>
+												</strong>
+								                <?php endif;?>
+											</a>&nbsp;
+											
+											<a href="javascript:void(0);" title="Lista" class="list" onclick="javascript:switchLayout('<?php echo $assign['url']?>', 'boxed');">
+								                <?php if($_SESSION['Search']['layout'] == 'boxed'):?>
+												<strong title="Lista" class="list">
+								                <?php endif;?>
+													<span>Lista</span>
+								                <?php if($_SESSION['Search']['layout'] == 'boxed'):?>
+												</strong>
+								                <?php endif;?>
+											</a>&nbsp;
+											
+											<a href="javascript:void(0);" title="Lista" class="grid-list" onclick="javascript:switchLayout('<?php echo $assign['url']?>', 'grid');">
+								                <?php if($_SESSION['Search']['layout'] == 'grid' || empty($_SESSION['Search']['layout'])):?>
+												<strong title="Lista" class="grid-list">
+								                <?php endif;?>
+													<span class="grid">Griglia</span>
+								                <?php if($_SESSION['Search']['layout'] == 'grid' || empty($_SESSION['Search']['layout'])):?>
+												</strong>
+								                <?php endif;?>
+											</a>&nbsp;
+										</p>
+										<div style="padding:5px">
+												Visualizza
+												<div class="cella-toolbar<?php if($_tplvar['all_disp'] || (empty($_tplvar['all_disp']) && empty($_tplvar['only_disp'])) ):?>-active<?php endif;?>">
+													<strong><a href="<?php echo $assign['url']?>&all_disp=1" style="color:#fff;">Tutti</a></strong>
+											  	</div>
+											  	&nbsp;
+												<div class="cella-toolbar<?php if($_tplvar['only_disp']):?>-active<?php endif;?>">
+													<strong><a href="<?php echo $assign['url']?>&only_disp=1" style="color:#fff;">Disponibili</a></strong>
+											  	</div>
+											  	&nbsp;
+												<div class="cella-toolbar" style="margin-left:390px">
+													<strong><a href="javascript:void(0);" style="color:#fff;" onclick="javascript:document.location.href = '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart';">Vai al Carrello</a></strong>
+											  	</div>
+										</div>
+										<br>
+										<div class="sort-by">
+											<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=Search" method="post" id="filter-data">
+<input type="hidden" name="go_search" value="1">
+												<table>
+												<tr>
+													<td style="padding:5px">
+														<input type="text" name="key_search" style="font-size:12px;margin-left:20px;width:105px;padding:2px" value="<?php if(!empty($_tplvar['key_search'])): echo $_tplvar['key_search']; else: echo 'Cerca...'; endif;?>" onclick="javascript:this.value = '';" onblur="javascript:if(this.value == '') this.value = 'Cerca...';">
+													</td>
+													<td style="padding:5px">
+														<select name="gm" id="gm" style="font-size:12px;width:110px;padding:2px">
+															<option value="">Gruppo</option>
+															<?php foreach ($_tplvar['cmb_gm'] as $value):?>
+															<option value="<?php echo $value['id']?>" <?php if($_tplvar['search']['gm'] == $value['id']):?>selected="selected"<?php endif;?>><?php echo $value['gruppo']?></option>
+															<?php endforeach;?>
+														</select>
+													</td>
+													<td style="padding:5px">
+														<select name="colore" id="colore" style="font-size:12px;width:110px;padding:2px">
+															<option value="">Colore</option>
+															<?php foreach ($_tplvar['cmb_colori'] as $value):?>
+															<?php if(!empty($value['value'])):?>
+																	<option value="<?php echo $value['value']?>" <?php if($_tplvar['search']['colore'] == $value['value']):?>selected="selected"<?php endif;?>><?php echo $value['value']?></option>
+																<?php endif;?>
+															<?php endforeach;?>
+														</select>
+													</td>
+													<td style="padding:5px">
+														<select name="tipo_colore" id="tipo_colore" style="font-size:12px;width:110px;padding:2px">
+															<option value="">Tonalit&aacute;</option>
+															<?php foreach ($_tplvar['cmb_tipo_colori'] as $value):?>
+																<?php if(!empty($value['value'])):?>
+																<option value="<?php echo $value['value']?>" <?php if($_tplvar['search']['tipo_colore'] == $value['value']):?>selected="selected"<?php endif;?>><?php echo $value['value']?></option>
+																<?php endif;?>
+															<?php endforeach;?>
+														</select>
+													</td>
+													<td style="padding:5px">
+														<input type="hidden" name="price_from" id="price_from" value="<?php echo $_tplvar['search']['price_from']?>">
+														<input type="hidden" name="price_to" id="price_to" value="<?php echo $_tplvar['search']['price_to']?>">
+														<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+														<script src="<?php echo $_tplvar['WWW_ROOT']?>javascript/jQuery/jqueryui/1.8/jquery-ui.min.js"></script>
+														<style type="text/css">
+															#slider { margin: 5px;width:100px; }
+														</style>
+														<script>
+														jQuery(document).ready(function() {
+															jQuery("#slider").slider({
+																      range: true,
+																      min: <?php echo $_tplvar['default_price_from']?>,
+																      max: <?php echo $_tplvar['default_price_to']?>,
+																      values: [ <?php echo (empty($_tplvar['search']['price_from'])) ?  $_tplvar['default_price_from'] :  $_tplvar['search']['price_from']?>, 
+																      <?php echo (empty($_tplvar['search']['price_to'])) ?  $_tplvar['default_price_to'] :  $_tplvar['search']['price_to']?> ],
+																      slide: function( event, ui ) { jQuery( "#slider-amount" ).html( "Prezzo da € " + ui.values[ 0 ] + " a € " + ui.values[ 1 ] ); },
+																      stop: function(event, ui) { 
+																    	  jQuery("#price_from").val(ui.values[ 0 ]);
+																    	  jQuery("#price_to").val(ui.values[ 1 ]);
+																	  }
+															});
+														});
+														</script>
+														<table width="100%">
+														<tr>
+															<td style="padding:5px;">
+															<div id="slider-amount">Prezzo da &euro; <?php echo (empty($_tplvar['search']['price_from'])) ?  $_tplvar['default_price_from'] :  $_tplvar['search']['price_from']?> a € <?php echo (empty($_tplvar['search']['price_to'])) ?  $_tplvar['default_price_to'] :  $_tplvar['search']['price_to']?></div>
+															</td>
+															<td style="padding:5px"><div id="slider"></div></td>
+														</tr>
+														</table>
+													</td>
+													<td style="padding:5px">
+														<div class="cella-toolbar">
+															<strong><a href="javascript:void(0);" style="color:#fff;" onclick="javascript:goSearchForm();">Filtra</a></strong>
+													  	</div>
+													</td>
+												</tr>
+												</table>
+
+
+												<!-- 
+													<script type="text/javascript">
+													function setLocation(val)
+													{
+														alert(val);
+													}
+													</script>
+									      		    <label>Ordina per</label>
+													<select onchange="setLocation(this.value)">
+														<option value="?act=Search&order_type=asc&order_by=bar_code" selected="selected">Codice</option>
+														<option value="/?dir=asc&order=name">Nome</option>
+														<option value="/?dir=asc&order=price">Prezzo</option>
+													</select>
+													<a href="#" title="Direzione Discendente"><img src="<?php echo $_tplvar['WWW_ROOT']?>css/images/i_asc_arrow.gif" alt="Direzione Discendente" class="v-middle" /></a>
+												 -->
+											</form>
+										</div>
+						    		</div>
+								</div>
+								<script type="text/javascript">
+								function goSearchForm()
+								{
+									jQuery('#filter-data').submit();
+								}
+								
+								if(!jQuery('.toolbar .pager .pages').length) {
+									  jQuery('.toolbar .pager').addClass('no-pager');
+								  }	  
+								if(navigator.userAgent.indexOf('IE 7')!=-1){
+									jQuery('.sorter .view-mode .list').addClass('ie7-fix');
+								}	  
+								</script>
+							</div>
+							<?php endif;?>
+							
+							
+							<?php if($assign['show_paging']):?>
+							<div class="toolbar-bottom">
+								<div class="toolbar">
+								    <div class="sorter">
+						                <p class="view-mode">
+						                
+										</p>
+										<div class="sort-by">
+										<!-- 
+							      		    <label>Ordina per</label>
+											<select onchange="setLocation(this.value)">
+												<option value="/?dir=asc&order=position" selected="selected">Codice</option>
+												<option value="/?dir=asc&order=name">Nome</option>
+												<option value="/?dir=asc&order=price">Prezzo</option>
+											</select>
+											<a href="#" title="Direzione Discendente"><img src="<?php echo $_tplvar['WWW_ROOT']?>css/images/i_asc_arrow.gif" alt="Direzione Discendente" class="v-middle" /></a>
+										-->
+										</div>
+						    		</div>
+									
+									<?php echo $this->getPartial('shared/Paging', $assign);?>
+								</div>
+							</div>				
+							<?php endif;?>			

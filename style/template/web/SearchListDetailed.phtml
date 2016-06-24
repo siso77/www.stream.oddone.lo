@@ -1,0 +1,175 @@
+<?php 
+$_tplvar = $this->getVars();
+$this->getIntlPartial('Login');
+$this->getIntlPartial('FilterFields');
+$templateConfig = $_tplvar['template_config']['search'];
+// require_once APP_ROOT.'/libs/GoogleTranslate.php';
+$this->getIntlPartial('CheckoutShopping');
+
+foreach ($_SESSION[session_id()]['basket'] as $bsk)
+	$productsInBasket[$bsk['giacenza']['id']] = $bsk;
+?>
+<?php if(!empty($_REQUEST['error_partenza'])):?>
+<script>
+jQuery(document).ready(function(){ jQuery('#alert_calendar').show(); });
+//jQuery(document).ready(function(){ jQuery.fancybox('<div style="padding:20px;font-size:12px"><?php echo $this->getText('error_msg_partenza')?></div>'); });
+</script>
+<?php endif;?>
+
+<script>
+function showHiddenDiv(img){
+	jQuery.fancybox('<img src="'+img+'" style="width:100%">');
+}
+</script>
+
+<div class="col-main">
+    <?php 
+    $assign['show_paging'] = true;
+    $assign['show_switch_layout'] = false;
+    $assign['row_i'] = 0;
+    $this->getPartial('shared/ToolBarButton', $assign);?>
+    
+    	<?php 
+    	include_once(APP_ROOT.'/beans/gruppi_merceologici.php');
+    	$BeanGruppi = new gruppi_merceologici(MyDB::connect(), $_REQUEST['gm']);
+
+    	if(!empty($BeanGruppi->id) && empty($_REQUEST['reset']))
+    	{
+    		if(!empty($BeanGruppi->description))
+    			echo('<div class="toolbar" style="padding: 0px;margin: 0px 16px 0px;"><p style="padding3px;">'.$BeanGruppi->description.'</p></div>');
+    	}
+    	?>
+    	
+
+	<!-- End ToolBarButton -->
+	<div class="category-products">
+		<!-- Begin ToolBarButton -->
+		<ol class="products-list" id="products-list">
+			<?php foreach ($_tplvar['content'] as $key => $value):?>
+			<?php $giacenza = $this->getGiacenzaById($value['id_gicenza']);?>
+			<script>jQuery('<img />').attr('src','<?php echo $this->getImageFromIdContent($value['id'], 'Large_');?>').appendTo('body').css('display','none');</script>
+			
+			
+			<?php 
+			$style = '';
+			foreach ($_SESSION[session_id()]['basket'] as $val):?>
+			<?php if($giacenza['id'] == $val['giacenza']['id']): $style = 'background-color:#B6E9B8;'; endif;?>
+			<?php endforeach;?>			
+			<li class="item odd" id="row-<?php echo $value['id_gicenza']?>" style="<?php echo $style?>">
+				<div class="product-image">
+					<?php $image = null;?>
+			 		<?php $image = $this->getImageFromIdContent($value['id'], 'Large_');?>
+				  	<?php if(!empty($image)):?>
+			 			<a href="javascript:void(0);" class="fancybox" onclick="showHiddenDiv('<?php echo $image;?>');" title="<?php echo $value['nome_it']?>" class="">
+							<?php if($giacenza['stato'] == 'N'):?>
+								<span class="sale-label sale-top-left"></span>
+							<?php endif;?>
+							<?php if($giacenza['stato'] == 'O'):?>
+								<span class="new-label new-top-left"></span>
+							<?php endif;?>					  	
+							<a href="javascript:void(0);" class="fancybox" onclick="showHiddenDiv('<?php echo $image;?>');">
+								<img src="<?php echo $image?>" class="small-image" width="200" height="200" alt="<?php echo $value['nome_it']?>">
+							</a>
+						</a>
+					<?php endif;?>             
+					<script>jQuery('<img />').attr('src','<?php echo $image?>').appendTo('body').css('display','none');</script>					
+				</div>
+				<?php
+				if(!empty($value['id_content']))
+					$detail_url = $_tplvar['WWW_ROOT'].'?act=ProductInfo&id='.$value['id_content'].'';
+				else
+					$detail_url = $_tplvar['WWW_ROOT'].'?act=ProductInfo&id_giacenza='.$value['id'].'';
+				?>
+				<div class="product-shop">
+					<h2 class="product-name">
+						<a href="<?php echo $detail_url?>" title="<?php echo $value['nome_it']?>"><?php echo $value['nome_it']?></a>
+					</h2>
+					<div class="price-box">
+						<?php echo $value['note']?>
+						<br>
+						<?php if(!empty($_SESSION['LoggedUser']['username'])):?>
+							<?php if(!empty($_SESSION['LoggedUser']['sconto'][0]['percentuale']) || $_SESSION['LoggedUser']['customer_data']['is_pz_commissione'] == 1):?>
+								<?php if(empty($_SESSION['LoggedUser']['customer_data']['costo_reso'])):?>
+									<span class="regular-price" id="product-price-2315"><span class="price" style="color:#BBBBBB">
+										<strike><?php echo Currency::FormatEuro($value['prezzo_0'])?></strike>
+									</span></span>
+								<?php endif;?>
+							<?php endif;?>
+							<span class="regular-price" id="product-price-2315"><span class="price">
+								<?php echo Currency::FormatEuro($this->getPrezzo($value));?>
+							</span></span>
+						<?php endif;?>
+						<input type="hidden" id="qta_min_ordine_<?php echo $value['id_gicenza']?>" value="<?php echo $value['qta_min_ordine']?>">
+						<input type="hidden" id="qta_confezione_<?php echo $value['id_gicenza']?>" value="<?php echo $value['qta_minima']?>">
+						<input type="hidden" id="qta_pianale_<?php echo $value['id_gicenza']?>" value="<?php echo $value['qta_pianale']?>">
+						<input type="hidden" id="qta_carrello_<?php echo $value['id_gicenza']?>" value="<?php echo $value['qta_carrello']?>">
+						<?php 
+						$qta_selected = null;
+						if($productsInBasket[$value['id_gicenza']]['box_type'] == 'confezione')
+							$qta_selected = $productsInBasket[$value['id_gicenza']]['basket_qty']['sel_quantita'];
+						if($productsInBasket[$value['id_gicenza']]['box_type'] == 'pianale')
+							$qta_selected = $productsInBasket[$value['id_gicenza']]['basket_qty']['sel_quantita'];
+						if($productsInBasket[$value['id_gicenza']]['box_type'] == 'carrello')
+							$qta_selected = $productsInBasket[$value['id_gicenza']]['basket_qty']['sel_quantita'];
+						?>
+						<br>
+						<?php echo $this->getText('qta_for_conf');?>
+						<?php echo $value['qta_minima']?>
+						<br>
+						<?php echo $this->getText('qta_for_plan');?>
+						<?php echo $value['qta_pianale']?>
+						<br>
+						<?php echo $this->getText('qta_for_chart');?>
+						<?php echo $value['qta_carrello']?>
+						<br>
+						<br>
+						<?php echo $this->getText('order');?>
+						<input type="text" id="quantita_<?php echo $value['id_gicenza']?>" value="<?php echo $qta_selected?>" style="width:50px;<?php if(!empty($qta_selected)):?>background-color:#2CC951;color:#fff;<?php endif;?>">&nbsp;
+						<select name="box_type_<?php echo $value['id_gicenza']?>" id="box_type_<?php echo $value['id_gicenza']?>">
+							<option value="confezione" <?php if($productsInBasket[$value['id_gicenza']]['box_type'] == 'confezione'):?>selected="selected"<?php endif;?>><?php echo $this->getText('package');?></option>
+							<option value="pianale" <?php if($productsInBasket[$value['id_gicenza']]['box_type'] == 'pianale' || empty($productsInBasket[$value['id_gicenza']]['box_type'])):?>selected="selected"<?php endif;?>><?php echo $this->getText('platform');?></option>
+							<option value="carrello" <?php if($productsInBasket[$value['id_gicenza']]['box_type'] == 'carrello'):?>selected="selected"<?php endif;?>><?php echo $this->getText('chart');?></option>
+						</select>
+						<br>
+						<br>
+						<textarea style="<?php if(!empty($qta_selected)):?>background-color:#2CC951;color:#fff;<?php endif;?>font-size:10px;" cols="30" id="note_<?php echo $value['id_gicenza']?>" name="note_<?php echo $value['id_gicenza']?>" onblur="if(this.value=='') this.value='<?php echo $this->getTranslation('Inserisci una nota sul prodotto')?>'" onclick="if(this.value=='<?php echo $this->getTranslation('Inserisci una nota sul prodotto')?>') this.value=''"><?php if(empty($productsInBasket[$value['id_gicenza']]['note'])) echo $this->getTranslation('Inserisci una nota sul prodotto'); else echo $productsInBasket[$value['id_gicenza']]['note'];?></textarea>
+						<button type="button" class="button btn-cart" style="margin-top: -26px;" onclick="javascript:addToCart('<?php echo $value['id_gicenza']?>');">
+							<span id="btn_addcart_<?php echo $value['id_gicenza']?>"> <?php if(!empty($qta_selected)):?><?php echo $this->getTranslation("&nbsp;&nbsp;&nbsp;Modifica")?><?php else:?><?php echo $this->getTranslation('&nbsp;&nbsp;&nbsp;Aggiungi al carrello')?><?php endif;?>&nbsp;&nbsp;</span>
+						</button>
+					</div>
+					<!-- 
+					<div class="desc std">
+						<p><?php echo $value['descrizione']?></p>
+						<a href="http://magento.magikthemes.com/magikakoha/furniture/intex-pull-out-sofa-queen.html" title="Intex Pull-out Sofa Queen" class="link-learn">Learn More</a>
+					</div>
+					<div class="actions">             
+						<span class="add-to-links">
+							<a href="http://magento.magikthemes.com/magikakoha/wishlist/index/add/product/2315/" class="button link-wishlist">Add to Wishlist</a>
+							<span class="separator">|</span>
+							<a href="http://magento.magikthemes.com/magikakoha/catalog/product_compare/add/product/2315/uenc/aHR0cDovL21hZ2VudG8ubWFnaWt0aGVtZXMuY29tL21hZ2lrYWtvaGEvZnVybml0dXJlLmh0bWw_bW9kZT1saXN0JnRpdGxlPW1hZ2lrYWtvaGElMkZmdXJuaXR1cmUuaHRtbA,,/" class="button link-compare">Add to Compare</a>
+						</span>
+					</div>
+					 -->
+				</div>
+			</li>
+			<?php endforeach;?>
+		</ol>
+		<!-- Begin Product Listing -->
+		<?php if(empty($_tplvar['content'])):?>
+		    <?php 
+		    $assign['err_message'] = 'Attenzione: il prodotto cercato non &eacute; al momento disponibile.';
+		    $this->getPartial('shared/ErrorMessage', $assign);
+		    ?>
+		<?php endif;?>
+		
+		</ol>	
+		<br>
+	<!-- Begin ToolBarButton -->
+    <?php 
+    $assign['url'] = WWW_ROOT.'?act=Search';
+    $assign['row_i'] = 1;
+    $this->getPartial('shared/ToolBarButton', $assign);?>
+	<!-- End ToolBarButton -->
+		
+	</div>
+</div>

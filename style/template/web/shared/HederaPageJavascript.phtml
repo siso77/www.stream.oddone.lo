@@ -1,0 +1,667 @@
+<?php $_tplvar = $this->getVars();?>
+
+	<script type="text/javascript">
+	function goLogin(close_loading)
+	{
+		$.ajax({
+			  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=Login',
+			  type: 'POST',
+			  dataType: 'html',
+			  data: '&username='+$('#username').val()+'&password='+$('#password').val()+'&return_uri=<?php echo $_SERVER['REDIRECT_URL']?>',
+			  success: function(html){
+
+				  $('#error_login_message').html('');
+				  $('#error_login_message').css('color', 'red');
+				  
+				  if(html == 'error_login')
+				  {
+					$('#error_login_message').html('<?php echo $this->getText('error_login_generic');?>');
+					$('#password').val('');
+					$('#username').css('border', '1px solid red');
+					$('#password').css('border', '1px solid red');
+				  }
+				  else if(html == 'error_login_username')
+				  {
+					$('#error_login_message').html('<?php echo $this->getText('error_login_username');?>');
+					$('#password').val('');
+					$('#username').css('border', '1px solid red');
+				  }
+				  else if(html == 'error_login_password')
+				  {
+					$('#error_login_message').html('<?php echo $this->getText('error_login_password');?>');
+					$('#username').css('border', '2px inset');
+					$('#password').val('');
+					$('#password').css('border', '1px solid red');
+				  }
+				  else
+				  {
+					$.fancybox.close( true );
+					document.location.href = html;
+//				  	$('#debug').html(html);
+				  }
+				  if(close_loading == true)
+					  $.fancybox.close( true );
+			  }
+			});
+	}
+	
+	function swapClass(obj, class1, class2)
+	{
+		var els = document.getElementsByClassName(class2);
+		for(var i=0; i<els.length; i++){
+	        oElement = els[i];
+	        oElement.setAttribute('class', class1);
+	    }
+		if(obj.getAttribute('class') == class1)
+			obj.setAttribute('class', class2);
+		else if(obj.getAttribute('class') == class2)
+			obj.setAttribute('class', class1);
+	}
+	
+	function switchLayout(url, layout)
+	{
+		jQuery('#swich_layout').css('opacity','0.3');
+		jQuery('#swich_layout').css('filter','alpha(opacity=60)');
+		//jQuery.fancybox.showActivity();
+		jQuery.ajax({
+		  url: url,
+		  type: 'POST',
+		  dataType: 'html',
+		  data: 'is_ajax=1&layout='+layout,
+		  success: function(html){
+			jQuery('#swich_layout').html( html );
+
+			jQuery('#swich_layout').css('opacity','');
+			jQuery('#swich_layout').css('filter','');
+			//jQuery.fancybox.hideActivity();		
+		  }
+		});
+	}
+	</script>
+	<script type="text/javascript">
+	function centra(div){
+		var DIVwidth = jQuery(div).width();	
+		var DIVheight = jQuery(div).height();
+		var SCREENwidth = jQuery(document).width();
+		var SCREENheight = jQuery(window).height();	
+		var SCREENscrolltop = jQuery(window).scrollTop();
+		jQuery(div).animate({   
+			top: (  (SCREENheight-DIVheight)/2+SCREENscrolltop) +"px",
+			left: (SCREENwidth-DIVwidth)/2+"px"
+		},100,function(){
+	        centra(div);
+	    });	 
+	}
+
+	function _centra(div)
+	{
+		jQuery(document).ready(function(){
+			   
+			jQuery(window).resize(function(){
+		
+				jQuery(div).css({
+				   position:'absolute',
+				   left: (jQuery(window).width() - jQuery(div).outerWidth())/2,
+				   top: (jQuery(window).height() - jQuery(div).outerHeight())/2
+				  });
+					
+			 });
+			 
+			 jQuery(window).resize();
+			});
+	}
+	
+
+	</script>
+	<script>
+	function addToCart(id_giacenza)
+	{
+		<?php if(empty($_SESSION['LoggedUser'])):?>document.location.href = '<?php echo $_tplvar['WWW_ROOT']?>?act=Login';<?php endif;?>
+		var qta_min_ordine = jQuery('#qta_min_ordine_'+id_giacenza).val();
+
+		var qta_confezione = jQuery('#qta_confezione_'+id_giacenza).val();
+		var qta_pianale = jQuery('#qta_pianale_'+id_giacenza).val();
+		var qta_carrello = jQuery('#qta_carrello_'+id_giacenza).val();
+
+		var quantita = jQuery('#quantita_'+id_giacenza).val();
+		var box_type = jQuery('#box_type_'+id_giacenza).val();
+		var note = jQuery('#note_'+id_giacenza).val();
+
+		if(!quantita.match('^(0|[1-9][0-9]*)$'))
+		{
+			if(quantita != '')
+				return jQuery.fancybox( '<div style="font-size:16px;text-align:center;padding:20px">Attenzione sono ammessi solo caratteri numerici!</div>' );
+		}
+
+		var quantita_ordine = 0;
+		var params = '';
+
+		if(quantita == '')
+			return jQuery.fancybox('<div style="font-size:16px;text-align:center;padding:20px">Atenzione la quantita minima d\' ordine &egrave; di '+(qta_min_ordine)+' confezioni o un multiplo di '+(qta_min_ordine)+'</div>');
+
+		if(box_type == 'confezione')
+		{
+			//quantita_ordine = quantita * qta_confezione;
+			quantita_ordine = quantita;
+			var test = (quantita_ordine * qta_confezione) / qta_min_ordine;
+			var re=/^-?[0-9]+$/;
+			if(!re.test(test))
+				return jQuery.fancybox('<div style="font-size:16px;text-align:center;padding:20px">Atenzione la quantita minima d\' ordine &egrave; di '+(qta_min_ordine)+' confezioni o un multiplo di '+(qta_min_ordine)+'</div>');
+
+			if(parseInt(qta_min_ordine) > parseInt(quantita_ordine))
+				return jQuery.fancybox('<div style="font-size:16px;text-align:center;padding:20px">Atenzione la quantita minima d\' ordine &egrave; di '+(qta_min_ordine)+' confezioni o un multiplo di '+(qta_min_ordine)+'</div>');
+
+			var re=/^-?[0-9]+$/;
+			if(!re.test( (quantita_ordine / qta_min_ordine) ))
+				return jQuery.fancybox('<div style="font-size:16px;text-align:center;padding:20px">Atenzione la quantita minima d\' ordine &egrave; di '+(qta_min_ordine)+' confezioni o un multiplo di '+(qta_min_ordine)+'</div>');
+
+			//if((quantita_ordine * qta_confezione) < qta_min_ordine)
+				//return jQuery.fancybox('<div style="font-size:16px;text-align:center;padding:20px">Atenzione la quantita minima d\' ordine &egrave; di '+qta_min_ordine+' confezioni o un multiplo di '+qta_min_ordine+'</div>');
+		}
+		else if(box_type == 'pianale')
+		{
+			//quantita_ordine = quantita * qta_pianale;
+			quantita_ordine = quantita;
+			if((quantita_ordine * qta_pianale) < qta_min_ordine)
+				return jQuery.fancybox('<div style="font-size:16px;text-align:center;padding:20px">Atenzione la quantita minima d\' ordine &egrave; di '+qta_min_ordine+' confezioni o un multiplo di '+qta_min_ordine+'</div>');
+		}
+		else if(box_type == 'carrello')
+		{
+			//quantita_ordine = quantita * qta_carrello;
+			quantita_ordine = quantita;
+			if((quantita_ordine * qta_carrello) < qta_min_ordine)
+				return jQuery.fancybox('<div style="font-size:16px;text-align:center;padding:20px">Atenzione la quantita minima d\' ordine &egrave; di '+qta_min_ordine+' confezioni o un multiplo di '+qta_min_ordine+'</div>');
+		}
+
+		jQuery.ajax({
+			  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+			  type: 'POST',
+			  dataType: 'html',
+			  cache: false,
+			  data: 'box_type='+box_type+'&id_giacenza='+id_giacenza+'&quantita='+quantita_ordine+'&note='+note+'&is_ajax=1',
+			  success: function(html){
+				//jQuery.fancybox.hideActivity();
+			  	jQuery('#mini-cart-container').html( html );
+
+				jQuery('#row-'+id_giacenza).css('background-color', '#B6E9B8');
+
+				jQuery('#quantita_'+id_giacenza).css('background-color', '#2CC951');
+				jQuery('#quantita_'+id_giacenza).css('color', '#fff');
+				jQuery('#note_'+id_giacenza).css('background-color', '#2CC951');
+				jQuery('#note_'+id_giacenza).css('color', '#fff');
+
+				jQuery('#btn_addcart_'+id_giacenza).html("&nbsp;&nbsp;&nbsp;Modifica");
+				
+				jQuery.fancybox('<div style="font-size:16px;text-align:center;padding:20px;width:300px">Prodotto aggiunto correttamente!</div>');
+				setTimeout( function() {jQuery.fancybox.close(); },2000);
+
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: '&get_cart=1',
+					  success: function(html){
+						jQuery('.col-right').html(html);
+					  }
+					});
+
+
+				//jQuery('#debug').html( html );
+				//if(html != '')
+					//jQuery.fancybox(html);
+			  }
+			});	
+
+			
+		//jQuery.fancybox('<div style="font-size:16px;text-align:center;padding:20px">Ok <br>qta_min_ordine='+qta_min_ordine+'<br> qta_confezione='+qta_confezione+'<br> qta_pianale='+qta_pianale+'<br> qta_carrello='+qta_carrello+'<br> box_type'+box_type+'<br> note '+note+'<br> quantita'+quantita+'<br> quantita_ordine='+quantita_ordine);
+	}
+
+	function addProductCartDispo(id, qty, id_mag, disponibilita, qty_giacenxa, e)
+	{
+			qty_tot = disponibilita / qty_giacenxa;
+	//jQuery.fancybox( '<div style="font-size:16px;text-align:center;">quantit&aacute; selezionata ('+qty+') disponibilit&aacute; ('+disponibilita+') qty giacenza ('+qty_giacenxa+') qty_tot ('+qty_tot+')</div>' );
+			
+			if(qty > qty_tot)
+			{
+				jQuery.fancybox( '<div style="font-size:16px;text-align:center;">Attenzione!!!<br><br> la quantit&aacute; selezionata ('+(qty_giacenxa * qty)+') &eacute; maggiore della disponibilit&aacute; ('+disponibilita+')</div>' );
+				jQuery('#quantita_'+id).val('');
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1'+'&id_giacenza='+id_mag+'&is_ajax=1',
+					  success: function(html){
+						jQuery('#row-'+id).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id).css('background-color', '');
+						//jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+					  }
+					});
+				return false;
+			}
+			else if(!qty.match('^(0|[1-9][0-9]*)$'))
+			{
+				if(qty != '')
+					jQuery.fancybox( '<div style="font-size:16px;text-align:center;padding:20px">Attenzione sono ammessi solo caratteri numerici!</div>' );
+	
+				jQuery('#quantita_'+id).val('');
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1'+'&id_giacenza='+id_mag+'&is_ajax=1',
+					  success: function(html){
+						jQuery('#row-'+id).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id).css('background-color', '');
+						//jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+						jQuery('#debug').html( html );
+					  }
+					});
+			}
+			else if(qty != '' && qty > 0)
+			{
+				jQuery.fancybox.showActivity();
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'id_giacenza='+id_mag+'&quantita='+qty+'&is_ajax=1',
+					  success: function(html){
+						jQuery.fancybox.hideActivity();
+					  	jQuery('#minicart').html( html );
+						jQuery('#row-'+id).attr('class', '');
+						jQuery('#row-'+id).css('background-color', '#B6E9B8');
+						//jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+						jQuery('#debug').html( html );
+						//if(html != '')
+							//jQuery.fancybox(html);
+					  }
+					});	
+			}
+			else if(qty == 0)
+			{
+				jQuery.fancybox.showActivity();
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1'+'&id_giacenza='+id_mag+'&is_ajax=1',
+					  success: function(html){
+						jQuery('#row-'+id).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id).css('background-color', '');
+						jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+					  	jQuery.fancybox.hideActivity();
+					  	jQuery('#debug').html( html );
+					  }
+					});	
+			}
+	}	
+	function addProductCart(id, qty, id_mag, disponibilita, qty_giacenxa, e)
+	{
+			qty_tot = disponibilita / qty_giacenxa;
+	//jQuery.fancybox( '<div style="font-size:16px;text-align:center;">quantit&aacute; selezionata ('+qty+') disponibilit&aacute; ('+disponibilita+') qty giacenza ('+qty_giacenxa+') qty_tot ('+qty_tot+')</div>' );
+			
+			if(qty > qty_tot)
+			{
+				jQuery.fancybox( '<div style="font-size:16px;text-align:center;">Attenzione!!!<br><br> la quantit&aacute; selezionata ('+(qty_giacenxa * qty)+') &eacute; maggiore della disponibilit&aacute; ('+disponibilita+')</div>' );
+				jQuery('#quantita_'+id).val('');
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1&id_content='+id+'&id_magazzino='+id_mag+'&is_ajax=1',
+					  success: function(html){
+						jQuery('#row-'+id_mag).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id_mag).css('background-color', '');
+						//jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+					  }
+					});
+				return false;
+			}
+			else if(!qty.match('^(0|[1-9][0-9]*)$'))
+			{
+				if(qty != '')
+					jQuery.fancybox( '<div style="font-size:16px;text-align:center;padding:20px">Attenzione sono ammessi solo caratteri numerici!</div>' );
+	
+				jQuery('#quantita_'+id).val('');
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1&id_content='+id+'&id_magazzino='+id_mag+'&is_ajax=1',
+					  success: function(html){
+						jQuery('#row-'+id_mag).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id_mag).css('background-color', '');
+						//jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+					  }
+					});
+			}
+			else if(qty != '' && qty > 0)
+			{
+				jQuery.fancybox.showActivity();
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'id_mag='+id_mag+'&id_content='+id+'&quantita='+qty+'&is_ajax=1',
+					  success: function(html){
+						jQuery.fancybox.hideActivity();
+					  	jQuery('#minicart').html( html );
+						jQuery('#row-'+id_mag).attr('class', '');
+						jQuery('#row-'+id_mag).css('background-color', '#B6E9B8');
+						jQuery('#row-'+id_mag).effect("pulsate", { times:2 }, 1000);
+						//if(html != '')
+							//jQuery.fancybox(html);
+					  }
+					});	
+			}
+			else if(qty == 0)
+			{
+				jQuery.fancybox.showActivity();
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1&id_content='+id+'&id_magazzino='+id_mag+'&is_ajax=1',
+					  success: function(html){
+						jQuery('#row-'+id_mag).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id_mag).css('background-color', '');
+						jQuery('#row-'+id_mag).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+					  	jQuery.fancybox.hideActivity();
+					  }
+					});	
+			}
+	}
+	/*****************************************************/
+	function addProductCartFornitori(id, qty)
+	{
+			if(!qty.match('^(0|[1-9][0-9]*)$'))
+			{
+				if(qty != '')
+					jQuery.fancybox( '<div style="font-size:16px;text-align:center;padding:20px">Attenzione sono ammessi solo caratteri numerici!</div>' );
+	
+				jQuery('#quantita_'+id).val('');
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCartFornitori',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1&id_content='+id+'&id_magazzino='+id+'&is_ajax=1',
+					  success: function(html){
+						jQuery('#row-'+id).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id).css('background-color', '');
+						//jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+					  }
+					});
+			}
+			else if(qty != '' && qty > 0)
+			{
+				jQuery.fancybox.showActivity();
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCartFornitori',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'id_mag='+id+'&quantita='+qty+'&is_ajax=1',
+					  success: function(html){
+						jQuery.fancybox.hideActivity();
+	//jQuery.fancybox(html);
+	
+						jQuery('#debug').html( html );
+	
+						jQuery('#row-'+id).attr('class', '');
+						jQuery('#row-'+id).css('background-color', '#B6E9B8');
+						jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+						
+					  }
+					});	
+			}
+			else if(qty == 0)
+			{
+				jQuery.fancybox.showActivity();
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCartFornitori',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1&id_magazzino='+id+'&is_ajax=1',
+					  success: function(html){
+	//jQuery.fancybox(html);
+						jQuery('#debug').html( html );
+	
+						jQuery('#row-'+id).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id).css('background-color', '');
+						jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+					  	jQuery.fancybox.hideActivity();
+					  }
+					});	
+			}
+	}
+
+	function addPianaleCartFornitori(id, qty)
+	{
+			if(!qty.match('^(0|[1-9][0-9]*)$'))
+			{
+				if(qty != '')
+					jQuery.fancybox( '<div style="font-size:16px;text-align:center;padding:20px">Attenzione sono ammessi solo caratteri numerici!</div>' );
+	
+				jQuery('#quantita_pianale_'+id).val('');
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCartFornitori',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1&id_content='+id+'&id_magazzino='+id+'&is_ajax=1',
+					  success: function(html){
+						jQuery('#row-'+id).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id).css('background-color', '');
+						//jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+					  }
+					});
+			}
+			else if(qty != '' && qty > 0)
+			{
+				jQuery.fancybox.showActivity();
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCartFornitori',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'id_mag='+id+'&quantita_pianale='+qty+'&is_ajax=1',
+					  success: function(html){
+						jQuery.fancybox.hideActivity();
+	//jQuery.fancybox(html);
+	
+						jQuery('#debug').html( html );
+	
+						jQuery('#row-'+id).attr('class', '');
+						jQuery('#row-'+id).css('background-color', '#B6E9B8');
+						jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+						
+					  }
+					});	
+			}
+			else if(qty == 0)
+			{
+				jQuery.fancybox.showActivity();
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCartFornitori',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1&id_magazzino='+id+'&is_ajax=1',
+					  success: function(html){
+	//jQuery.fancybox(html);
+						jQuery('#debug').html( html );
+	
+						jQuery('#row-'+id).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id).css('background-color', '');
+						jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+					  	jQuery.fancybox.hideActivity();
+					  }
+					});	
+			}
+	}
+	/*****************************************************/
+	/*****************************************************/
+	function addProductCartFornitoriDe(id, qty)
+	{
+			if(!qty.match('^(0|[1-9][0-9]*)$'))
+			{
+				if(qty != '')
+					jQuery.fancybox( '<div style="font-size:16px;text-align:center;padding:20px">Attenzione sono ammessi solo caratteri numerici!</div>' );
+	
+				jQuery('#quantita_'+id).val('');
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCartFornitoriDe',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1&id_content='+id+'&id_magazzino='+id+'&is_ajax=1',
+					  success: function(html){
+						jQuery('#row-'+id).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id).css('background-color', '');
+						//jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+					  }
+					});
+			}
+			else if(qty != '' && qty > 0)
+			{
+				jQuery.fancybox.showActivity();
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCartFornitoriDe',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'id_mag='+id+'&quantita='+qty+'&is_ajax=1',
+					  success: function(html){
+						jQuery.fancybox.hideActivity();
+	//jQuery.fancybox(html);
+	
+						jQuery('#debug').html( html );
+	
+						jQuery('#row-'+id).attr('class', '');
+						jQuery('#row-'+id).css('background-color', '#B6E9B8');
+						jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+						
+					  }
+					});	
+			}
+			else if(qty == 0)
+			{
+				jQuery.fancybox.showActivity();
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCartFornitoriDe',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1&id_magazzino='+id+'&is_ajax=1',
+					  success: function(html){
+	//jQuery.fancybox(html);
+						jQuery('#debug').html( html );
+	
+						jQuery('#row-'+id).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id).css('background-color', '');
+						jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+					  	jQuery.fancybox.hideActivity();
+					  }
+					});	
+			}
+	}
+
+	function addPianaleCartFornitoriDe(id, qty)
+	{
+			if(!qty.match('^(0|[1-9][0-9]*)$'))
+			{
+				if(qty != '')
+					jQuery.fancybox( '<div style="font-size:16px;text-align:center;padding:20px">Attenzione sono ammessi solo caratteri numerici!</div>' );
+	
+				jQuery('#quantita_pianale_'+id).val('');
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCartFornitoriDe',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1&id_content='+id+'&id_magazzino='+id+'&is_ajax=1',
+					  success: function(html){
+						jQuery('#row-'+id).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id).css('background-color', '');
+						//jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+					  }
+					});
+			}
+			else if(qty != '' && qty > 0)
+			{
+				jQuery.fancybox.showActivity();
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCartFornitoriDe',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'id_mag='+id+'&quantita_pianale='+qty+'&is_ajax=1',
+					  success: function(html){
+						jQuery.fancybox.hideActivity();
+	//jQuery.fancybox(html);
+	
+						jQuery('#debug').html( html );
+	
+						jQuery('#row-'+id).attr('class', '');
+						jQuery('#row-'+id).css('background-color', '#B6E9B8');
+						jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+						
+					  }
+					});	
+			}
+			else if(qty == 0)
+			{
+				jQuery.fancybox.showActivity();
+				jQuery.ajax({
+					  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCartFornitoriDe',
+					  type: 'POST',
+					  dataType: 'html',
+					  cache: false,
+					  data: 'delete=1&id_magazzino='+id+'&is_ajax=1',
+					  success: function(html){
+	//jQuery.fancybox(html);
+						jQuery('#debug').html( html );
+	
+						jQuery('#row-'+id).attr('class', 'list-row-detailed');
+						jQuery('#row-'+id).css('background-color', '');
+						jQuery('#row-'+id).effect("pulsate", { times:2 }, 1000);
+					  	jQuery('#minicart').html( html );
+					  	jQuery.fancybox.hideActivity();
+					  }
+					});	
+			}
+	}	
+	/*****************************************************/
+	
+	function emptyComboQty(id)
+	{
+		var sel = jQuery("#"+id).val("0");
+	}
+	</script>	

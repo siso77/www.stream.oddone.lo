@@ -1,0 +1,515 @@
+<?php 
+$_tplvar = $this->getVars();
+?>
+
+<style>
+<!--
+.selected {
+	background-color: #B00000;
+}
+.not_selected {
+	background-color: #ADADAD;
+}
+
+td {
+	padding: 9px 12px;
+	color: #333;
+	border-top: 1px solid white;
+	font-size:11px;
+}
+th {
+	font-size:11px;
+}
+.container_24 {
+	margin-left: auto;
+	margin-right: auto;
+	width: 1200px;
+}
+
+.myButton:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bc3315), color-stop(1, #d0451b));
+	background:-moz-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+	background:-webkit-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+	background:-o-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+	background:-ms-linear-gradient(top, #bc3315 5%, #d0451b 100%);
+	background:linear-gradient(to bottom, #bc3315 5%, #d0451b 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bc3315', endColorstr='#d0451b',GradientType=0);
+	background-color:#bc3315;
+	text-decoration:none;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+	color:#ffffff;
+	text-decoration:none;
+}
+.myButton:visited{
+	position:relative;
+	top:1px;
+	color:#ffffff;
+	text-decoration:none;
+}
+-->
+</style>
+<script>
+function addRemoveQty(type, index, id_giacenza)
+{
+	if(type == 'rem' && parseInt(jQuery('#quantita_'+id_giacenza).val())-parseInt(index) >= parseInt(index))
+		jQuery('#quantita_'+id_giacenza).val(parseInt(jQuery('#quantita_'+id_giacenza).val())-parseInt(index));
+	else if(type == 'add' && parseInt(jQuery('#quantita_'+id_giacenza).val())+parseInt(index) >= parseInt(index))
+		jQuery('#quantita_'+id_giacenza).val(parseInt(jQuery('#quantita_'+id_giacenza).val())+parseInt(index));
+
+	jQuery.ajax({
+		  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart',
+		  type: 'POST',
+		  dataType: 'html',
+		  cache: false,
+		  data: 'box_type=confezione&id_giacenza='+id_giacenza+'&quantita='+jQuery('#quantita_'+id_giacenza).val()+'&is_ajax=1&point_to='+id_giacenza,
+		  success: function(html){
+
+			document.location.href = '<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart&point_to='+id_giacenza;
+			/*
+		  	jQuery('#mini-cart-container').html( html );
+			jQuery('#row-'+id_giacenza).css('background-color', '#B6E9B8');
+			jQuery('#quantita_'+id_giacenza).css('background-color', '#2CC951');
+			jQuery('#quantita_'+id_giacenza).css('color', '#fff');
+			jQuery('#note_'+id_giacenza).css('background-color', '#2CC951');
+			jQuery('#note_'+id_giacenza).css('color', '#fff');
+			jQuery.fancybox('<div style="font-size:16px;text-align:center;padding:20px;width:300px">Quantit&agrave; modificata correttamente!</div>');
+			*/
+		  }
+		});		
+}
+
+function controlNote(url){
+	var ret;
+	el = jQuery('.hidden_note');
+	var i = 0;
+	while (i < el.length) {
+		if(el[i].value != jQuery('#note_'+el[i].id).val())
+		{
+			ret = confirm('<?php echo $this->getText("attention");?>?');
+
+			if(ret == true)
+			{
+				jQuery('#shopping-cart').submit();
+				return false;
+			}
+			else
+				document.location.href=url;
+		}
+		else
+			ret = true;
+	    i++;        
+	}
+	if(ret == undefined)
+		ret = true;
+
+	return ret;
+}
+
+function goForm(url)
+{
+	if(controlNote(url))
+		document.location.href=url;
+}
+</script>
+<div id="page-content" style="padding-left: 20px;padding-right: 20px;margin-top: 100px;">
+	<div id="page-content-header">
+	
+		<table cellspacing="3" width="100%" class="tbl-shopping-cart">
+			<tr>
+				<td nowrap="nowrap" align="left">
+					<div class="actions">
+						<button value="<< <?php echo $this->getText('back_to')?>" class="button btn-cart" onclick="javascript:goForm('<?php echo $_tplvar['WWW_ROOT']?>Magazzino-Online/Lista-Prodotti.html<?php if(!empty($_tplvar['params_banking'])):?>&params=<?php echo $_tplvar['params_banking']?><?php endif;?>');return false;"><span><span><< <?php echo $this->getText('back_to')?></span></span></button>
+					</div>
+				</td>
+				<td nowrap="nowrap" align="right" colspan="6">&nbsp;</td>
+				<td nowrap="nowrap" align="right" style="padding:0px;">
+					<div class="actions">
+						<button value="<?php echo $this->getText('send_order')?>" class="button btn-cart" onclick="javascript:goForm('<?php echo $_tplvar['WWW_ROOT']?>?act=CheckoutShopping<?php if(!empty($_tplvar['params_banking'])):?>&params=<?php echo $_tplvar['params_banking']?><?php endif;?>');return false;">
+						<span>
+							<span style="vertical-align:middle;"><?php echo $this->getText('send_order');?></span>
+						</span>
+						</button>
+					</div>
+				</td>
+			</tr>
+		</table>	
+	
+		<div id="page-title">
+		<?php echo $this->getText('your_chart');?>
+		</div>
+<!-- 		<p class="breadcrumbs"><span class="breadcrumb_info">Ti trovi in:</span> <a href="/">Home</a><span class="breadarrow"> &raquo; </span><span class="current_crumb">Carrello</span></p> -->
+	</div>
+
+	<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart" method="post" id="shopping-cart">
+	<?php if(!empty($_tplvar['params_banking'])):?>
+	<input type="hidden" name="params" value="<?php echo $_tplvar['params_banking']?>">
+	<?php endif;?>
+	<?php if(!empty($_REQUEST['error_qta'])):?>
+		<script>jQuery.fancybox('<div style="width:300px;color:red;text-align:center;"><br><br><?php echo str_replace("'", "\'", $_REQUEST['error_qta']);?></div>');</script>
+	<?php endif;?>
+	<div>
+		<div class="entry">
+			<p>
+				<?php echo $this->getText('shopping_chart_text_refresh');?>
+			</p>
+		</div>
+		<div id="main-content" class="grid_17">
+			<div class="main-content-padding">
+				</div>
+					<div class="entry">
+						<br>
+					</div>
+						<div class="cart-contents-table-bg-img">
+						</div>
+		</div>
+
+<div class="tabella tabella_ordine">
+	<a href="javascript:void(0);" onclick="javascript: window.open('<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart&print_orders=1', '', '');" title="Stampa il tuo ordine" alt="Stampa il tuo ordine">
+		<img src="<?php echo $_tplvar['WWW_ROOT']?>img/web/document-print-hi.png" style="width:30px" width="30">
+	</a>
+	<div class="riga riga-first">
+	   <div class="colonna colonna1">CC</div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna2">PIA</div>
+	   <div class="colonna_space">&nbsp;</div>
+       <div class="colonna colonna3"><?php echo $this->getText('shopping_chart_table_articolo');?></div>
+       <div class="colonna_space">&nbsp;</div>
+   	   <div class="colonna colonna4"><?php echo $this->getText('packages');?></div>
+   	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna5">&nbsp;</div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna6"><?php echo $this->getText('packing');?></div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna7"><?php echo $this->getText('shopping_chart_table_qta');?></div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna8"><?php echo $this->getText('price');?></div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna9"><?php echo $this->getText('amount');?></div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna10">IVA</div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna11"><?php echo $this->getText('shopping_chart_table_delete');?></div>
+	</div>
+	
+	
+	<?php 
+	$j=0;
+	$peso_spedizione = 0;
+	?>
+	<?php //foreach ($_tplvar['products']['contents'] as $value):?>
+		<?php 
+		//rsort($_tplvar['basket']);
+		$basket = $_tplvar['basket'];
+		unset($basket['n_carrelli']);
+		unset($basket['perc_occupazione']);
+		?>
+
+		<?php if(!empty($basket)):?>
+		<script>
+		jQuery( document ).ready(function() {
+			jQuery("html, body").animate({ scrollTop: jQuery('#quantita_<?php echo $_REQUEST['point_to']?>').offset().top }, 2000);
+		});
+		</script>
+		<?php endif;?>
+		
+		<?php 
+		foreach ($basket as $key => $value):
+		$peso_spedizione += $value['contenuto']['peso']*$value['basket_qty']['sel_quantita'];
+		?>
+		
+		<input type="hidden" name="id_contenuto[]" value="<?php echo $value['contenuto']['id'];?>">
+		<input type="hidden" name="id_giacenza[]" value="<?php echo $value['giacenza']['id'];?>">
+		<?php 
+		$qta_selected = null;
+		if($value['box_type'] == 'confezione')
+		{											
+			$qta_selected = $value['basket_qty']['quantita'];
+			$qta_linea = $value['basket_qty']['sel_quantita'];
+			
+			$qta_tot = $value['giacenza']['qta_minima']*$value['basket_qty']['sel_quantita'];
+		}
+		if($value['box_type'] == 'pianale')
+		{
+			$qta_conf = $value['giacenza']['qta_pianale'] / $value['giacenza']['qta_minima'];
+			
+			$qta_selected = $qta_conf * $value['basket_qty']['quantita'];
+			$qta_linea = $value['basket_qty']['sel_quantita'];
+
+			$qta_tot = $value['giacenza']['qta_pianale']*$value['basket_qty']['sel_quantita'];
+		}
+		if($value['box_type'] == 'carrello')
+		{
+			$qta_conf = $value['giacenza']['qta_carrello'] / $value['giacenza']['qta_minima'];
+			
+			$qta_selected = $qta_conf * $value['basket_qty']['quantita'];
+			$qta_linea = $value['basket_qty']['sel_quantita'];
+			
+			$qta_tot = $value['giacenza']['qta_carrello']*$value['basket_qty']['sel_quantita'];
+		}
+		?>		
+		
+	<div class="riga">
+	   <div class="colonna colonna1"><?php echo number_format(round($qta_tot / $value['giacenza']['qta_carrello'],2), 2, ',', ' ');?></div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna2"><?php echo number_format(round($qta_tot / $value['giacenza']['qta_pianale'],2), 2, ',', ' ');?></div>
+   		<?php
+		if(!empty($value['contenuto']['id']))
+			$detail_url = $_tplvar['WWW_ROOT'].'?act=ProductInfo&id_giacenza='.$value['contenuto']['id'].'';
+		else
+			$detail_url = $_tplvar['WWW_ROOT'].'?act=ProductInfo&id_giacenza='.$value['id'].'';
+		?>									
+       <div class="colonna_space">&nbsp;</div>
+       <div class="colonna colonna3 fonsize"><b><a href="<?php echo $detail_url?>" style="color:#000;"><?php echo $value['contenuto']['nome_it']?></a></b></div>
+   	   <div class="colonna_space">&nbsp;</div>
+   	   <div class="colonna colonna4">
+			<div class="tabella tabella_agg_qta">
+			<div class="riga">
+				<div class="colonna"><a href="javascript:void(0);" class="myButton" style="padding-left: 5px;padding-right: 5px;padding-top: 5px;padding-bottom: 5px;" onclick="addRemoveQty('rem', '<?php echo $value['giacenza']['qta_min_ordine']?>', <?php echo $value['giacenza']['id']?>);"> - </a></div>
+				<div class="colonna"><input onkeydown="return false;" onmousedown="return false;" type="text" name="quantita[]" id="quantita_<?php echo $value['giacenza']['id']?>" value="<?php echo $qta_selected?>" style="padding:0px;width:26px;height:29px;float:left;font-size:10px;"></div>
+				<div class="colonna"><a href="javascript:void(0);" class="myButton" style="padding-left: 5px;padding-right: 5px;padding-top: 5px;padding-bottom: 5px;" onclick="addRemoveQty('add', '<?php echo $value['giacenza']['qta_min_ordine']?>', <?php echo $value['giacenza']['id']?>);">+</a></div>
+			</div>
+			</div>
+   	   </div>
+   	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna5">X</div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna6">
+			<?php 
+			if($value['box_type'] == 'confezione')
+				echo $value['giacenza']['qta_minima'];
+			if($value['box_type'] == 'pianale')
+				echo $value['giacenza']['qta_minima'];
+			if($value['box_type'] == 'carrello')
+				echo $value['giacenza']['qta_minima'];
+			?>
+	   </div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna7"><b><?php echo $qta_tot?></b></div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna8">
+	   <?php if($_SESSION['LoggedUser']['customer_data']['is_pz_commissione'] == 1):?>
+		<?php $prezzo_pieno += str_replace(',', '.', $value['giacenza']['prezzo_0']) * $qta_tot;?>
+   		<?php endif;?>
+	   	<b><?php echo Currency::FormatEuro($this->getPrezzo($value['giacenza']))?></b>
+	   </div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna9">
+			<?php 
+			$cod_iva = $value['contenuto']['cod_iva'];
+			?>
+			<?php echo Currency::FormatEuro( $this->getPrezzo($value['giacenza']) * $qta_tot);?>
+			<?php $imponibile += $this->getPrezzo($value['giacenza']) * $qta_tot;?>
+			<?php $mapsCodIva[$value['contenuto']['cod_iva']] += ($this->getPrezzo($value['giacenza']) * $qta_tot);?>
+	   </div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna10"><?php echo $value['contenuto']['cod_iva'];?> %</div>
+	   <div class="colonna_space">&nbsp;</div>
+	   <div class="colonna colonna11">
+			<a href="<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart&delete=1&id_content=<?php echo $value['contenuto']['id']?>&id_magazzino=<?php echo $value['giacenza']['id']?>" onclick="return confirm('<?php echo $this->getText('are_you_sure');?>?');">
+				<img src="<?php echo $_tplvar['WWW_ROOT']?>img/web/delete.jpg" style="width:20px" width="20">
+			</a>
+	   </div>
+	</div>
+	<input type="hidden" class="hidden_note" id="<?php echo $value['giacenza']['id']?>" value="<?php if(empty($value['note'])) echo $this->getText('note_product'); else echo $value['note'];?>">
+	<div class="riga">
+	   <div class="colonna colonna3 colonna3-textarea">
+	   		<textarea style="font-size:10px;margin-top:10px" cols="65" rows="2" id="note_<?php echo $value['giacenza']['id']?>" name="note_<?php echo $value['giacenza']['id']?>" onblur="if(jQuery(this).val()=='') this.value='<?php echo $this->getText('note_product')?>'" onclick="if(jQuery(this).val()=='<?php echo $this->getText('note_product')?>') jQuery(this).val('')"><?php if(empty($value['note'])) echo $this->getText('note_product'); else echo $value['note'];?></textarea>
+	    <a href="javascript:void(0);" alt="Aggiorna il campo Note" title="Aggiorna il campo Note" onclick="jQuery('#shopping-cart').submit();">
+			<img src="<?php echo $_tplvar['WWW_ROOT']?>img/web/refresh-blue-btn.png" style="width:17px" width="17">
+		</a>
+	   </div>
+	</div>
+	<hr>
+
+	<?php $j++;?>
+	<?php $cod_iva = $value['contenuto']['cod_iva'];?>
+	<?php endforeach;?>
+<?php //endforeach;?>
+<div class="tabella_carrelli">
+<div class="riga riga_completeshop">
+	<div class="colonna">
+			<?php echo $this->getText('complete_cart');?> 
+			<?php echo $_SESSION[session_id()]['basket']['n_carrelli']-1;?><br>
+			<?php echo $this->getText('occupation');?> 
+			<?php echo $_SESSION[session_id()]['basket']['n_carrelli'];?>&deg; <?php echo $this->getText('cart');?> <?php echo $_tplvar['perc_occupazione']?> %<br>
+			<?php $count = $_SESSION[session_id()]['basket']['n_carrelli'];?>
+			
+			<?php for($i = 1;$i <= $_SESSION[session_id()]['basket']['n_carrelli'];$i++):?>
+				<?php if($i < $count):?>
+					<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_full.png" width="50">
+				<?php else:?>
+					<?php if($_tplvar['perc_occupazione'] <= 0):?>
+					<?php elseif($_tplvar['perc_occupazione'] <= 20):?>
+						<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_low.png" width="50">
+					<?php elseif($_tplvar['perc_occupazione'] <= 40):?>
+						<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_low_2.png" width="50">
+					<?php elseif($_tplvar['perc_occupazione'] <= 55):?>
+						<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_low_3.png" width="50">
+					<?php elseif($_tplvar['perc_occupazione'] <= 75):?>
+						<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_medium.png" width="50">
+					<?php elseif($_tplvar['perc_occupazione'] <= 90):?>
+						<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_medium_2.png" width="50">
+					<?php else:?>
+						<img alt="" src="<?php echo $_tplvar['WWW_ROOT']?>img/web/carrello_full.png" width="50">
+					<?php endif;?>
+				<?php endif;?>
+			<?php endfor;?>
+		</div>
+	</div>
+</div>
+<?php if(!empty($value['contenuto']) && $value['contenuto'] != array() && !empty($imponibile)):?>
+		
+	<div class="tabella tabella_total">
+		<div class="riga riga_total">
+									<div class="colonna">&nbsp;</div>
+									<div class="colonna">
+										<div id="page-title">
+											<?php echo $this->getText('total_order');?>
+										</div>
+									</div>
+									<div class="colonna">&nbsp;</div>
+								</div>
+			<div class="riga riga_total">
+				<div class="colonna">&nbsp;</div>
+			</div>
+							<div class="riga riga_total">
+									<div class="colonna">&nbsp;</div>
+									<div class="colonna"><b><?php echo $this->getText('shopping_chart_table_imponibile')?></b></div>
+									<div class="colonna colonna_eimp"><?php echo Currency::FormatEuro($imponibile)?></div>
+									<div class="colonna">&nbsp;</div>
+								</div>
+				<?php $importo_iva = 0;?>
+				<?php foreach ($mapsCodIva as $iva => $impo):?>
+					<?php 
+					$importo_iva = 0;
+					if(round( $impo * ('0.'.$iva) , 2) > $importo_iva)
+					{
+						if(strlen($iva) == 1)
+							$iva = '0'.$iva;
+						$importo_iva = round( $impo * ('0.'.$iva) , 2);
+						$tot_iva += $importo_iva;
+						$iva_spese = $iva;
+					}
+					?>
+				<?php endforeach;?>
+				<?php $spese_spedizione = $this->getSpeseSpedizione($_tplvar['basket']);?>
+				<?php if(!empty($spese_spedizione)):?>
+			<div class="riga riga_total">
+				<div class="colonna">&nbsp;</div>
+			</div>
+			<div class="riga riga_total">
+				<div class="colonna">&nbsp;</div>
+				<div class="colonna colonna_spes"><?php echo $this->getText('expense');?></div><br>
+				<div class="colonna">&nbsp;</div>
+				<div class="colonna"><?php echo $this->getText('shipping');?></div>
+				<div class="colonna colonna_espsp">
+				<?php 
+				$spese_spedizione = $spese_spedizione*$_SESSION[session_id()]['basket']['n_carrelli'];
+				$iva_trasporto = round( $spese_spedizione * ('0.'.$iva_spese) , 2);
+				$subTotale += $spese_spedizione;
+				echo Currency::FormatEuro($spese_spedizione)?></div>
+				<div class="colonna">&nbsp;</div>
+			</div>
+			<?php endif;?>
+			<div class="riga riga_total">
+				<div class="colonna">&nbsp;</div>
+			</div>
+			<div class="riga riga_total">
+			<?php 
+					$subTotale += $imponibile;
+					if($_SESSION['LoggedUser']['customer_data']['is_pz_commissione'] == 1):
+					
+// 						_dump($subTotale);
+						$importo_commissione = round( $subTotale * ('0.'.$_SESSION['LoggedUser']['customer_data']['perc_commissione']) , 2);
+						$subTotale += $importo_commissione;
+					
+					?>
+				<div class="colonna colonna_comm"><?php echo $this->getText('comm');?></div>
+				<div class="colonna colonna_ecomm"><?php echo Currency::FormatEuro($importo_commissione)?></div><br>
+				<div class="riga riga_total">
+					<div class="colonna">&nbsp;</div>
+				</div>
+		<?php endif;  ?>
+				<?php 
+				if(!empty($iva_trasporto))
+				{
+					$tot_iva += $iva_trasporto;
+					$importo_iva += $iva_trasporto;
+				}
+				?>
+				<div class="riga riga_total">
+						<div class="colonna">&nbsp;</div>
+						<div class="colonna colonna_iva"><b><?php echo $this->getText('shopping_chart_table_iva')?></b></div>
+						<div class="colonna colonna_eiva"><?php echo Currency::FormatEuro($tot_iva)?></div>
+						<div class="colonna">&nbsp;</div>
+				</div>
+				<div class="riga riga_total">
+					<div class="colonna">&nbsp;</div>
+				</div>
+				<?php if($_SESSION['LoggedUser']['customer_data']['is_pz_commissione'] == 1):?>
+				<div class="riga riga_total">
+						<div class="colonna">&nbsp;</div>
+						<div class="colonna colonna_tot_pz_pieno"><b><?php echo $this->getText('shopping_chart_prezzo_pieno')?></b></div>
+						<div class="colonna colonna_eiva"><?php echo Currency::FormatEuro($prezzo_pieno+$importo_iva+$spese_spedizione)?></div>
+						<div class="colonna">&nbsp;</div>
+				</div>
+				<div class="riga riga_total">
+					<div class="colonna">&nbsp;</div>
+				</div>
+				<?php endif;?>
+				<div class="riga riga_total">
+					<div class="colonna">&nbsp;</div>
+					<div class="colonna colonna_tot"><b><?php echo $this->getText('shopping_chart_table_tot')?></b></div>
+					<div class="colonna colonna_etot"><?php echo Currency::FormatEuro($subTotale+$tot_iva)?></div>
+					<div class="colonna">&nbsp;</div>
+				</div>
+				
+				
+			<?php endif;?>
+	</div>
+</div>										
+
+
+							<table cellspacing="3" width="100%" class="tbl-shopping-cart">
+								<tr>
+									<td nowrap="nowrap" align="left">
+										<div class="actions">
+											<button value="<< <?php echo $this->getText('back_to')?>" class="button btn-cart" onclick="javascript:goForm('<?php echo $_tplvar['WWW_ROOT']?>Magazzino-Online/Lista-Prodotti.html<?php if(!empty($_tplvar['params_banking'])):?>&params=<?php echo $_tplvar['params_banking']?><?php endif;?>');return false;"><span><span><< <?php echo $this->getText('back_to')?></span></span></button>
+										</div>
+									</td>
+									<td nowrap="nowrap" align="right" colspan="6">&nbsp;</td>
+									<td nowrap="nowrap" align="right" style="padding:0px;">
+										<div class="actions">
+											<button value="<?php echo $this->getText('send_order')?>" class="button btn-cart" onclick="javascript:goForm('<?php echo $_tplvar['WWW_ROOT']?>?act=CheckoutShopping<?php if(!empty($_tplvar['params_banking'])):?>&params=<?php echo $_tplvar['params_banking']?><?php endif;?>');return false;">
+											<span>
+												<span style="vertical-align:middle;"><?php echo $this->getText('send_order');?></span>
+											</span>
+											</button>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</form>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<!-- end main-content-padding -->
+		</div>
+		<!-- end main-content -->
+		<!-- start categories -->
+		<?php //echo $this->getPartial('shared/BoxUserData');?>
+		<!-- end categories -->
+	</div>
+	<!-- end content-container -->
+	<div class="clear"></div>
+</div>
+<!-- end page-content -->
+<br>
+<br>
+
+	

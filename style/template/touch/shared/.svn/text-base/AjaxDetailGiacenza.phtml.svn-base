@@ -1,0 +1,73 @@
+<?php $_tplvar = $this->getVars();
+
+// _dump($_tplvar['contenuto']);
+// _dump($_tplvar['data']);
+// exit();
+?>
+
+<div class="ui-grid-a">
+	
+	<?php foreach ($_tplvar['data'] as $key => $value):?>
+	
+		<div class="ui-block-a">Foto Partita</div>
+		<div class="ui-block-b">	
+			<?php if($value['id_content'] == 1):?>
+			<?php $image = $_tplvar['WWW_ROOT'].'email_images/10002.jpg'?>
+			<?php endif;?>
+			<?php if(!empty($image)):?>
+				<img  src="<?php echo $image?>" alt="" width="100" height="100" />
+			<?php else:?>
+				<img  src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/image.gif" alt="" width="100" height="100" />
+			<?php endif;?>	
+		</div>
+		
+		<div class="ui-block-a">Codice VBN</div>
+		<div class="ui-block-b"><?php echo $_tplvar['contenuto']['vbn'];?></div>
+		
+		<div class="ui-block-a">Codice Partita</div>
+		<div class="ui-block-b"><?php echo $value['bar_code'];?></div>
+		
+		<div class="ui-block-a">Variet&aacute;</div>
+		<div class="ui-block-b"><?php echo $_tplvar['contenuto']['nome_it'];?></div>
+		
+		<div class="ui-block-a">Colore</div>
+		<div class="ui-block-b"><?php echo $value['contenuto']['C3'];?></div>
+		
+		<div class="ui-block-b">Altezza</div>
+		<div class="ui-block-b"><?php echo $_tplvar['contenuto']['C4'];?></div>
+
+		<div class="ui-block-a">Quantit&aacute; Imballo</div>
+		<div class="ui-block-b"><?php echo $value['quantita'];?></div>
+
+		<div class="ui-block-a">Disponibilit&aacute;</div>
+		<div class="ui-block-b"><?php echo $value['disponibilita'];?></div>
+		
+		<div class="ui-block-a">Prezzo</div>
+		<div class="ui-block-b"><?php echo $_tplvar['contenuto'][$_tplvar['key_prezzo']];?></div>
+		
+		<div class="ui-block-a">Provenienza</div>
+		<div class="ui-block-b"><?php echo $_tplvar['contenuto']['C5'];?></div>
+
+		<div class="ui-block-a">Aggiungi al carrello</div>
+		<div class="ui-block-b">
+			<?php 
+			$add_to_basket_url = $_tplvar['WWW_ROOT'].'ShoppingCart';
+			if(!empty($_tplvar['contenuto']['id_famiglia']))
+			{
+				$famiglia = $this->getFamigliById($_tplvar['contenuto']['id_famiglia']);
+				$add_to_basket_url .= '/'.$famiglia['famiglia'];
+			}
+			else
+				$add_to_basket_url .= '/-';
+
+			if(!empty($_tplvar['contenuto']['nome_it']))
+				$add_to_basket_url .= '/'.$_tplvar['contenuto']['nome_it'];
+			else
+				$add_to_basket_url .= '-';
+
+			$add_to_basket_url .= '/'.$value['id'].'.html';
+			?>		
+			<a href="<?php echo $add_to_basket_url?>" data-role="button" data-icon="plus" data-mini="true" data-iconpos="notext" data-transition="flip">Delete</a>
+		</div>
+	<?php endforeach;?>
+</div>

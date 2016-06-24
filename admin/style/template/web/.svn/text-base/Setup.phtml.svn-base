@@ -1,0 +1,151 @@
+<?php
+$_tplvar = $this->getVars();
+?>
+
+<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=Setup" method="post">
+
+<table width="80%">
+<tr>
+	<td colspan="2" align="center"">
+		<h2>
+		<?php if($_tplvar['header_message']):?>
+			<?echo $_tplvar['header_message']?>
+		<?php else:?>
+			Modifica le impostazioni di Setup
+		<?php endif;?>
+		</h2>	
+	</td>
+</tr>
+<tr>
+	<td colspan="2">
+		<input type="submit" class="submit" value="Salva"/>
+		<input type="reset" class="submit reset" value="Reset" onClick="location.href='<?php echo $_tplvar['WWW_ROOT']?>?act=Setup&reset=1';" />
+	</td>
+</tr>
+<tr>
+	<td valign="top">
+		<table>
+			<tr>
+				<td style="border:1px solid #fff">IVA</td>
+			</tr>
+			<?php foreach($_tplvar['cmb_iva'] as $key => $val):?>
+			<tr>
+				<?php if(!empty($val['id'])):?>
+					<input type="hidden" name="id_iva" value="<?php echo $val['id']?>" />
+				<?php endif;?>
+				<?php if(!empty($val['name'])):?>
+					<td>
+						<input type="text" name="iva" id="iva" value="<?php echo $val['name']?>" />
+					</td>
+				<?php endif;?>
+			</tr>
+			<?php endforeach;?>
+		</table>	
+	</td>
+	<td valign="top">
+		<table>
+			<tr>
+				<td style="border:1px solid #fff">Tipologia di pagamento</td>
+			</tr>
+			<?php foreach($_tplvar['payment_type'] as $key => $val):?>
+			<tr>
+				<?php if(!empty($val['id'])):?>
+					<input type="hidden" name="id_payment_type[]" value="<?php echo $val['id']?>" />
+				<?php endif;?>
+				<?php if(!empty($val['name'])):?>
+					<td>
+						<input type="text" name="payment_type[]" id="payment_type" value="<?php echo $val['name']?>" />
+						<a href="<?php echo $_tplvar['WWW_ROOT']?>/?act=Setup&delete_pt=1&id=<?php echo $val['id']?>">Rimuovi</a>
+					</td>
+				<?php endif;?>
+				<?php if(empty($val['name'])):?>
+					<td><input type="text" name="payment_type[]" value="" /></td>
+				<?php endif;?>
+			</tr>
+			<?php endforeach;?>
+			<tr>
+				<td style="border:1px solid #fff">
+					<a href="<?php echo $_tplvar['WWW_ROOT']?>/?act=Setup&add_pt=1">AGGIUNGI </a>&nbsp;&nbsp;
+				<?php if(count($_tplvar['percent_sale']) >= 1):?>
+					<a href="<?php echo $_tplvar['WWW_ROOT']?>/?act=Setup&rem_pt=1">RIMUOVI ULTIMO</a>
+				<?php endif;?>
+				</td>
+			</tr>
+		</table>	
+	</td>
+</tr>
+
+<tr>
+	<td valign="top">
+		<table>
+			<tr>
+				<td style="border:1px solid #fff">Spese di Spedizione</td>
+			</tr>
+			<?php foreach($_tplvar['spese_spedizione'] as $key => $val):?>
+			<tr>
+				<?php if(!empty($val['id'])):?>
+					<input type="hidden" name="id_spese_spedizione" value="<?php echo $val['id']?>" />
+				<?php endif;?>
+				<?php if(!empty($val['name'])):?>
+					<td>
+						<input type="text" name="spese_spedizione" id="spese_spedizione" value="<?php echo $val['name']?>" />
+					</td>
+				<?php endif;?>
+				<?php if(empty($val['name'])):?>
+					<td><input type="text" name="spese_spedizione" id="spese_spedizione" value="" /></td>
+				<?php endif;?>
+			</tr>
+			<?php endforeach;?>
+		</table>
+	</td>	
+	<td valign="top">
+		<table>
+			<tr>
+				<td style="border:1px solid #fff">Tipologie di Utenti</td>
+			</tr>
+			<?php foreach($_tplvar['user_type'] as $key => $val):?>
+			<tr>
+				<?php if(!empty($val['id'])):?>
+					<input type="hidden" name="id_user_type[]" value="<?php echo $val['id']?>" />
+				<?php endif;?>
+				<?php if(!empty($val['name'])):?>
+					<td>
+						<input type="text" name="user_type[]" id="user_type" value="<?php echo $val['name']?>" />
+						<a href="<?php echo $_tplvar['WWW_ROOT']?>/?act=Setup&delete_ut=1&id=<?php echo $val['id']?>">Rimuovi</a>
+					</td>
+				<?php endif;?>
+				<?php if(empty($val['name'])):?>
+					<td><input type="text" name="user_type[]" id="user_type" value="" /></td>
+				<?php endif;?>
+			</tr>
+			<?php endforeach;?>
+			<tr>
+				<td style="border:1px solid #fff">
+					<a href="<?php echo $_tplvar['WWW_ROOT']?>/?act=Setup&add_ut=1">AGGIUNGI </a>&nbsp;&nbsp;
+				<?php if(count($_tplvar['percent_sale']) >= 1):?>
+					<a href="<?php echo $_tplvar['WWW_ROOT']?>/?act=Setup&rem_ut=1">RIMUOVI ULTIMO</a>
+				<?php endif;?>
+				</td>
+			</tr>
+		</table>
+	</td>	
+</tr>
+<tr>
+	<td colspan="2">
+		<input type="submit" class="submit" value="Salva"/>
+		<input type="reset" class="submit reset" value="Reset" onClick="location.href='<?php echo $_tplvar['WWW_ROOT']?>?act=Setup&reset=1';" />
+	</td>
+</tr>
+</table>
+
+
+
+
+</form>
+
+<div class="separatore"></div>
+
+<br />
+
+
+</div>

@@ -1,0 +1,73 @@
+<?php $_tplvar = $this->getVars();?>
+
+<script type="text/javascript">
+<!--
+document.location.href = '<?php echo $_tplvar['WWW_ROOT']?>Magazzino-Online/Lista-Prodotti.html';
+//-->
+</script>
+
+			<div id="home-page-content">
+				<div id="before-content-column" class="container_24">
+					<div class="home-page-divider pngfix"></div>
+					<div id="before-cont-box-1" class="column_3_of_3 home-cont-box">
+						<div class="column-content-wrapper">
+							<div class="cont_col_1 substitute_widget_class">
+								<div class="textwidget">
+									<h2 class="large-text" style="font-size:33px; margin:0 0 5px;">Stream</h2>
+									<div class="featured-text"><span class="theme-color">
+										E' la nuova piattaforma web di Florsistemi.<br>Grazie a Stream potrai potrai far visualizzare il tuo magazzino in tempo reale a tutti i tuoi clienti o partner commerciali.
+										<!--<br><em><a href="">(Leggi tutto...)</a></em>-->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end before-cont-box-1 -->
+					<div class="home-page-divider pngfix"></div>
+				</div>
+				<!-- end before-content-column -->
+				<div class="clear"></div>
+				<div id="content-container" class="container_24">
+					<div id="cont-box-1" class="column_1_of_3 home-cont-box">
+						<div class="column-content-wrapper">
+							<div class="cont_col_1 substitute_widget_class">
+								<h3 class="cont_col_1_title">Stram</h3>
+								<div class="textwidget">
+									<!-- <img style="padding-bottom:7px;" src="images/browsers.jpg" width="288" height="98" alt="browsers" /> -->
+									Stram.
+									<br><a href="#">Leggi tutto</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end cont-box-1 -->
+					<div id="cont-box-2" class="column_1_of_3 home-cont-box">
+						<div class="column-content-wrapper">
+							<div class="cont_col_2 substitute_widget_class">
+								<h3 class="cont_col_2_title">Stram</h3>
+								<div class="textwidget">
+									<!-- <img style="padding-bottom:7px;" src="images/jquery-blue.jpg" width="288" height="98" alt="jquery" /> -->
+									Stram. 
+									<br><a href="#">Leggi tutto</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end cont-box-2 -->
+					<div id="cont-box-3" class="column_1_of_3 home-cont-box">
+						<div class="column-content-wrapper">
+							<div class="cont_col_3 substitute_widget_class">
+								<h3 class="cont_col_3_title">Stram</h3>
+								<div class="textwidget">
+									<!-- <img style="padding-bottom:7px;" src="images/colors.jpg" width="288" height="98" alt="colors" /> -->
+									Stram. 
+									<br><a href="#">Leggi tutto</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end cont-box-3 --> </div>
+				<!-- end content-container -->
+				<div class="clear"></div>
+			</div>
+			<!-- end home-page-content -->

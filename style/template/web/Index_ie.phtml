@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<?php
+$_tplvar = $this->getVars();
+$this->getIntlPartial('Index');
+$this->getIntlPartial('Login');
+?>
+<head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Akoha Home Page</title>
+	<meta name="viewport" content="width=device-width; initial-scale=1.0">
+<!-- 	<meta name="description" content="Default Description" /> -->
+<!-- 	<meta name="keywords" content="Magento, Varien, E-commerce" /> -->
+<!-- 	<meta name="robots" content="NOINDEX,NOFOLLOW" /> -->
+	
+	<?php echo $this->getEncoding();?>
+	<?php $this->getPartial('shared/MetaTag');?>
+	<?php $this->getPartial('shared/HederaPageJavascript');?>
+	
+	<link rel="icon" href="/skin/frontend/default/default/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="/skin/frontend/default/default/favicon.ico" type="image/x-icon" />
+	<!-- <link href='http://fonts.googleapis.com/css?family=Verdana:200,300,400,500,600,700,800' rel='stylesheet' type='text/css'> -->
+	<!--[if lt IE 7]>
+	<script type="text/javascript">
+	//<![CDATA[
+	    var BLANK_URL = '/js/blank.html';
+	    var BLANK_IMG = '/js/spacer.gif';
+	//]]>
+	</script>
+	<![endif]-->
+	<script type="text/javascript">
+	var BLANK_URL = '/js/blank.html';
+	var BLANK_IMG = '/js/spacer.gif';
+	var SKIN_URL = '/skin/frontend/default/akoha/';
+	</script>
+	<link rel="stylesheet" type="text/css" href="/skin/frontend/base/default/css/widgets.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="/skin/frontend/default/akoha/css/local.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="/skin/frontend/default/akoha/css/responsive.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="/skin/frontend/default/default/css/print.css" media="print" />
+	<script type="text/javascript" src="/js/prototype/prototype.js"></script>
+	<script type="text/javascript" src="/js/lib/ccard.js"></script>
+	<script type="text/javascript" src="/js/prototype/validation.js"></script>
+	<script type="text/javascript" src="/js/scriptaculous/builder.js"></script>
+	<script type="text/javascript" src="/js/scriptaculous/effects.js"></script>
+	<script type="text/javascript" src="/js/scriptaculous/dragdrop.js"></script>
+	<script type="text/javascript" src="/js/scriptaculous/controls.js"></script>
+	<script type="text/javascript" src="/js/scriptaculous/slider.js"></script>
+	<script type="text/javascript" src="/js/varien/js.js"></script>
+	<script type="text/javascript" src="/js/varien/form.js"></script>
+	<script type="text/javascript" src="/js/mage/translate.js"></script>
+	<script type="text/javascript" src="/js/mage/cookies.js"></script>
+	<script type="text/javascript" src="/skin/frontend/default/akoha/js/jquery.js"></script>
+	<script type="text/javascript" src="/skin/frontend/default/akoha/js/custom.js"></script>
+	<!--[if lt IE 8]>
+	<link rel="stylesheet" type="text/css" href="/skin/frontend/default/default/css/styles-ie.css" media="all" />
+	<![endif]-->
+	<!--[if lt IE 7]>
+	<script type="text/javascript" src="/js/lib/ds-sleight.js"></script>
+	<script type="text/javascript" src="/skin/frontend/base/default/js/ie6.js"></script>
+	<![endif]-->
+
+	<script type="text/javascript">
+	//<![CDATA[
+	Mage.Cookies.path     = '/';
+	Mage.Cookies.domain   = '.oddone.florsistemi.it';
+	//]]>
+	</script>
+	<script type="text/javascript">
+	//<![CDATA[
+	optionalZipCountries = ["HK","IE","MO","PA"];
+	//]]>
+	</script>
+	<script type="text/javascript">
+	//<![CDATA[
+	        var Translator = new Translate([]);
+	//]]>
+	</script>
+	<style type="text/css">
+	body, label, input, button, select, textarea ,h1, h2, h3, h4, h5, h6,
+	.block .block-title,
+	.slide-title, .col2-set h4,.col2-set h5, .breadcrumbs, .breadcrumbs span, .page-title h1,
+	.page-title h2, .header-top .right, .toplinks a, #mini-cart > .button , .button,
+	.btn,
+	.button-inverse,
+	.sidebar .button,
+	.sidebar .btn,
+	.dropdown .dropdown-menu .button,
+	.buttons-set .back-link a,
+	.scrolltop,
+	.button-tabs li a, .banner-inner,.banner-inner .banner-title, .banner-center p, .banner-center .banner-link a, .product-title,.block .block-title,.block .block-content, .block-layered-nav .block-subtitle ,
+	.sidebar, .sidebar .link-cart, .sidebar .link-wishlist, .sidebar .link-reorder, .sidebar .link-compare,
+	.block .actions a, .col-left .block-cart .block-content ul li .product-details a, .block-related .price-box .old-price .price, .block-related  a.link-cart, .block-related  a.link-cart:hover,
+	.block-viewed li span, #recently-viewed-items .product-name a, .block-compared li span, .block-poll label,.block-poll .label, .block-company li span,.ratings .rating-links a, .ratings .rating-links a:hover,
+	 .product-name , a:hover.product-name,.products-list .product-shop .desc ,.products-list .product-shop p,.product-tabs a, .product-options dt label,
+	.box-reviews dt,
+	.data-table,
+	.fraction-slider .slide-subtitle ,.product-view .box-tags .form-add label, .add-to-cart label,.add-to-cart .qty ,.footer,.footer h3, .footer .title,.footer-bottom , .footer-bottom .copyright { font-family: 'Verdana',  sans-serif;   }
+	
+	button.button, .button-inverse, .button-tabs li.active a { background:; } 
+	</style>
+	
+	<!-- FANCY APPS -->
+	<!-- <script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/fancyapps-fancyBox/lib/jquery-1.7.2.min.js"></script> -->
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/fancyapps-fancyBox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/fancyapps-fancyBox/source/jquery.fancybox.js?v=2.0.6"></script>
+	<link rel="stylesheet" type="text/css" href="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/fancyapps-fancyBox/source/jquery.fancybox.css?v=2.0.6" media="screen" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/fancyapps-fancyBox/source/helpers/jquery.fancybox-buttons.css?v=1.0.2" />
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/fancyapps-fancyBox/source/helpers/jquery.fancybox-buttons.js?v=1.0.2"></script>
+	<link rel="stylesheet" type="text/css" href="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/fancyapps-fancyBox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.2" />
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/fancyapps-fancyBox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.2"></script>
+	<script type="text/javascript" src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/fancyapps-fancyBox/source/helpers/jquery.fancybox-media.js?v=1.0.0"></script>
+	<script>jQuery.noConflict();</script>
+	<!-- FANCY APPS -->
+	
+</head>
+
+<body class="fixed  cms-index-index cms-akoha-home">
+<div class="page">
+
+	<noscript>
+        <div class="global-site-notice noscript">
+            <div class="notice-inner">
+                <p><strong>JavaScript seems to be disabled in your browser.</strong><br />You must have JavaScript enabled in your browser to utilize the functionality of this website. </p>
+            </div>
+        </div>
+    </noscript>
+	    
+	<?php echo $this->getPartial('shared/MenuTop');?>
+	<?php echo $this->getPartial('shared/Middle');?>
+
+</div> <!--page-->	
+	<?php echo $this->getPartial('shared/Footer');?>

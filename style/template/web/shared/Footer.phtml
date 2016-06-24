@@ -1,0 +1,69 @@
+<?php 
+$_tplvar = $this->getVars();
+$this->getIntlPartial('Footer');
+?>
+<div class="footer informative">
+
+	<div class="footer-container">
+	  <div class="footer-column-1">
+	    <h3 class="title"><a style="color:#fff;" href="http://www.oddone.biz/index.php?option=com_content&task=view&id=18&Itemid=36"><?php echo $this->getText('company');?></a></h3>
+	      <ul class="links">
+	         <li class="item first">&nbsp;&nbsp;&nbsp;&nbsp;<a title="" href="http://www.oddone.biz/index.php?option=com_content&task=view&id=20&Itemid=42"><?php echo $this->getText('odd_fior');?></a></li>
+	         <li class="item">&nbsp;&nbsp;&nbsp;&nbsp;<a title="" href="http://www.oddone.biz/index.php?option=com_content&task=view&id=21&Itemid=43"><?php echo $this->getText('odd_srl');?></a></li>
+	      </ul>
+	    
+	  </div>
+	  <div class="footer-column-2">
+	    <h3 class="title"><a style="color:#fff;" href="http://www.oddone.biz/index.php?option=com_content&task=view&id=16&Itemid=34"><?php echo $this->getText('ship');?></a></h3>
+	        <ul class="links">
+	          <li class="first"><a href="#"></a></li>
+	        </ul>
+	  </div>
+	  <div class="footer-column-3">
+	    <h3 class="title"><a style="color:#fff;" href="http://www.oddone.biz/index.php?option=com_content&task=view&id=17&Itemid=35">Cash&Carry</a></h3>
+	        <ul class="links">
+	          <li class="first">&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.oddone.biz/index.php?option=com_content&task=view&id=15&Itemid=38"><?php echo $this->getText('stores');?></a></li>
+	        </ul>
+	  </div>
+	  <div class="footer-column-4">
+	  	<h3 class="title"><?php echo $this->getText('conditions');?></h3>
+	        <ul class="links">
+	          <li class="first"><a href=""></a></li>
+	        </ul>
+	  
+	  </div>
+	  <!--
+	  <div class="footer-column-3">
+	    <h3 class="title">Facebook</h3>
+	    <div id="fb-root"></div>
+		<script>(function(d, s, id) {
+		  var js, fjs = d.getElementsByTagName(s)[0];
+		  if (d.getElementById(id)) return;
+		  js = d.createElement(s); js.id = id;
+		  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+		  fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));</script>
+	
+		<div class="fb-like-box" data-href="http://www.facebook.com/Tangando" style="background-color:#fff" data-width="250" data-height="200" data-colorscheme="light" data-show-faces="true" data-header="false" data-stream="false" data-show-border="false"></div>
+	
+	  </div>
+	  <div class="footer-column-4">
+	    <h3 class="title">Twitter</h3>
+	    	<style>iframe{height: 200px;}</style>
+ 		 <a class="twitter-timeline" href="https://twitter.com/SilvioSiso77" data-widget-id="523068443814141953">Tweets di @SilvioSiso77</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>  
+ 	    
+	  </div>
+	  -->
+	</div>
+
+</div> <!--footer-->
+<div class="footer-bottom">
+	<div class="footer-bottom-inner">
+		<div class="copyright">Copyright &copy; <?php echo date('Y')?>. All Rights Reserved. Designed by <a href="http://integra-services.it">integra-services.it</a></div>
+		<div class="bottom_links">
+			<ul class="links">				
+				<li><a title="" href="<?php echo $_tplvar['WWW_ROOT']?>?act=StaticPageController&article=1"><?php echo $this->getText('privacy');?></a></li>
+			</ul>
+		</div>
+	</div>
+</div>

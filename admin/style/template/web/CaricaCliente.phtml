@@ -1,0 +1,230 @@
+<?php
+$_tplvar = $this->getVars();
+?>
+
+
+	<article class="module width_full" style="width:100%">
+		<header><h3 class="tabs_involved">Modifica Cliente - <?php echo $_tplvar['cliente']['ragione_sociale']?></h3></header>
+		<div class="tab_container">
+			<div id="tab1" class="tab_content">
+				<h1><?php if($_tplvar['header_message']):?><?echo $_tplvar['header_message']?><?php endif;?></h1>
+				<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=CaricaCliente" method="post">
+				
+				<?php if(!empty($_REQUEST['id'])):?>
+				<input type="hidden" name="id" value="<?php echo $_REQUEST['id']?>">
+				<?php endif;?>
+				<?php if(!empty($_tplvar['cliente']['id'])):?>
+				<input type="hidden" name="id" value="<?php echo $_tplvar['cliente']['id']?>">
+				<?php endif;?>
+				
+				<div class="module_content">
+				
+					<fieldset>
+						<label style="width:300px">CLIENTE PZ. ACQISTO + COMMISSIONE</label>
+						<input type="checkbox" name="is_pz_commissione" id="is_pz_commissione" <?php if($_tplvar['cliente']['is_pz_commissione']):?>checked="checked"<?php endif;?> />
+					</fieldset>
+					<fieldset>
+						<label>COMMISSIONE ACQUISTO</label>
+						<input type="text" name="perc_commissione" id="perc_commissione" value="<?php echo $_tplvar['cliente']['perc_commissione']?>"/>
+					</fieldset>
+				
+					<fieldset>
+						<label>CODICE CLIENTE</label>
+						<input type="text" name="customer_code" id="customer_code" value="<?php echo $_tplvar['cliente']['customer_code']?>" readonly/>
+					</fieldset>
+					<fieldset>
+						<label>NOME</label>
+						<input type="text" name="nome" id="nome" value="<?php echo $_tplvar['cliente']['nome']?>" />
+					</fieldset>
+					<fieldset>
+						<label>COGNOME</label>
+						<input type="text" name="cognome" id="cognome" value="<?php echo $_tplvar['cliente']['cognome']?>" />
+					</fieldset>
+					<fieldset>
+						<label>CODICE FISCALE</label>
+						<input type="text" name="codice_fiscale" id="codice_fiscale" value="<?php echo $_tplvar['cliente']['codice_fiscale']?>" />
+					</fieldset>
+					<fieldset>
+						<label>RAGIONE SOCIALE</label>
+						<input type="text" name="ragione_sociale" id="ragione_sociale" value="<?php echo $_tplvar['cliente']['ragione_sociale']?>" />
+					</fieldset>
+					<fieldset>
+						<label>P.IVA</label>
+						<input type="text" name="p_iva" id="p_iva" value="<?php echo $_tplvar['cliente']['p_iva']?>" />
+					</fieldset>
+					<fieldset>
+						<label>PROVINCIA</label>
+						<input type="text" name="provincia" id="provincia" value="<?php echo $_tplvar['cliente']['provincia']?>" />
+					</fieldset>
+					<fieldset>
+						<label>STATO</label>
+						<input type="text" name="stato" id="stato" value="<?php echo $_tplvar['cliente']['stato']?>" />
+					</fieldset>
+					<fieldset>
+						<label>INDIRIZZO</label>
+						<input type="text" name="indirizzo" id="indirizzo" value="<?php echo $_tplvar['cliente']['indirizzo']?>" />
+					</fieldset>
+					<fieldset>
+						<label>CAP</label>
+						<input type="text" name="cap" id="cap" value="<?php echo $_tplvar['cliente']['cap']?>" />
+					</fieldset>
+					<fieldset>
+						<label>CITTA'</label>
+						<input type="text" name="citta" id="citta" value="<?php echo $_tplvar['cliente']['citta']?>" />
+					</fieldset>
+					<fieldset>
+						<label>TELEFONO fISSO</label>
+						<input type="text" name="fisso" id="fisso" value="<?php echo $_tplvar['cliente']['fisso']?>" />
+					</fieldset>
+					<fieldset>
+						<label>CELLULARE</label>
+						<input type="text" name="cellulare" id="cellulare" value="<?php echo $_tplvar['cliente']['cellulare']?>" />
+					</fieldset>
+					<fieldset>
+						<label>MAIL</label>
+						<input type="text" name="email" id="email" value="<?php echo $_tplvar['cliente']['email']?>" />
+					</fieldset>
+
+					<fieldset>
+						<label>SCONTO</label>
+						<br><br>
+						<table>
+						<?php foreach ($_tplvar['sconti'] as $sconto):?>
+						<tr>
+							<td><input type="radio" name="id_sconto" value="<?php echo $sconto['id']?>"<?php if($_tplvar['sconti_customer'][0]['id_sconto'] == $sconto['id']):?>checked="checked"<?php endif;?>></td>
+							<td><div style="width:15px;background-color:#<?php echo $sconto['colore']?>">&nbsp;</div></td>
+							<td><?php echo $sconto['percentuale'].' - '.$sconto['nome']?></td>
+						</tr>
+						<?php endforeach;?>
+						</table>						
+						
+					</fieldset>
+					
+					<fieldset>
+						<label>TIPO DI CONSEGNA</label>
+						<select name="cod_tipo_pagamento" style="width:92%;min-height:150px;">
+						<?php foreach ($_tplvar['tipo_consegna'] as $type):?>
+							<option value="<?php echo $type['id']?>" <?php if($_tplvar['cliente']['cod_tipo_pagamento'] == $type['id']):?>selected="selected"<?php endif;?>><?php echo $type['name']?></option>
+						<?php endforeach;?>
+						</select>
+					</fieldset>
+					
+					
+				</div>
+						<!-- 
+						<table width="100%">
+						<tr>
+							<td colspan="2" align="center">DATI PER LA SPEDIZIONE</td>
+						</tr>
+						<tr>
+							<td>PRESSO</td>
+							<td><input type="text" name="text_spedizione" id="text_spedizione" value="<?php echo $_tplvar['cliente']['text_spedizione']?>" /></td>
+						</tr>
+						<tr>
+							<td>INDIRIZZO</td>
+							<td><input type="text" name="indirizzo_spedizione" id="indirizzo_spedizione" value="<?php echo $_tplvar['cliente']['indirizzo_spedizione']?>" /></td>
+						</tr>
+						<tr>
+							<td>CAP</td>
+							<td><input type="text" name="cap_spedizione" id="cap_spedizione" value="<?php echo $_tplvar['cliente']['cap_spedizione']?>" /></td>
+						</tr>
+						<tr>
+							<td>CITTA'</td>
+							<td><input type="text" name="citta_spedizione" id="citta_spedizione" value="<?php echo $_tplvar['cliente']['citta_spedizione']?>" /></td>
+						</tr>
+						<tr>
+							<td>PROVINCIA</td>
+							<td><input type="text" name="provincia_spedizione" id="provincia_spedizione" value="<?php echo $_tplvar['cliente']['provincia_spedizione']?>" /></td>
+						</tr>
+						<tr>
+							<td>STATO</td>
+							<td><input type="text" name="stato_spedizione" id="stato_spedizione" value="<?php echo $_tplvar['cliente']['stato_spedizione']?>" /></td>
+						</tr>
+						</table>
+						-->
+				
+		</div>
+	</div>
+	<footer>
+		<div class="submit_link">
+			<input type="submit" value="Salva" class="alt_btn">
+			<input type="reset" class="submit" value="Reset">
+		</div>
+	</footer>
+
+</article>
+
+<article class="module width_full" style="width:100%">
+	<header><h3 class="tabs_involved">COSTO CC X PREZZO RESO</h3></header>
+	<div class="tab_container">
+		<div class="module_content">
+			<fieldset>
+				<input type="text" name="costo_reso" id="costo_reso" value="<?php echo $_tplvar['cliente']['costo_reso']?>"/>
+			</fieldset>
+		</div>
+	</div>
+</article>
+
+<article class="module width_full" style="width:100%">
+	<header><h3 class="tabs_involved">Spese di Spedizione - <?php echo $_tplvar['cliente']['ragione_sociale']?></h3></header>
+	<div class="tab_container">
+		<div class="module_content">
+
+					<table class="tablesorter">
+						<tr>
+							<td style="border:1px solid #fff" colpsan="2">Spese di Spedizione</td>
+						</tr>
+						<?php foreach($_tplvar['spese_spedizione_peso'] as $key => $val):?>
+						
+							<?php if(!empty($val['id'])):?>
+								<input type="hidden" name="id_spese_spedizione_peso[]" value="<?php echo $val['id']?>" />
+							<?php endif;?>
+							<?php if(!empty($val['spese_spedizione_peso'])):?>
+							<tr>
+								<td>
+									<input type="text" name="spese_spedizione_peso[]" id="spese_spedizione_peso" value="<?php echo $val['spese_spedizione_peso']?>" />
+									Carrelli da <input type="text" name="peso_spese_spedizione_da[]" id="peso_spese_spedizione_da" value="<?php echo $val['peso_spese_spedizione_da']?>" />
+									a <input type="text" name="peso_spese_spedizione_a[]" id="peso_spese_spedizione_a" value="<?php echo $val['peso_spese_spedizione_a']?>" />
+								</td>
+							</tr>
+							<?php endif;?>
+							<?php if(empty($val['peso_spese_spedizione_da'])):?>
+							<?php endif;?>
+						
+						<?php endforeach;?>
+						<tr>
+							<td>
+								<input type="text" name="spese_spedizione_peso[]" id="spese_spedizione_peso	" value="" />
+								Carrelli da <input type="text" name="peso_spese_spedizione_da[]" id="peso_spese_spedizione_da" value="<?php echo $val['peso_spese_da']?>" />
+								a <input type="text" name="peso_spese_spedizione_a[]" id="peso_spese_spedizione_a" value="<?php echo $val['peso_spese_a']?>" />
+							</td>
+						</tr>
+						<tr>
+							<td style="border:1px solid #fff" colspan="2">
+								<a href="<?php echo $_tplvar['WWW_ROOT']?>/?act=CaricaCliente&edit=1&id=<?php echo $_tplvar['cliente']['id']?>&add_spese=1">AGGIUNGI </a>&nbsp;&nbsp;
+							<?php if(count($_tplvar['spese_spedizione_peso']) >= 1):?>
+								<a href="<?php echo $_tplvar['WWW_ROOT']?>/?act=CaricaCliente&edit=1&id=<?php echo $_tplvar['cliente']['id']?>&rem_spese=1">RIMUOVI ULTIMO</a>
+							<?php endif;?>
+							</td>
+						</tr>
+					</table>
+		</div>			
+	</div>
+</article>
+</form>	
+
+<article class="module width_full" style="width:100%">
+	<header><h3 class="tabs_involved">Destinazioni Cliente - <?php echo $_tplvar['cliente']['ragione_sociale']?></h3></header>
+	<div class="tab_container">
+		<div class="module_content">
+			<fieldset>
+				<label>CODICE CLIENTE</label>
+				<select name="destinazioni" style="width:92%;min-height:150px;" multiple>
+					<?php foreach ($_tplvar['destinazioni'] as $dest):?>
+						<option value="<?php echo $dest['id']?>" <?php if($for['is_default'] == $dest['id']):?>selected="selected"<?php endif;?>><?php echo $dest['customer_code'].' - '.$dest['ragione_sociale'].' - '.$dest['indirizzo'].' '.$dest['citta'].' '.$dest['provincia']?></option>
+					<?php endforeach;?>
+				</select>
+			</fieldset>
+		</div>			
+	</div>
+</article>

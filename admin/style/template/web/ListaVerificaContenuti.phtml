@@ -1,0 +1,325 @@
+<?php $_tplvar = $this->getVars();?>
+
+<!-- <script  src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['JS_DIR'];?>/jQuery/jquery-1.3.min.js"></script> -->
+
+<script type="text/javascript">
+function showConfirmDelete(id)
+{
+	var el = document.getElementById(id);
+	if(el.style.visibility == 'hidden')
+		el.style.visibility = 'visible';
+	else
+		el.style.visibility = 'hidden';
+}
+</script>
+
+<?php
+$params = '';
+if(!empty($_tplvar['id_category']))
+	$params .= '&id_category='.$_tplvar['id_category'];
+if(!empty($_tplvar['id_brand']))
+	$params .= '&id_brand='.$_tplvar['id_brand'];
+?>
+<style>
+.crop{
+    float:left;
+    margin:.1em 2px .1em 0;
+    overflow:hidden;
+    position:relative;
+    border:0px solid #ccc;
+    width:100px;
+    height:80px;
+    }
+.crop img{
+    position:absolute;
+    top:0px;
+    left:0px;
+    }
+</style>
+		<article class="module width_full">
+		<header><h3 class="tabs_involved">Lista Prodotti</h3></header>
+		<!--BOX PER LA RICERCA-->
+		<?php 
+		$assign['show_combo'] = true;
+		$assign['show_calendar'] = false;
+		$assign['show_combo_brand'] = false;	
+		$assign['show_checkboxes'] = false;
+		$assign['show_fornitori'] = true;
+		$assign['show_pubblicazione'] = true;
+		?>
+		<?php echo $this->getPartial('shared/BoxSearch', $assign);?>
+		<!--BOX PER LA RICERCA-->
+
+		<div class="tab_container">
+			<div id="tab1" class="tab_content">
+		
+					<table class="tablesorter" cellspacing="0" cellpadding="0">
+					<tr>
+						<td>IMMAGINE</td>
+						<td nowrap="nowrap">
+						<?php
+						$assign['key_session'] = 'ListaVerificaContenuti';
+						$assign['order_by'] = 'giacenze.bar_code';
+						$assign['action'] = 'ListaVerificaContenuti';
+						$assign['field_name'] = 'Codice';							
+						$assign['params'] = $params;
+						$this->getPartial('shared/SortField', $assign);
+						?>
+						</td>
+						<td nowrap="nowrap">
+						<?php
+						$assign['key_session'] = 'ListaVerificaContenuti';
+						$assign['order_by'] = 'content.nome_it';
+						$assign['action'] = 'ListaVerificaContenuti';
+						$assign['field_name'] = 'nome';							
+						$assign['params'] = $params;
+						$this->getPartial('shared/SortField', $assign);
+						?>
+						</td>
+						
+						<td nowrap="nowrap">
+						<?php
+						$assign['key_session'] = 'ListaVerificaContenuti';
+						$assign['order_by'] = 'giacenze.quantita_mazzo';
+						$assign['action'] = 'ListaVerificaContenuti';
+						$assign['field_name'] = 'Q. Mazzo';							
+						$assign['params'] = $params;
+						$this->getPartial('shared/SortField', $assign);
+						?>
+						</td>
+						<td nowrap="nowrap">
+						<?php
+						$assign['key_session'] = 'ListaVerificaContenuti';
+						$assign['order_by'] = 'giacenze.qta_pianale';
+						$assign['action'] = 'ListaVerificaContenuti';
+						$assign['field_name'] = 'Q. Pianale';							
+						$assign['params'] = $params;
+						$this->getPartial('shared/SortField', $assign);
+						?>
+						</td>
+						<td nowrap="nowrap">
+						<?php
+						$assign['key_session'] = 'ListaVerificaContenuti';
+						$assign['order_by'] = 'giacenze.qta_carrello';
+						$assign['action'] = 'ListaVerificaContenuti';
+						$assign['field_name'] = 'Q. Carrello';							
+						$assign['params'] = $params;
+						$this->getPartial('shared/SortField', $assign);
+						?>
+						</td>
+						                        
+						<td nowrap="nowrap">
+						<?php
+						$assign['key_session'] = 'ListaVerificaContenuti';
+						$assign['order_by'] = 'giacenze.prezzo_0';
+						$assign['action'] = 'ListaVerificaContenuti';
+						$assign['field_name'] = 'prezzo';
+						$assign['params'] = $params;
+						$this->getPartial('shared/SortField', $assign);
+						?>
+						</td>                        
+						<td nowrap="nowrap">
+						<?php
+						$assign['key_session'] = 'ListaVerificaContenuti';
+						$assign['order_by'] = 'giacenze.prezzo_acquisto';
+						$assign['action'] = 'ListaVerificaContenuti';
+						$assign['field_name'] = 'prezzo acquisto';
+						$assign['params'] = $params;
+						$this->getPartial('shared/SortField', $assign);
+						?>
+						</td>                        
+						<td>Fornitore</td>                        
+						<td>operatore</td>
+						<td nowrap="nowrap">
+						<?php
+						$assign['key_session'] = 'ListaVerificaContenuti';
+						$assign['order_by'] = 'giacenze.visibile';
+						$assign['action'] = 'ListaVerificaContenuti';
+						$assign['field_name'] = 'Pubblicazione';
+						$assign['params'] = $params;
+						$this->getPartial('shared/SortField', $assign);
+						?>
+						</td>
+						
+                        <td>modifica</td>
+                        <td>cancella</td>
+					</tr>
+					<script>
+					function swapCheckbox(div_id, action, id)
+					{
+						$('#loading_'+div_id).show();
+						$('#loading_'+div_id).css('position', 'relative');
+						
+						$('#'+div_id).css('position', 'absolute');
+						$('#'+div_id).hide();
+						$.ajax({
+							  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=AjaxSetOption',
+							  type: 'POST',
+							  dataType: 'html',
+							  data: 'id_content='+id+'&action='+action,
+							  success: function(html){
+								  if($('#'+div_id).css('background-color') == 'rgb(0, 128, 0)')
+									  $('#'+div_id).css('background-color', 'red');
+								  else
+								  	$('#'+div_id).css('background-color', 'green');
+
+								  $('#'+div_id).css('position', 'relative');
+								  $('#'+div_id).show();
+								  $('#loading_'+div_id).css('position', 'absolute');
+								  $('#loading_'+div_id).hide();
+							  }
+							});	
+					}
+					</script>
+					<script>
+					function showHiddenDiv(img){
+						jQuery.fancybox('<img src="'+img+'" style="width:auto">');
+					}
+					</script>
+									
+				<?php foreach ($_tplvar['list'] as $key => $value):
+					$fornitore = $this->getFornitoreFromId($value['id_fornitore']);
+					include_once(APP_ROOT.'/beans/content_adhoc.php');
+					$Bean = new content_adhoc();
+					$dataAdHoc = $Bean->dbFree(MyDB::connect(), "SELECT DISTINCT(vbn) FROM content_adhoc WHERE vbn = '".$value['bar_code']."'");
+					if(!empty($dataAdHoc))
+						continue;
+					?>	
+				
+				<script>$('<img />').attr('src','<?php echo $this->getImagePathFromIdContent($value['id'], '');?>').appendTo('body').css('display','none');</script>
+					<tr style="<?php echo $style?>">
+						<td>
+							<p class="crop">
+								<a href="javascript:void(0);" class="fancybox" onclick="showHiddenDiv('<?php echo $this->getImagePathFromIdContent($value['id'], '');?>');">
+									<?php echo $this->getImageFromIdContent($value['id'], 'Medium_');?>
+								</a>
+							</p>
+						</td>
+						<td>
+                            <?php echo $value['bar_code'];?>
+						</td>
+						<td>
+                            <?php echo $value['nome_it'];?>
+						</td>
+						<td><?php echo $value['quantita_mazzo']?></td>
+						<td><?php echo $value['qta_pianale']?></td>
+						<td><?php echo $value['qta_carrello']?></td>
+						
+						<td><?php echo $this->getFormatPrice($value['prezzo_giac'])?></td>
+                        <td><?php echo $this->getFormatPrice($value['prezzo_acquisto'])?></td>
+                        <!-- 
+                        <td>
+                        	<?php
+                        	foreach ($_tplvar['cmb_category'] as $cat)
+                        	{
+                        		if($cat['id'] == $value['id_gm'])
+                        		{
+                        			echo $cat['name'];
+                        			break;
+                        		}
+                        		if(!empty($cat['sub_category']))
+                        		{
+                        			foreach ($cat['sub_category'] as $c)
+                        			{
+                        				if($c['id'] == $value['id_gm'])
+                        				{
+                        					echo $c['name'];
+                        					break;
+                        				}
+                        			}
+                        		}
+                        	}
+                        	?>
+                        </td>
+                         -->
+                         <td><?php echo $fornitore['nome'];?></td>
+						<td><?php echo $value['operatore'];?></td>
+
+
+						<td class="actions" align="center">
+							<?php
+// 							$flug = 'red';
+// 							$yellow = 0;
+// 							foreach ($value['giacenze'] as $giacenza)
+// 							{
+// 								if($giacenza['quantita'] == 0)
+// 									$yellow ++;
+// 							}
+// 							if($yellow == count($value['giacenze']))
+// 								$flug = 'red';
+// 							if($yellow < count($value['giacenze']) && $yellow > 0)
+// 								$flug = 'yellow';
+// 							elseif($yellow == 0)
+// 								$flug = 'green';
+
+// 							switch ($flug)
+// 							{
+// 								case 'red':
+// 									$flug = '<div style="height:15px;width:15px;background-color:#FF0000">&nbsp;</div>';
+// 								break;
+// 								case 'yellow':
+// 									$flug = '<div style="height:15px;width:15px;background-color:#FDE910">&nbsp;</div>';
+// 								break;
+// 								case 'green':
+// 									$flug = '<div style="height:15px;width:15px;background-color:#228b22">&nbsp;</div>';
+// 								break;
+// 							}
+							?>
+							<!-- 
+							<a class="edit" href="javascript:void(0);" onclick="
+									$.ajax({
+										  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=AjaxSetOption',
+										  type: 'POST',
+										  dataType: 'html',
+										  data: 'id_content=<?php echo $value['id'];?>',
+										  success: function(html){
+											  $('#giacenze_<?php echo $value['id'];?>').html(html);
+											  $('#giacenze_<?php echo $value['id'];?>').show();
+										  }
+										});"><?php echo $flug;?></a>
+							<div id="giacenze_<?php echo $value['id'];?>" style="border:1px solid #993300;background-color:#000000;left:20px;display:none;position:absolute;z-index:1000"></div>
+							-->
+							
+							<div id="div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>" 
+									style="height:15px;width:15px;background-color:<?php if($value['visibile'] == 1):?>green<?php else:?>red<?php endif;?>;cursor:pointer;" 
+									onclick="swapCheckbox('div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>', 'visibile', '<?php echo $value['id_gicenza'];?>');">&nbsp;</div>
+							<div id="loading_div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>" style="position:absolute;display:none;">
+								<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/loading.gif" width="30">
+							</div>
+
+						</td>
+                                               
+                       	<td class="actions">                        
+                       		<a href="<?php echo $_tplvar['WWW_ROOT'].'?act=CaricaMagazzino&id_content='. $value['id']?>">modifica</a>
+						</td>
+                        <td class="actions">
+							<a class="delete" href="javascript:void(0);" onclick="javascript:showConfirmDelete('confirm_delete_<?php echo $value['id'];?>')">cancella</a>
+							<div id="confirm_delete_<?php echo $value['id'];?>" style="background-color:#4A5154;left:400px;padding:10px;border:3px solid #900;width:250px;position:absolute;visibility:hidden">
+								<b><font color="#ffffff">Sei sicuro di voler cancellare?</font></b>
+								
+								<div style="width:200px; height:50px; margin-left:15px; margin-top:10px;">
+								
+									<div style="float:left;width:100px;">
+									<input type="button" value="Si" onclick="javascript:document.location.href = '<?php echo $_tplvar['WWW_ROOT']?>?act=ListaVerificaContenuti&delete=1&id=<?php echo $value['id']?>'" style="cursor:pointer" />
+									</div>
+									<div style="float:left; width:100px;">
+									<input type="button" value="No" onclick="javascript:showConfirmDelete('confirm_delete_<?php echo $value['id'];?>')" style="cursor:pointer"/>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+				<?php endforeach;?>						
+
+				</table>
+
+                <!-- Page Navigation -->
+                <?php
+                if(!empty($_REQUEST['id_category'])) 
+                	$assign['params'] = '&id_category='.$_REQUEST['id_category'];
+                ?>
+				<?php //echo $this->getPartial('shared/Paging', $assign);?>
+				<!-- /Page Navigation -->
+		</div>
+	</div>
+</article>

@@ -1,0 +1,190 @@
+<?php $_tplvar = $this->getVars();?>
+
+<style>
+<!--
+.selected {
+	background-color: #B00000;
+}
+.not_selected {
+	background-color: #ADADAD;
+}
+
+td {
+	padding: 9px 12px;
+	color: #333;
+	border-top: 1px solid white;
+}
+tbody tr:hover td {
+	background: url('<?php echo STORE_WWW_ROOT_PATH?>theme/styles/style2/images/back.png') repeat scroll transparent;
+}
+tbody td {
+	background: url('<?php echo STORE_WWW_ROOT_PATH?>theme/styles/style2/images/back.png') repeat scroll transparent;
+}
+.container_24 {
+	margin-left: auto;
+	margin-right: auto;
+	width: 1200px;
+}
+-->
+</style>
+
+<div id="page-content">
+	<div id="page-content-header" class="container_24">
+		<div id="page-title">
+<!--			<h2>IL TUO CARRELLO</h2>-->
+		</div>
+<!--		<p class="breadcrumbs"><span class="breadcrumb_info">Ti trovi in:</span> <a href="/">Home</a><span class="breadarrow"> &raquo; </span><span class="current_crumb">Carrello</span></p>-->
+	</div>
+
+	<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart" method="post" id="shopping-cart">
+	<?php if(!empty($_tplvar['params_banking'])):?>
+	<input type="hidden" name="params" value="<?php echo $_tplvar['params_banking']?>">
+	<?php endif;?>
+
+	<div>
+		<div class="entry">
+			<p>
+				Attenzione: Per aggiungere quantità per ogni prodotto, scegli la quantita che desideri e clicca sul tasto "Aggiorna Quantità".
+			</p>
+		</div>
+		<div id="main-content" class="grid_17">
+			<div class="main-content-padding">
+				<div class="page">
+					<div class="entry">
+						<br>
+						<div class="cart-contents-table-bg-img">
+									
+						<table cellspacing="3" width="75%">
+							<tbody>
+								<tr>
+									<th style="width:70px;text-align:center;">Articolo</td>
+									<th style="text-align:center;">Descrizione</th>
+									<th style="text-align:center;">Colore</th>
+									<th style="text-align:center;">Quantit&aacute; X Imballo</th>
+									<th style="text-align:center;">Quantit&aacute;</th>
+									<th style="text-align:center;">Prezzo</th>
+									<th style="text-align:center;">IVA</th>
+									<th style="text-align:center;">Prezzo Totale</th>
+									<th style="text-align:center;">Elimina</th>
+								</tr>
+							<?php $j=0;?>
+							<?php //foreach ($_tplvar['products']['contents'] as $value):?>
+								<?php foreach ($_tplvar['products']['contents'] as $key => $content):?>
+								<input type="hidden" name="id_to_basket[]" value="<?php echo $content['id'];?>">
+								<tr>
+									<td style="text-align:center;">
+										<?php $image = $this->getImageFromVbn($value['vbn']);?>
+										<?php if(!empty($image)):?>
+											<img alt="" src="<?php echo $image;?>" width="300" class="main-pic">			
+										<?php else:?>
+											<img alt="" src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/image_large.gif" width="90" height="85">
+										<?php endif;?>
+						
+									</td>
+									<td style="text-align:center;"><?php echo $_tplvar['products']['contenuto'][$key]['nome_it']?></td>
+									<td style="text-align:center;">
+										<?php echo $_tplvar['products']['contenuto'][$key]['C3']?>
+									</td>
+									<td style="text-align:center;">
+										<?php echo $content['quantita']?>
+									</td>
+									<td style="text-align:center;">
+									<?php $index = round($content['disponibilita'] / $content['quantita'], 0, PHP_ROUND_HALF_DOWN);?>
+									<select name="quantita[]" id="quantita">
+											<option value="0"<?php if($_tplvar['basket'][$j]['sel_quantita'] == 0):?>selected="selected"<?php endif;?>>0</option>
+											<?php for($i = 1;$i<=$index;$i++):?>
+											<?php if(empty($_tplvar['basket'][$j]['sel_quantita']) &&  $i == 1):?>
+												<option value="<?php echo $i?>" selected="selected"><?php echo $i?></option>
+											<?php else:?>
+												<option value="<?php echo $i?>" <?php if($_tplvar['basket'][$j]['sel_quantita'] == $i):?>selected="selected"<?php endif;?>><?php echo $i?></option>
+											<?php endif;?>
+											<?php endfor;?>
+										</select>			
+									</td>
+									<td style="text-align:center;">
+										<?php echo Currency::FormatEuro($_tplvar['products']['contenuto'][$key][$_tplvar['key_prezzo']])?>
+									</td>
+									<td style="text-align:center;">
+										<?php echo $_tplvar['products']['contenuto'][$key]['cod_iva']?>%
+									</td>
+									<td style="text-align:center;">
+										<?php 
+										$prezzoIva = (str_replace(',', '.', $content['price_it_qty']) * $_tplvar['products']['contenuto'][$key]['cod_iva']) / 100;
+										$prezzoIva = round($prezzoIva, 2);
+										?>
+										<?php echo Currency::FormatEuro(str_replace(',', '.', $content['price_it_qty']+$prezzoIva));?>
+										<?php $subTotale += str_replace(',', '.', $content['price_it_qty']+$prezzoIva);?>
+										<?php $imponibile += str_replace(',', '.', $content['price_it_qty']);?>
+									</td>
+									
+									<td style="text-align:center;">
+										<a href="<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart&delete=1&id_content=<?php echo $_tplvar['products']['contenuto'][$key]['id']?>&id_magazzino=<?php echo $content['id']?>">Elimina</a>
+									</td>
+								</tr>
+								<?php $j++;?>
+								<?php endforeach;?>
+							<?php //endforeach;?>
+							<?php if(!empty($_tplvar['products']['contents']) && $_tplvar['products']['contents'] != array()):?>
+								<tr>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>Imponibile</td>
+									<td><?php echo Currency::FormatEuro($imponibile)?></td>
+									<td>&nbsp;</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>IVA <?php echo IVA?>%</td>
+									<td><?php echo Currency::FormatEuro(round($imponibile * FATTURA_TAX_IVA, 2))?></td>
+									<td>&nbsp;</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>Totale</td>
+									<td><?php echo Currency::FormatEuro($subTotale)?></td>
+									<td>&nbsp;</td>
+								</tr>
+								<?php endif;?>
+								<tr>
+									<td nowrap="nowrap" align="right" colspan="10">
+										<div class="actions">
+											<button type="button" title="Subscribe" class="button" onclick="javascript:document.location.href='<?php echo $_tplvar['WWW_ROOT']?>?act=CheckoutShopping<?php if(!empty($_tplvar['params_banking'])):?>&params=<?php echo $_tplvar['params_banking']?><?php endif;?>';"><span><span>Vai in Cassa</span></span></button>
+											<button type="button" title="Subscribe" class="button" onclick="jQuery('#shopping-cart').submit();"><span><span>Aggiorna Quantità</span></span></button>
+											<button type="button" title="Subscribe" class="button" onclick="javascript:document.location.href='<?php echo $_tplvar['WWW_ROOT']?>Magazzino-Online/Lista-Prodotti.html<?php if(!empty($_tplvar['params_banking'])):?>&params=<?php echo $_tplvar['params_banking']?><?php endif;?>';"><span><span>Continua lo Shopping</span></span></button>
+										</div>
+										
+									</td>
+								</tr>
+						</table>
+						</form>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<!-- end main-content-padding -->
+		</div>
+		<!-- end main-content -->
+		<!-- start categories -->
+		<?php //echo $this->getPartial('shared/BoxUserData');?>
+		<!-- end categories -->
+	</div>
+	<!-- end content-container -->
+	<div class="clear"></div>
+</div>
+<!-- end page-content -->
+

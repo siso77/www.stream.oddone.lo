@@ -1,0 +1,6 @@
+Dec 28 23:54:07|5[info]28/12/2014 23:54:07 - [UTENTE = ][REMOTE IP = 79.20.198.218][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0]
+Dec 28 23:54:18|5[info]28/12/2014 23:54:18 - [UTENTE = paolo][REMOTE IP = 79.20.198.218][act = Home][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0]
+Dec 28 23:54:18|5[info]28/12/2014 23:54:18 - [UTENTE = paolo][REMOTE IP = 79.20.198.218][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0]
+Dec 28 23:54:34|5[info]28/12/2014 23:54:34 - [UTENTE = paolo][REMOTE IP = 79.20.198.218][act = ListaClienti][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0]
+Dec 28 23:54:36|5[info]28/12/2014 23:54:36 - [UTENTE = paolo][REMOTE IP = 79.20.198.218][act = CaricaCliente][edit = 1][id = 1][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0]
+Dec 28 23:54:45|5[info]28/12/2014 23:54:45 - [UTENTE = paolo][REMOTE IP = 79.20.198.218][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:34.0) Gecko/20100101 Firefox/34.0]

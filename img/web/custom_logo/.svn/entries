@@ -1,0 +1,28 @@
+10
+
+dir
+0
+http://192.168.0.4/svn/gardesana/trunk/img/web/custom_logo
+http://192.168.0.4/svn/gardesana
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+63943108-bf6c-2345-ab5b-09b6d17420ce
+

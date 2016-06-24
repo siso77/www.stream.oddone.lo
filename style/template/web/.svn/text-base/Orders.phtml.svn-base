@@ -1,0 +1,101 @@
+<?php $_tplvar = $this->getVars();?>
+
+<style>
+.container_24 {
+	margin-left: auto;
+	margin-right: auto;
+}
+.detail-orders td {
+	padding: 9px 12px;
+	color: #333;
+}
+td{
+padding:10px;
+}
+</style>
+			<div id="page-content">
+				<div id="page-content-header" class="container_24">
+					<div id="page-title">
+<!--						<h2>Magazzino Krupy</h2>-->
+					</div>
+<!--					<p class="breadcrumbs"><span class="breadcrumb_info">Ti trovi in:</span> <a href="index.php">Home</a><span class="breadarrow"> &raquo; </span><span class="current_crumb">Lista Ordini</span></p>-->
+				</div>
+				<div id="content-container" class="container_24">
+					<div class="entry">
+
+					</div>
+					<div id="main-content" class="grid_17">
+						<div class="main-content-padding">
+							<div class="page">
+								<div class="entry">
+<!--									<h3>Lista Ordini</h3>-->
+									<div class="cart-contents-table-bg-img">
+									
+									<table cellspacing="10" cellpadding="14" style="width: 70%; background-color:#fff">
+									<tbody>
+										<tr align="left"">
+											<th scope="col" width="100" style="text-align:center;">&nbsp;</th>
+										</tr>
+										<tr align="left"">
+											<th scope="col" width="65" style="text-align:center;">Id Ordine</th>
+											<th scope="col" width="150" style="text-align:center;">Data</th>
+											<th scope="col" width="100" style="text-align:center;">Stato</th>
+											<th scope="col" style="text-align:center;">Totale dell'ordine</th>
+											<th scope="col" style="text-align:center;">Dettaglio Ordine</th>
+										</tr>
+		
+										<?php foreach ($_tplvar['list'] as $key => $ordini):?>
+										<tr valign="top" align="left">
+											<td style="text-align:center;">
+												N. <?php echo $ordini['id']?>
+											</td>									
+											<td style="text-align:center;">
+												<?php 
+													$exp = explode(' ', $ordini['data_inserimento_riga']);
+													echo $this->getFormatDate($exp[0]).' '.$exp[1];
+												?>
+											</td>
+											<td style="text-align:center;" nowrap="nowrap"><span><?php if($ordini['spedito']):?>Spedito<?php else:?>In lavorazione<?php endif;?></span>&nbsp;</td>
+											<td style="text-align:center;">
+												<?php echo Currency::FormatEuro($ordini['importo'])?>
+											</td>
+											<td style="text-align:center;">
+<!-- 
+												<a href="javascript:void(0);" onclick="javascript:jQuery.fancybox('<ol class=products-list id=products-list><li class=item><table width=700><tr><td nowrap=nowrap align=center>Ordine N.</td><td nowrap=nowrap align=center>Modalit&aacute; di Pagamento</td><td nowrap=nowrap align=center>Stato</td><td nowrap=nowrap align=center>Traking</td></tr><tr><td nowrap=nowrap align=center><?php echo $ordini['id']?></td><td nowrap=nowrap align=center><?php echo $ordini['tipo_pagamento']?></td><td nowrap=nowrap align=center><?php if($ordini['spedito']):?>Spedito con <?php echo $ordini['corriere']?><?php else:?>In Lavorazione<?php endif;?></td><td nowrap=nowrap align=center><?php echo $ordini['traking']?></td></tr><tr><td nowrap=nowrap align=center>Variet&aacute;</td><td nowrap=nowrap align=center>Prezzo</td><td nowrap=nowrap align=center>Quantit&aacute;</td><td nowrap=nowrap align=center>Importo</td></tr><?php foreach ($ordini['ordini_magazzino'] as $ordine):?><tr><td nowrap=nowrap align=center><?php echo $ordine['content']['nome_it']?></td><td nowrap=nowrap align=center><?php echo Currency::FormatEuro($ordine['content'][$_tplvar['key_prezzo']])?></td><td nowrap=nowrap align=center><?php echo $ordine['ordine_magazzino']['quantita']?></td><td nowrap=nowrap align=center><?php echo Currency::FormatEuro($ordine['ordine_magazzino']['importo'])?></td><?php $totale += str_replace(',', '.', $ordine['ordine_magazzino']['importo']);?></tr><?php endforeach;?><tr><td></td><td></td><td>Importo</td><td><?php echo Currency::FormatEuro($totale);?></td></tr></table></li></ol>');">										
+													Dettaglio ordine
+												</a>
+-->
+											</td>
+										</tr>
+										<?php endforeach;?>
+										<tr>
+											<td colspan="5">
+												<!-- Page Navigation -->
+												<?php
+												$assign['keys_search'] = '&user_id='.$_REQUEST['user_id']; 
+												echo $this->getPartial('shared/Paging', $assign);
+												?>
+												<!-- /Page Navigation -->
+											</td>
+										</tr>
+									</tbody>
+								</table>
+				
+				
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<!-- end main-content-padding -->
+		</div>
+		<!-- end main-content -->
+		<!-- start categories -->
+		<?php //echo $this->getPartial('shared/BoxUserData');?>
+		<!-- end categories -->
+	</div>
+	<!-- end content-container -->
+	<div class="clear"></div>
+</div>
+<!-- end page-content -->
+

@@ -1,0 +1,92 @@
+10
+
+dir
+2
+http://192.168.0.4/svn/gardesana/trunk/admin/javascript/dhtmlxSuite/dhtmlxChart/samples
+http://192.168.0.4/svn/gardesana
+
+
+
+2013-03-04T22:52:19.820665Z
+2
+siso
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+63943108-bf6c-2345-ab5b-09b6d17420ce
+
+01_initialization
+dir
+
+02_color
+dir
+
+03_group
+dir
+
+04_pie_chart
+dir
+
+05_line_chart
+dir
+
+06_bar_chart
+dir
+
+07_area_chart
+dir
+
+08_dynamic
+dir
+
+09_integration
+dir
+
+common
+dir
+
+readme.txt
+file
+
+
+
+
+2013-07-26T16:01:39.000000Z
+69838b4936ea0eddc5a669fea6dcf0ac
+2013-03-04T22:52:19.820665Z
+2
+siso
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+253
+

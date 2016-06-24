@@ -1,0 +1,25 @@
+<?php $_tplvar = $this->getVars();?>
+
+<div class="col-main">
+<div class="category-products" style="padding:30px">
+
+			<h2><?php echo $this->getText($_tplvar['key_title'])?></h2>
+
+							
+								
+									<h3><?php echo $this->getText($_tplvar['key_paragraph_title'])?> &nbsp;&nbsp;&nbsp;</h3>
+								
+									<p><?php echo $this->getText($_tplvar['key_body'])?></p>
+									<?php $body_evidence = $this->getText($_tplvar['key_body_evidence'])?>
+									<?php if(!empty($body_evidence)):?>
+									<div class="info">
+										<div class="msg-box-icon pngfix"><?php echo $body_evidence?></div>
+									</div>
+									<?php endif;?>
+									<p><?php echo $this->getText($_tplvar['key_body_evidence'])?></p>
+					
+					
+
+				<div class="clear"></div>
+</div>
+</div>

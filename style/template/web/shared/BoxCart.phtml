@@ -1,0 +1,125 @@
+<?php
+$_tplvar = $this->getVars();
+$this->getIntlPartial('Index');
+$this->getIntlPartial('BoxCart');
+?>
+
+	<div class="block-content">
+		<p class="a-center">
+		
+			<?php 
+			$basket = $_SESSION[session_id()]['basket'];
+			unset($basket['n_carrelli']);
+			unset($basket['perc_occupazione']);
+			?>		
+			<?php if(empty($basket)):?>
+			
+				<?php echo $this->getText('chart');?>
+				
+			<?php else:?>
+				<?php 
+				//rsort($_SESSION[session_id()]['basket']);
+				?>
+		        <ol id="cart-sidebar" class="mini-products-list">
+		        	<?php 
+		        	
+		        	foreach ($basket as $val)
+		        		$minicarrello[] = $val;
+		        	krsort($minicarrello);
+		        	reset($minicarrello);
+		        	?>
+					<?php foreach($minicarrello as $k => $prod):?>
+					<li class="item last odd">
+						<a href="<?php echo $_tplvar['WWW_ROOT']?>?act=ProductInfo&id_giacenza=<?php echo $prod['contenuto']['id']?>" title="<?php echo $prod['contenuto']['nome_it']?>" class="product-image">
+							<?php $image = null;?>
+				 			<?php $image = $this->getImageFromIdContent($prod['contenuto']['id'], '');?>
+							<?php if(!empty($image)):?>
+								<img alt="<?php echo $prod['contenuto']['nome_it']?>" src="<?php echo $image;?>" style="width:40px;">
+							<?php else:?>
+								<img alt="<?php echo $prod['contenuto']['nome_it']?>" src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/image_large.gif" style="width:40px;">
+							<?php endif;?>
+						</a>
+						<div class="product-details">
+							<a href="<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart&delete=1&delete_from_box=1&id_content=<?php echo $prod['contenuto']['id']?>&id_magazzino=<?php echo $prod['giacenza']['id']?>" title="<?php echo $this->getText('remove');?>" onclick="return confirm('<?php echo $this->getText('are_you_sure');?>?');" class="btn-remove">
+								<?php echo $this->getText('remove');?>
+							</a>
+							<p class="product-name" style="font-size:10px">
+								<?php echo $prod['contenuto']['nome_'.$_SESSION['lang']]?> 
+							</p>
+							
+							<?php 
+							$qta_selected = null;
+							if($prod['box_type'] == 'confezione')
+							{
+								$qta_selected = $prod['basket_qty']['sel_quantita'];
+								$qta_linea = $prod['basket_qty']['sel_quantita'];
+								echo '<strong style="font-size:12px">'.$qta_selected. $this->getText('package').'</strong>';
+							}
+							if($prod['box_type'] == 'pianale')
+							{
+								$qta_selected = $prod['basket_qty']['sel_quantita'];
+								$qta_linea = $prod['basket_qty']['sel_quantita'];
+								echo '<strong style="font-size:12px">'.$qta_selected. $this->getText('shelf').'</strong>';
+							}
+							if($prod['box_type'] == 'carrello')
+							{
+								$qta_selected = $prod['basket_qty']['sel_quantita'];
+								$qta_linea = $prod['basket_qty']['sel_quantita'];
+								echo '<strong style="font-size:12px">'.$qta_selected. $this->getText('trolley').'</strong>';
+							}
+							?>
+							<br>
+							<span class="price" style="font-size:12px">
+								<?php echo Currency::FormatEuro($this->getPrezzo($prod['giacenza']));?>
+							</span>							 
+							<?php 
+							$tot_price = $tot_price + $this->getPrezzo($prod['giacenza']);
+							?>                    
+							<div class="truncated">
+								<div class="truncated_full_value">
+									<dl class="item-options">
+										<?php if(!empty($prod['giacenza']['C4'])):?>
+											<dt><?php echo $this->getText('height');?></dt>
+											<dd><?php echo $prod['giacenza']['C4']?></dd>
+										<?php endif;?>						
+										<?php if(!empty($prod['giacenza']['dimensione'])):?>
+											<dt><?php echo $this->getText('dimension');?></dt>
+											<dd><?php echo $prod['giacenza']['dimensione']?></dd>
+										<?php endif;?>						
+										<?php if(!empty($prod['giacenza']['C5'])):?>
+											<dt><?php echo $this->getText('provenance');?></dt>
+											<dd><?php echo $prod['giacenza']['C5']?></dd>
+										<?php endif;?>						
+										<?php if(!empty($prod['giacenza']['scelta'])):?>
+											<dt><?php echo $this->getText('choice');?></dt>
+											<dd><?php echo $prod['giacenza']['scelta']?></dd>
+										<?php endif;?>
+										<?php if(!empty($prod['giacenza']['fusto'])):?>
+											<dt><?php echo $this->getText('stem');?></dt>
+											<dd><?php echo $prod['giacenza']['fusto']?></dd>
+										<?php endif;?>
+									</dl>
+								</div>
+							</div>
+						</div>
+					</li>
+					<?php if($i == 5):?>
+						<li class="item last odd" style="text-align:center;padding:10px;">...</li>
+						<?php 
+							$btnTitle = $this->getText('view_all');
+						break;
+						?>
+					<?php else:?>
+						<?php $i++;?>
+						<?php $btnTitle = $this->getText('go_to_cart');?>
+					<?php endif;?>
+					<?php endforeach;?>
+				</ol>		
+				<div class="actions_checkout">
+					<button type="button" title="Checkout" class="button" onclick="setLocation('<?php echo $_tplvar['WWW_ROOT']?>?act=ShoppingCart')"><span><span><?php echo $btnTitle?></span></span></button>
+				</div>
+			<?php endif;?>
+		</p>
+		
+	</div> <!--block-content-->
+

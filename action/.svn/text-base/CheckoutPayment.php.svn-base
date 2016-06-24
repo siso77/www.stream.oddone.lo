@@ -1,0 +1,471 @@
+<?php
+include_once(APP_ROOT.'/beans/category.php');
+include_once(APP_ROOT."/beans/content.php");
+include_once(APP_ROOT."/beans/giacenze.php");
+include_once(APP_ROOT."/beans/users.php");
+include_once(APP_ROOT."/beans/users_anag.php");
+include_once(APP_ROOT."/beans/ecm_ordini_magazzino.php");
+include_once(APP_ROOT."/beans/ecm_ordini.php");
+include_once(APP_ROOT."/beans/ecm_basket_magazzino.php");
+include_once(APP_ROOT."/beans/ecm_basket.php");
+
+class CheckoutPayment extends DBSmartyMailAction
+{
+	var $className;
+	var $importo_spese;
+	var $id_negozio;
+
+	function CheckoutPayment()
+	{
+		parent::DBSmartyMailAction();
+
+		if(empty($_SESSION[session_id()]['basket']))
+			$this->_redirect('');
+			
+		include_once(APP_ROOT.'/beans/ApplicationSetup.php');
+		$BeanApplicationSetup = new ApplicationSetup();
+		$speseSpedizione = $BeanApplicationSetup->dbGetAllByField(MyDB::connect(), 'spese_spedizione');
+		
+		$this->importo_spese = $speseSpedizione[0]['name'];
+		$this->id_negozio = "129280605500277";
+		
+		$this->className = get_class($this);
+
+		if(!empty($_REQUEST['params']))
+		{
+			$params = base64_decode($_REQUEST['params']);
+			$exp = explode('&', $params);
+			foreach ($exp as $val)
+			{
+				$ex = explode('=', $val);
+				if($ex[0] == 'back')
+					$back = 1;
+				if($ex[0] == 'confirm')
+					$confirm = 1;
+				if($ex[0] == 'id_ordine')
+					$idOrdine = $ex[1];
+				if($ex[0] == 'remote_address')
+					$remote_address = $ex[1];
+			}
+			if($_SESSION[session_id()]['remote_address'] != $remote_address)
+			{
+				$this->_redirect('?CheckoutShopping=err_remote_addr');
+				mail('siso77@gmail.com', 'STREAM - Truffa', 'Remote address: '.$remote_address.'<br>User ID: '.$_SESSION['LoggedUser']['id'].'<br>User Name: '.$_SESSION['LoggedUser']['username']);
+			}
+		}
+		
+		if(!empty($_REQUEST['payment_type']))
+			$_SESSION[session_id()]['payment_type'] = $_REQUEST['payment_type'];
+
+		if(!empty($confirm))
+		{
+			if(!empty($_SESSION[session_id()]['ecm_id_ordine']))
+			{
+				$beanBasketMagazzino = new ecm_basket_magazzino();
+				$data = $beanBasketMagazzino->dbGetAllByIdBasket($this->conn, $_SESSION[session_id()]['ecm_basket']);
+				foreach ($data as $bkm)
+					$beanBasketMagazzino->dbDelete($this->conn, array($bkm['id']));
+
+				$beanBasket = new ecm_basket($this->conn, $_SESSION[session_id()]['ecm_basket']);
+				$beanBasket->dbDelete($this->conn, array($_SESSION[session_id()]['ecm_basket']));
+
+				$BeanEcmOrdini = new ecm_ordini($this->conn, $_SESSION[session_id()]['ecm_id_ordine']);
+				$BeanEcmOrdini->setOperatore(ECM_OPERATORE);
+				$BeanEcmOrdini->setPagato(1);
+				
+				$idOrdine = $BeanEcmOrdini->dbStore($this->conn);
+
+				$BeanUsers = new users($this->conn, $BeanEcmOrdini->id_user);
+				$BeanUsersAnag = new users_anag($this->conn, $BeanUsers->id_anag);
+				
+				$BeanEcmOrdiniMagazzino = new ecm_ordini_magazzino();
+				$products = $BeanEcmOrdiniMagazzino->dbGetAllByIdOrdine($this->conn, $BeanEcmOrdini->id);
+
+				$fp = fopen(APP_ROOT.'/FlorSysIntegration/Out/0000088V.'.$this->tEngine->getCutomFormatCode($idOrdine, 3), 'w+');
+				fwrite($fp, "*MAG#0\r\n");
+				foreach ($products as $key => $value)
+				{
+					$BeanMagazzino = new giacenze();
+					$_products[$key]['magazzino'] = $BeanMagazzino->dbSearch($this->conn, ' AND id = '.$value['id_magazzino']);
+					$str = '';
+					$str .= 'PC';
+					$str .= $this->tEngine->getBlankSpaceForFlorSysOrder('0', 7);
+					$str .= $this->tEngine->getBlankSpaceForFlorSysOrder(date('d/m/Y'), 10);
+					$str .= $this->tEngine->getBlankSpaceForFlorSysOrder($this->tEngine->getFormatCodiceCliente($_SESSION['LoggedUser']['id_customer']), 7);
+					$str .= '  ';
+					$str .= $this->tEngine->getBlankSpaceForFlorSysOrder($_products[$key]['magazzino'][0]['bar_code'], 20);
+					$str .= $this->tEngine->getBlankSpaceForFlorSysOrder($value['quantita'], 10);
+					$str .= $this->tEngine->getBlankSpaceForFlorSysOrder($value['importo'], 10);
+					$str .= $this->tEngine->getBlankSpaceForFlorSysOrder('0', 10);
+					$str .= $this->tEngine->getBlankSpaceForFlorSysOrder('0', 5);
+					$str .= "\r\n";
+					fwrite($fp, $str);
+				}
+				fclose($fp);
+				Base_CacheCore::getInstance()->clean();
+				
+				$this->SendEmail($BeanEcmOrdini, $BeanUsersAnag, $products, $data);
+			}
+			$this->tEngine->assign('confirm', true);
+			$this->tEngine->assign('num_ordine', $_SESSION[session_id()]['ecm_id_ordine']);
+			unset($_SESSION[session_id()]);
+		}
+		else 
+		{
+			if(empty($_SESSION['LoggedUser']))
+			{
+				$_SESSION[session_id()]['return'] = 'CheckoutShopping';
+				$this->_redirect('?act=Login');
+			}
+
+			if(empty($_SESSION[session_id()]['ecm_id_ordine']))
+			{
+				$BeanEcmOrdini = new ecm_ordini();
+				$BeanEcmOrdini->setTipo_pagamento($_SESSION[session_id()]['payment_type']);
+				$BeanEcmOrdini->setId_user($_SESSION['LoggedUser']['id']);
+				$BeanEcmOrdini->setOperatore(ECM_OPERATORE);
+				$BeanEcmOrdini->setPagato(0);
+				$BeanEcmOrdini->setFatturato(0);
+				$BeanEcmOrdini->setSpedito(0);
+				$idOrdine = $BeanEcmOrdini->dbStore($this->conn);
+				$_SESSION[session_id()]['ecm_id_ordine'] = $idOrdine;
+			}
+			else
+			{
+				$BeanEcmOrdiniMagazzino = new ecm_ordini_magazzino();
+				$values = $BeanEcmOrdiniMagazzino->dbGetAllByIdOrdine($this->conn, $_SESSION[session_id()]['ecm_id_ordine']);
+				foreach ($values as $val)
+					$BeanEcmOrdiniMagazzino->dbDelete($this->conn, $val['id']);
+			}
+
+			$IMPORTO = 0.00;
+			foreach ($_SESSION[session_id()]['basket'] as $val)
+			{
+				$price_it_qty = $_SESSION[session_id()]['cart']['contents'][ $val['id'] ]['price_it_qty'];
+				$price_discounted_it_qty = $_SESSION[session_id()]['cart']['contents'][ $val['id'] ]['price_discounted_it_qty'];
+				if(!empty($price_discounted_it_qty) && $price_discounted_it_qty > 0)
+					$IMPORTO = $IMPORTO + str_replace(',', '.', $price_discounted_it_qty);
+				else
+					$IMPORTO = $IMPORTO + str_replace(',', '.', $price_it_qty);
+					
+				$BeanEcmOrdiniMagazzino = new ecm_ordini_magazzino();
+				$BeanEcmOrdiniMagazzino->setId_content($_SESSION[session_id()]['cart']['contenuto'][ $val['id'] ]['id']);
+				$BeanEcmOrdiniMagazzino->setId_magazzino($_SESSION[session_id()]['cart']['contents'][ $val['id'] ]['id']);
+				$BeanEcmOrdiniMagazzino->setId_ordine($_SESSION[session_id()]['ecm_id_ordine']);
+				$BeanEcmOrdiniMagazzino->setQuantita($val['quantita']);
+				if(!empty($price_discounted_it_qty) && $price_discounted_it_qty > 0)
+					$BeanEcmOrdiniMagazzino->setImporto($price_discounted_it_qty);
+				else
+					$BeanEcmOrdiniMagazzino->setImporto($price_it_qty);
+					$BeanEcmOrdiniMagazzino->dbStore($this->conn);
+			}
+			$BeanEcmOrdini = new ecm_ordini($this->conn, $_SESSION[session_id()]['ecm_id_ordine']);
+			$BeanEcmOrdini->setImporto($this->tEngine->getFormatPrice($IMPORTO));
+			$BeanEcmOrdini->dbStore($this->conn);
+			
+			if(!empty($_REQUEST['id_user']))
+			{
+				$BeanUsers = new users($this->conn, $_REQUEST['id_user']);
+				$BeanUsersAnag = new users_anag($this->conn, $BeanUsers->getId_anag());
+				$BeanUsersAnag->fill($_REQUEST);
+				$BeanUsersAnag->dbStore($this->conn);
+			}
+		}
+		
+		if($_REQUEST['payment_type'] == 'CC')
+		{
+			$_SESSION[session_id()]['remote_address'] = $_SERVER['REMOTE_ADDR'];
+			$IDNEGOZIO = $this->id_negozio;
+			$NUMORD = $_SESSION[session_id()]['ecm_id_ordine'];
+			$IMPORTO = str_replace(',', '.', $this->tEngine->getFormatPrice($IMPORTO + $this->importo_spese));
+			$IMPORTO = str_replace('.', '', $IMPORTO);
+			$VALUTA="978";
+			$TCONTAB="I";
+			$TAUTOR="I";
+			$URLMS = WWW_ROOT."?act=Ms";
+			$URLDONE = WWW_ROOT."?act=".$this->className.'&params='.base64_encode('confirm=1&id_ordine='.$_SESSION[session_id()]['ecm_id_ordine'].'&remote_address='.$_SERVER['REMOTE_ADDR']).'&krupy='.session_id();
+			$URLBACK = WWW_ROOT.'?act=CheckoutShopping&params='.base64_encode('back=1&id_ordine='.$_SESSION[session_id()]['ecm_id_ordine']).'&krupy='.session_id();
+			$KEY = "FjRqt6nyGU-ULeHpRJjhz-S-V-7mbGb-pMQUwdS7MSZfuJFN-x";
+			
+			$MACCHIARO = "URLMS=".$URLMS."&URLDONE=".$URLDONE."&NUMORD=".$NUMORD."&IDNEGOZIO=".$IDNEGOZIO."&IMPORTO=".$IMPORTO."&VALUTA=".$VALUTA."&TCONTAB=".$TCONTAB."&TAUTOR=".$TAUTOR."&".$KEY;
+			$MACCHIARO2 = "NUMORD=".$NUMORD."&IDNEGOZIO=".$IDNEGOZIO."&IMPORTO=".$IMPORTO."&VALUTA=".$VALUTA."&TCONTAB=".$TCONTAB."&TAUTOR=".$TAUTOR."&".$KEY;
+			// MAC = UCASE(MD5(MACCHIARO))
+			$MAC = strtoupper(md5($MACCHIARO));
+			
+			$URLSEND = "https://atpos.ssb.it/atpos/pagamenti/main?PAGE=MASTER&
+			IMPORTO=".$IMPORTO."&
+			VALUTA=".$VALUTA."&
+			NUMORD=".$NUMORD."&
+			IDNEGOZIO=".$IDNEGOZIO."&
+			URLDONE=".urlencode($URLDONE)."&
+			URLBACK=".urlencode($URLBACK)."&
+			URLMS=".urlencode($URLMS)."&
+			TAUTOR=".$TAUTOR."&
+			TCONTAB=".$TCONTAB."&
+			MAC=".$MAC;
+
+			echo '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+			<html>
+			<head>
+			<meta http-equiv="refresh" content="1;url='.$URLSEND.'">
+			</head>
+			<body style="background-color:#000000">
+				<table width="100%" height="100%" style="background-color:#000000"><tr><td>&nbsp;</td></tr></table>
+			</body>
+			</html>';
+			exit();
+		}
+		else if(empty($confirm))
+			$this->_redirect("?act=".$this->className.'&params='.base64_encode('confirm=0&id_ordine='.$_SESSION[session_id()]['ecm_id_ordine']).'&stream='.session_id());
+
+		$this->tEngine->assign('content', $content);
+		$this->tEngine->assign('tpl_action', $this->className);
+		$this->tEngine->display('Index');
+	}
+	
+	function SendEmail($BeanEcmOrdini, $userAnag, $products)
+	{
+		$BeanEcmOrdini = $BeanEcmOrdini->vars();
+		$userAnag	   = $userAnag->vars();
+		
+		$hdrs = array("From" 		=> EMAIL_ADMIN_FROM, 
+					  "To" 			=> $userAnag['email'],
+					  "Cc" 			=> "", 
+					  "Bcc" 		=> "", 
+					  "Subject" 	=> "Conferma ordine N. ".$BeanEcmOrdini['id']." - ".PREFIX_META_TITLE,
+					  "Date"		=> date("r")
+					  );
+		$this->setHeaders($hdrs);
+
+		$html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+				<html xmlns="http://www.w3.org/1999/xhtml">
+				<html>
+				<HEAD>
+					<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+				    <title>Conferma ordine N. '.$BeanEcmOrdini['id'].' - '.PREFIX_META_TITLE.'</title>
+				</HEAD>
+				<body style="background-color:#fff;font-family: Arial, Tahoma, Verdana, FreeSans, sans-serif;">
+				<table width="100%" height="100%" border="0" cellspacing="10">
+				<tr>
+					<td width="50" style="color:#000;font-size:22px;"><img src="'.WWW_ROOT.'/theme/styles/style2/images/logo.png"></td>
+					<td align="left" style="color:#fff;font-size:22px;color: #999;font-weight: bold;">
+						<!--<h3>'.PREFIX_META_TITLE.'</h3>-->
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="color:#8F8F8F;font-size:16px;">
+						Gentile '.$userAnag['name'].' '.$userAnag['surname'].',<br> il tuo ordine # '.$BeanEcmOrdini['id'].' è andato a buon fine.<br><br>
+						Di seguito ti riportiamo i dettagli del tuo ordine. 
+					</td>
+				</tr>
+				<tr>
+					<td width="50%" valign="top">
+						<table width="100%" cellpadding="6" style="border:1px solid #8F8F8F;">
+						<tr style="background-color:#8F8F8F;">
+							<td colspan="2" style="color:#fff;font-size:16px;"><b>Dati Fatturazione</b></td>
+						</tr>
+						<tr style="color:#8F8F8F;font-size:16px;">
+							<td>Nome</td>
+							<td>'.$userAnag['name'].'</td>
+						</tr>
+						<tr style="color:#8F8F8F;font-size:16px;">
+							<td>Cogome</td>
+							<td>'.$userAnag['surname'].'</td>
+						</tr>
+						<tr style="color:#8F8F8F;font-size:16px;">
+							<td>Indirizzo</td>
+							<td>'.$userAnag['address'].' '.$userAnag['cap'].' - '.$userAnag['city'].' ('.$userAnag['province'].') - '.$userAnag['nation'].'</td>
+						</tr>
+						<tr style="color:#8F8F8F;font-size:16px;">
+							<td>Indirizzo Secondario</td>
+							<td>'.$userAnag['address_secondary'].'</td>
+						</tr>
+						<tr style="color:#8F8F8F;font-size:16px;">
+							<td>Telefono Fisso</td>
+							<td>'.$userAnag['phone'].'</td>
+						</tr>
+						<tr style="color:#8F8F8F;font-size:16px;">
+							<td>Telefono Mobile</td>
+							<td>'.$userAnag['mobile'].'</td>
+						</tr>
+						<tr style="color:#8F8F8F;font-size:16px;">
+							<td>Email</td>
+							<td>'.$userAnag['email'].'</td>
+						</tr>
+						</table>
+					</td>
+					<td width="50%" valign="top">
+						<table width="100%" cellpadding="6" style="border:1px solid #8F8F8F;">
+						<tr style="background-color:#8F8F8F;">
+							<td colspan="2" style="color:#fff;font-size:16px;"><b>Dati Spedizione</b></td>
+						</tr>
+						<tr style="color:#8F8F8F;font-size:16px;">
+							<td>Nome</td>
+							<td>'.$userAnag['name_spedizione'].'</td>
+						</tr>
+						<tr style="color:#8F8F8F;font-size:16px;">
+							<td>Cogome</td>
+							<td>'.$userAnag['surname_spedizione'].'</td>
+						</tr>
+						<tr style="color:#8F8F8F;font-size:16px;">
+							<td>Indirizzo</td>
+							<td>'.$userAnag['address_spedizione'].' '.$userAnag['cap_spedizione'].' - '.$userAnag['address_secondary_spedizione'].' ('.$userAnag['province_spedizione'].') - '.$userAnag['nation_spedizione'].'</td>
+						</tr>
+						<tr style="color:#8F8F8F;font-size:16px;">
+							<td>Indirizzo Secondario</td>
+							<td>'.$userAnag['address_secondary_spedizione'].'</td>
+						</tr>
+						<tr style="color:#8F8F8F;faddress_secondaryont-size:16px;font-size:16px;">
+							<td>Email</td>
+							<td>'.$userAnag['email'].'</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td width="50%" valign="top">
+						<table width="100%" cellpadding="6" style="border:1px solid #8F8F8F;">
+						<tr style="background-color:#8F8F8F;">
+							<td colspan="2" style="color:#fff;font-size:16px;"><b>Modalit&aacute; di pagamento</b></td>
+						</tr>
+						<tr style="color:#8F8F8F;font-size:16px;">
+							<td>';
+						if($BeanEcmOrdini['tipo_pagamento'] == 'CC')
+							$html .= 'Carta di Credito';
+						if($BeanEcmOrdini['tipo_pagamento'] == 'vaglia')
+							$html .= 'Vaglia Postale';
+						if($BeanEcmOrdini['tipo_pagamento'] == 'bonifico')
+							$html .= 'Bonifico';
+						if($BeanEcmOrdini['tipo_pagamento'] == 'contrassegno')
+							$html .= 'Contrassegno';
+							$html .= '</td>
+						</tr>
+						</table>					
+					</td>
+				</tr>
+				<tr>
+					<td width="50%" valign="top" colspan="2">
+						<table width="100%" cellpadding="6" style="border:1px solid #8F8F8F;">
+						<tr style="background-color:#8F8F8F;">
+							<td colspan="8" style="color:#fff;font-size:16px;"><b>Prodotti acquistati</b></td>
+						</tr>
+						';
+				include_once(APP_ROOT.'/beans/ApplicationSetup.php');
+				$BeanApplicationSetup = new ApplicationSetup();
+				$speseSpedizione = $BeanApplicationSetup->dbGetAllByField(MyDB::connect(), 'spese_spedizione');
+
+				foreach ($products as $key => $product)
+				{
+					$BeanContent = new content($this->conn, $product['id_content']);
+					$Content = $BeanContent->vars();
+					$BeanGiacenze = new giacenze($this->conn, $product['id_magazzino']);
+					$iva = $BeanContent->cod_iva;
+					$total = $total + str_replace(',', '.', $product['importo']);
+
+					$imponibile = str_replace(',', '.', $product['importo']);
+					$prezzo_iva = str_replace(',', '.', $product['importo']) * $BeanContent->cod_iva / 100;
+
+					$tot_imponibile = $tot_imponibile + $imponibile;
+					$tot_prezzo_iva = $tot_prezzo_iva + $prezzo_iva;
+
+					if($key == (count($products)-1))
+					{
+						if($speseSpedizione[0]['name'] != '0,00' && $speseSpedizione[0]['name'] > 0)
+						{
+							$total = $total + str_replace(',', '.', $speseSpedizione[0]['name']);
+							$tot_imponibile += round(str_replace(',', '.', $speseSpedizione[0]['name']) * FATTURA_TAX_IVA, 2);
+							if(empty($tot_prezzo_iva))
+							{
+								$tot_prezzo_iva = $tot_imponibile - str_replace(',', '.', $speseSpedizione[0]['name']);
+							}
+						}
+					}
+				
+					if($key == 0)
+					{
+						$html .='
+							<tr style="color:#8F8F8F;font-size:16px;">
+								<td>Codice Prodotto</td>
+								<td>Nome</td>
+								<td>Colore</td>
+								<td>Quantit&aacute; Imballo</td>
+								<td>Imballi Acquistati</td>
+								<td>Prezzo</td>
+								<td>IVA</td>
+								<td>Importo</td>
+							</tr>';
+					}
+					$html .='
+						<tr style="color:#8F8F8F;font-size:16px;">
+							<td>'.$BeanGiacenze->bar_code.'</td>
+							<td>'.$BeanContent->nome_it.'</td>
+							<td>'.$BeanContent->C3.'</td>
+							<td>'.$BeanGiacenze->quantita.'</td>
+							<!--<td>'.$product['quantita'].'</td>-->
+							<td>'.$_SESSION[session_id()]['basket'][$Content['id']]['sel_quantita'].'</td>
+							<td>'.Currency::FormatEuro($Content[$this->key_prezzo]).'</td>
+							<td>'.$iva.'%</td>
+							<td>'.Currency::FormatEuro($product['importo']).'</td>
+						</tr>
+						';
+				}
+
+				if(!empty($imponibile))
+				{
+					$html .= '<tr style="color:#8F8F8F;font-size:16px;">';
+					$html .= '<td colspan="8" align="right">';
+					$html .= '<table cellpadding="6" width="220">';
+					$html .= '<tr style="color:#8F8F8F;font-size:16px;">';
+					if($speseSpedizione[0]['name'] != '0,00' && $speseSpedizione[0]['name'] > 0)
+					{
+						$html .= '<td align="right">Spese Spedizione</td>';
+						$html .= '<td>&euro; '.$this->tEngine->getFormatPrice($speseSpedizione[0]['name']).'</td>';
+					}
+					else
+					{
+						$html .= '<td align="right"></td>';
+						$html .= '<td></td>';
+					}
+					$html .= '</tr>';
+					$html .= '<tr style="color:#8F8F8F;font-size:16px;">';
+					$html .= '<td align="right">Imponibile</td>';
+					$html .= '<td>'.Currency::FormatEuro($tot_imponibile).'</td>';
+					$html .= '</tr>';
+					$html .= '<tr style="color:#8F8F8F;font-size:16px;">';
+					$html .= '<td align="right">IVA '.$iva.'%</td>';
+					$html .= '<td>'.Currency::FormatEuro(round($tot_prezzo_iva, 2)).'</td>';
+					$html .= '</tr>';
+					$html .= '<tr style="color:#8F8F8F;font-size:16px;">';
+					$html .= '<td align="right">Totale</td>';
+					$html .= '<td>'.Currency::FormatEuro( ($total + round($tot_prezzo_iva, 2))).'</td>';
+					$html .= '</tr>';
+					$html .= '</table>';
+					$html .= '</td>';
+					$html .= '</tr>';
+				}				
+				$html .= '</table>
+					</td>
+				<tr>
+					<td colspan="2" style="color:#8F8F8F;font-size:10px;">
+						'.ADMIN_RAGIONE_SOCIALE.' - '.ADMIN_INDIRIZZO.' - '.ADMIN_TELEFONO.' - '.ADMIN_P_IVA.'
+					</td>
+				</tr>
+			</table>
+			</body>
+			</html>';
+		$this->setHtmlText($html);
+		$this->mail_factory();
+
+		$is_send = $this->sendMail($userAnag['email']);
+		$is_send = $this->sendMail('siso77@gmail.com');
+		$is_send = $this->sendMail(EMAIL_ADMIN_TO);
+		
+		if(PEAR::isError($is_send))
+		{
+			echo "Errore nell'invio della mail!";
+			exit;
+		}
+		return $is_send;
+	}
+}
+?>

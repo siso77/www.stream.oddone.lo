@@ -1,0 +1,34 @@
+10
+
+dir
+2
+http://192.168.0.4/svn/gardesana/trunk/admin/style/template
+http://192.168.0.4/svn/gardesana
+
+
+
+2013-03-04T22:52:19.820665Z
+2
+siso
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+63943108-bf6c-2345-ab5b-09b6d17420ce
+
+config
+dir
+
+web
+dir
+

@@ -1,0 +1,53 @@
+<?php $_tplvar = $this->getVars();?>
+
+<?php if($_REQUEST['act'] == 'SetupColor' || $_REQUEST['act'] == 'SetupNewColor'):?>
+<br><br>
+<ul id="jsddm">
+    <li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=SetupColor" class="selected"><?php echo $this->getText('sub_menu_top_list_color');?></a></li>
+    <li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=SetupNewColor"><?php echo $this->getText('sub_menu_top_new_color');?></a></li>
+</ul>
+<?php endif;?>
+<?php if($_REQUEST['act'] == 'SetupSize' || $_REQUEST['act'] == 'SetupNewSize'):?>
+<br><br>
+<ul id="jsddm">
+    <li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=SetupSize" class="selected"><?php echo $this->getText('sub_menu_top_list_size');?></a></li>
+    <li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=SetupNewSize"><?php echo $this->getText('sub_menu_top_new_size');?></a></li>
+</ul>
+<?php endif;?>
+<?php if($_REQUEST['act'] == 'SetupSizeType' || $_REQUEST['act'] == 'SetupNewSizeType'):?>
+<br><br>
+<ul id="jsddm">
+    <li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=SetupSizeType" class="selected"><?php echo $this->getText('sub_menu_top_list_size_type');?></a></li>
+    <li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=SetupNewSizeType"><?php echo $this->getText('sub_menu_top_new_size_type');?></a></li>
+</ul>
+<?php endif;?>
+<?php if($_REQUEST['act'] == 'SetupPercentDiscount' || $_REQUEST['act'] == 'SetupNewPercentDiscount'):?>
+<br><br>
+<ul id="jsddm">
+    <li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=SetupPercentDiscount" <?php if($_REQUEST['act']=='SetupPercentDiscount'):?> class="selected"<?php else:?> class="not_selected"<?php endif;?>><?php echo $this->getText('sub_menu_top_list_percent_discount');?></a></li>
+    <li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=SetupNewPercentDiscount" <?php if($_REQUEST['act']=='SetupNewPercentDiscount'):?> class="selected"<?php else:?> class="not_selected"<?php endif;?>><?php echo $this->getText('sub_menu_top_new_percent_discount');?></a></li>
+</ul>
+<?php endif;?>
+
+<?php if($_REQUEST['act'] == 'ListaUtenti'):?>
+<br><br>
+<ul id="jsddm">
+    <li><a href="javascript:void(0);" onclick="javascript:showConfirmDelete('new_user');" class="selected">NUOVO UTENTE</a></li>
+</ul>
+<?php endif;?>
+
+<?php if($_REQUEST['act'] == 'CaricaMagazzino' || $_REQUEST['act'] == 'CaricaMagazzinoGiacenze' || $_REQUEST['act'] == 'CaricaMagazzinoImmagini'):?>
+<br><br>
+<?php 
+$params = '';
+if(!empty($_REQUEST['id_content']))
+	$params .= '&id_content='.$_REQUEST['id_content'];
+if(!empty($_REQUEST['bar_code']))
+	$params .= '&bar_code='.$_REQUEST['bar_code'];
+?>
+<ul id="jsddm">
+    <li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=CaricaMagazzino<?php echo $params;?>" <?php if($_REQUEST['act']=='CaricaMagazzino'):?> class="selected"<?php else:?> class="not_selected"<?php endif;?>>PRODOTTO</a></li>
+    <li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=CaricaMagazzinoGiacenze<?php echo $params;?>" <?php if($_REQUEST['act']=='CaricaMagazzinoGiacenze'):?> class="selected"<?php else:?> class="not_selected"<?php endif;?>>GIACENZE</a></li>
+    <li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=CaricaMagazzinoImmagini<?php echo $params;?>" <?php if($_REQUEST['act']=='CaricaMagazzinoImmagini'):?> class="selected"<?php else:?> class="not_selected"<?php endif;?>>IMMAGINI</a></li>
+</ul>
+<?php endif;?>

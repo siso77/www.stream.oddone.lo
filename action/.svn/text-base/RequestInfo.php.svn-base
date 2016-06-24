@@ -1,0 +1,192 @@
+<?php
+include_once(APP_ROOT.'/beans/category.php');
+include_once(APP_ROOT."/beans/content.php");
+include_once(APP_ROOT."/beans/magazzino.php");
+
+class RequestInfo extends DBSmartyMailAction
+{
+	var $className;
+
+	function RequestInfo()
+	{
+		parent::DBSmartyMailAction();
+		
+		$this->className = get_class($this);
+
+		require_once(APP_ROOT.'/libs/ext/google_recaptcha/recaptchalib.php');
+		$privatekey = "6LfcC9MSAAAAAM9yV2HSpq7Zu3bLPWrjxkpBDURD";
+		$resp = recaptcha_check_answer ($privatekey,
+										$_SERVER["REMOTE_ADDR"],
+										$_POST["recaptcha_challenge_field"],
+										$_POST["recaptcha_response_field"]);
+		
+		if (!$resp->is_valid) 
+			$this->_redirect('?act=ProductInfo&id='.$_SESSION[session_id()]['product_id'].'&error_captcha=1');
+		else 
+		{
+			$BeanContent = new content();
+			$where = " AND content.id = ".$_SESSION[session_id()]['product_id'];		
+			$content = $BeanContent->dbSearch($this->conn, $where, new magazzino());
+
+			include_once(APP_ROOT."/beans/newsletter_emails.php");
+			if(empty($_SESSION['LoggedUser']))
+			{
+				$BeanNewsletterEmails = new newsletter_emails();
+				$email_exists = $BeanNewsletterEmails->dbSearch($this->conn, $_REQUEST['email']);
+				if(!$email_exists)
+				{
+					$BeanNewsletterEmails->setEmail($_REQUEST['email']);
+					$BeanNewsletterEmails->dbStore($this->conn);
+				}			
+			}
+			$this->SendEmail($content);
+			unset($_SESSION['request_info']['customer_data']);
+			$this->_redirect('?act=ProductInfo&id='.$_SESSION[session_id()]['product_id'].'&confirm=1');
+		}		
+		
+//		include_once APP_ROOT . '/securimage/securimage.php';
+//		$securimage = new Securimage();		
+//		
+//		$_SESSION['request_info']['customer_data'] = $_REQUEST;
+//		
+//		if ($securimage->check($_POST['captcha_code']) == false) {
+//			$this->_redirect('?act=ProductInfo&id='.$_SESSION[session_id()]['product_id'].'&error_captcha=1');
+//		}
+//		else{
+//			$BeanContent = new content();
+//			$where = " AND content.id = ".$_SESSION[session_id()]['product_id'];		
+//			$content = $BeanContent->dbSearch($this->conn, $where, new magazzino());
+//			$this->SendEmail($content);
+//			unset($_SESSION['request_info']['customer_data']);
+//			$this->_redirect('?act=ProductInfo&id='.$_SESSION[session_id()]['product_id'].'&confirm=1');
+//		}
+	}
+	
+	function SendEmail($product)
+	{
+		
+		$hdrs = array("From" 		=> "info@pro-bike.it", 
+					  "To" 			=> $_REQUEST['email'],
+					  "Cc" 			=> "", 
+					  "Bcc" 		=> "", 
+					  "Subject" 	=> "Richiesta informazioni da ".str_replace("\\", "", $_REQUEST['nome']).' '.str_replace("\\", "", $_REQUEST['cognome']),
+					  "Date"		=> date("r")
+					  );
+		$this->setHeaders($hdrs);
+
+		$html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+				<html xmlns="http://www.w3.org/1999/xhtml">
+				<html>
+				<HEAD>
+					<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+				    <title>Richiesta informazioni da '.str_replace("\\", "", $_REQUEST['nome']).' '.str_replace("\\", "", $_REQUEST['cognome']).'</title>
+				</HEAD>
+				<body style="background-color:#000">
+				<table width="100%" height="100%" border="0" cellspacing="10">
+				<tr>
+					<td width="150" style="color:#000;font-size:22px;"><img src="http://www.pro-bike.it/wp-content/themes/stationpro/images/logo_bw.png"></td>
+					<td align="left" style="color:#fff;font-size:22px;font-family: Arial,Verdana,Sans-serif;color: #999;font-size: 1.3em;font-weight: bold;"><h3>PRO BIKE S.r.l.</h3></td>
+				</tr>
+				<tr>
+					<td colspan="2" style="color:#8F8F8F;font-size:16px;font-size:16px;">
+						Richiesta informazioni da '.str_replace("\\", "", $_REQUEST['nome']).' '.str_replace("\\", "", $_REQUEST['cognome']).' per il prodotto '.$product[0]['name'].' - '.$product[0]['name_it'].'.<br>
+					</td>
+				</tr>
+				<tr>
+					<td style="color:#8F8F8F;font-size:16px;font-size:16px;">
+						Richiesta: 
+					</td>
+					<td style="color:#8F8F8F;font-size:16px;font-size:16px;">
+						'.str_replace("\\", "", $_REQUEST['richiesta']).'
+					</td>
+				</tr>
+				<tr>
+					<td style="color:#8F8F8F;font-size:16px;font-size:16px;" valign="top">
+						Dettaglio richiedente	
+					</td>
+					<td style="color:#8F8F8F;font-size:16px;font-size:16px;">
+						<table>
+						<tr>
+							<td>Nome</td>
+							<td>'.str_replace("\\", "", $_REQUEST['nome']).'</td>
+						</tr>
+						<tr>
+							<td>Cognome</td>
+							<td>'.str_replace("\\", "", $_REQUEST['cognome']).'</td>
+						</tr>
+						<tr>
+							<td>Telefono</td>
+							<td>'.$_REQUEST['telefono'].'</td>
+						</tr>
+						<tr>
+							<td>Email</td>
+							<td>'.$_REQUEST['email'].'</td>
+						</tr>
+						<tr>
+							<td>Localita</td>
+							<td>'.str_replace("\\", "", $_REQUEST['localita']).'</td>
+						</tr>
+						<tr>
+							<td>Data Richiesta</td>
+							<td>'.date('d/m/Y H:i:s').'</td>
+						</tr>
+						</table>
+					</td>
+					</tr>
+				<tr>
+					<td colspan="2" style="color:#8F8F8F;font-size:16px;font-size:10px;">
+						PRO BIKE S.r.l. - Via Alfredo Catalani 9 - 00199 - Roma - Tel. +39 06 82 21 32 - P.I. 05178341003
+					</td>
+				</tr>
+			</table>
+			</body>
+			</html>';
+
+		$this->setHtmlText($html);
+		$this->mail_factory();
+
+		if(!$this->checkEmail($_REQUEST['email']))
+		{
+			$hdrs = array("From" 		=> "info@pro-bike.it", 
+						  "To" 			=> $_REQUEST['email'],
+						  "Cc" 			=> "", 
+						  "Bcc" 		=> "", 
+						  "Subject" 	=> "Debug richiesta info ".$_REQUEST['email']." - Addr. ".$_SERVER["REMOTE_ADDR"],
+						  "Date"		=> date("r")
+						  );
+			$this->setHeaders($hdrs);
+			$is_send = $this->sendMail('siso77@gmail.com');
+			return 1;
+		}
+//		$is_send = $this->sendMail($_REQUEST['email']);
+		$is_send = $this->sendMail('siso77@gmail.com');
+		$is_send = $this->sendMail('info@pro-bike.it');
+
+		if(PEAR::isError($is_send))
+		{
+			echo "Errore nell'invio della mail!";
+			exit;
+		}
+		return $is_send;
+	}
+	
+	function checkEmail($email) 
+	{
+	   // Create the syntactical validation regular expression
+	   $regexp = "^([_a-z0-9-]+)(\.[_a-z0-9-]+)*@([a-z0-9-]+)(\.[a-z0-9-]+)*(\.[a-z]{2,4})$";
+	   // Presume that the email is invalid
+	   $valid = 0;
+	   // Validate the syntax
+	   if (eregi($regexp, $email))
+	   {
+	      list($username,$domaintld) = split("@",$email);
+	      // Validate the domain
+	      if (getmxrr($domaintld,$mxrecords))
+	         $valid = 1;
+	   } else {
+	      $valid = 0;
+	   }
+	   return $valid;
+	}		
+}
+?>

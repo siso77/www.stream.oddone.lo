@@ -1,0 +1,5 @@
+Jan 04 11:55:15|5[info]04/01/2015 11:55:15 - [UTENTE = ][REMOTE IP = 95.225.163.88][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0]
+Jan 04 11:55:23|5[info]04/01/2015 11:55:23 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][act = Home][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0]
+Jan 04 11:55:27|5[info]04/01/2015 11:55:27 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][act = ListaContenuti][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0]
+Jan 04 11:55:35|5[info]04/01/2015 11:55:35 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][act = CaricaMagazzino][id_content = 40][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0]
+Jan 04 11:56:39|5[info]04/01/2015 11:56:39 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][act = ListaContenuti][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0]

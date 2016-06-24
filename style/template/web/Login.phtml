@@ -1,0 +1,65 @@
+<?php $_tplvar = $this->getVars();?>
+<style>
+td{
+	padding:15px;
+}
+</style>
+<script>
+jQuery(document).ready(function() { 
+	jQuery('#username').focus();
+});
+</script>
+<br><br><br><br>
+<div class="line"></div>
+<div class="login_page">
+<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=Login" method="post">
+		<fieldset class="col2-set login-page">
+            <div class="col-1 new-users"> 
+                 <?php echo $this->getText('new_user');?>                                
+                  <div class="content">         
+	             <?php echo $this->getText('text_register');?>                          
+                    <div class="buttons-set" style="margin-top: 27px;">
+                      <button type="button" title="Richiedi accredito come nuovo cliente" class="button" onclick="javascript:document.location.href = '<?php echo $_tplvar['WWW_ROOT']?>?act=CreateAccount'"><?php echo $this->getText('new_client');?></button>                     
+                    </div> <!--buttons-set-->
+                  </div> <!--content-->                
+            </div> <!--col-1 new-users-->
+            <div class="col-2 registered-users">
+            <?php echo $this->getText('user_register');?>  
+                  <div class="content">                                    
+                    <p><?php echo $this->getText('account');?></p>
+                    <ul class="form-list">
+                        <li>
+                            <label for="email"><?php echo $this->getText('username');?><em class="required">*</em></label>
+                            <div class="input-box">
+                                <input type="text" name="username" value="" id="email" class="input-text required-entry validate-email" title="Username">
+                            </div>
+                        </li>
+                        <li>
+                            <label for="pass">Password<em class="required">*</em></label>
+                            <div class="input-box">
+                                <input type="password" name="password" class="input-text required-entry validate-password" id="pass" title="Password">
+                            </div>
+                        </li>
+					</ul>
+                    
+
+                    <p class="required"><?php echo $this->getText('required_field');?></p>
+                    <div class="buttons-set">                                                      
+                       <button type="submit" class="button" title="Login" name="send" id="send2"><span>Login</span></button>    
+                       <a href="<?php echo $_tplvar['WWW_ROOT']?>?act=ForgotPassword"><?php echo $this->getText('forgot_password');?></a>                                                      
+                    </div> <!--buttons-set-->
+                  </div> <!--content-->                               
+            </div> <!--col-2 registered-users-->
+              </fieldset> <!--col2-set login-page-->
+    </form>
+    <script type="text/javascript">
+    //<![CDATA[
+        var dataForm = new VarienForm('login-form', true);
+    //]]>
+    </script>
+</div>
+
+
+
+
+</form>

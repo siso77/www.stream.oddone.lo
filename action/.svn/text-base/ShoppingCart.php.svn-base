@@ -1,0 +1,188 @@
+<?php
+include_once(APP_ROOT.'/beans/category.php');
+include_once(APP_ROOT."/beans/content.php");
+include_once(APP_ROOT."/beans/giacenze.php");
+include_once(APP_ROOT."/beans/ecm_basket.php");
+include_once(APP_ROOT."/beans/ecm_basket_magazzino.php");
+
+class ShoppingCart extends DBSmartyAction
+{	
+	function ShoppingCart()
+	{
+		parent::DBSmartyAction();
+//unset($_SESSION[session_id()]['basket']);
+//unset($_SESSION[session_id()]['cart']);
+
+		if(empty($_SESSION['LoggedUser']))
+			$this->_redirect('?act=Login');
+
+		if(!empty($_SERVER['HTTP_DELETE_SESSION']))
+			unset($_SESSION[session_id()]);
+			
+		if(!empty($_REQUEST['params']))
+			$this->tEngine->assign('params_banking', $_REQUEST['params']);
+			
+		if(!empty($_REQUEST['delete']) && !empty($_SESSION[session_id()]['cart']['contenuto'][ $_REQUEST['id_magazzino'] ]))
+		{
+			$BeanMagazzino = new giacenze($this->conn, $_REQUEST['id_magazzino']);
+			if(!empty($_SESSION[session_id()]['basket'][$key]['quantita']))
+				$BeanMagazzino->setDisponibilita(($BeanMagazzino->getDisponibilita()+($_SESSION[session_id()]['basket'][$key]['quantita'])*$BeanMagazzino->getQuantita()));
+			else
+				$BeanMagazzino->setDisponibilita($BeanMagazzino->getDisponibilita()+(1*$BeanMagazzino->getQuantita()));
+
+			$BeanMagazzino->dbStore($this->conn);
+
+			$beanBasket = new ecm_basket();
+			$basket = $beanBasket->dbGetOneByCustomerAndDate($this->conn, $_SESSION['LoggedUser']['id'], date('Y-m-d'));
+			$beanBasketMagazzino = new ecm_basket_magazzino();
+			$basketMagazzino = $beanBasketMagazzino->dbGetOneByBasketAndMagazzino($this->conn, $basket['id'], $_SESSION[session_id()]['cart']['contents'][ $_REQUEST['id_to_basket'][$key] ]['id_magazzino']);
+			if(!empty($basketMagazzino))
+			{
+				$beanBasketMagazzino->setIs_active(0);
+				$beanBasketMagazzino->dbStore($this->conn);
+			}
+			unset($_SESSION[session_id()]['cart']['contents'][ $_REQUEST['id_magazzino'] ]);
+			unset($_SESSION[session_id()]['cart']['contenuto'][ $_REQUEST['id_magazzino'] ]);
+			
+			unset($_SESSION[session_id()]['basket'][$_REQUEST['id_magazzino']]);
+			
+//			foreach ($_SESSION[session_id()]['basket'] as $key => $value)
+//			{
+//				if($value['id'] == $_REQUEST['id_content'])
+//					unset($_SESSION[session_id()]['basket'][$key]);
+//			}
+			if(count($_SESSION[session_id()]['basket']) == 0)
+				unset($_SESSION[session_id()]['ecm_basket']);
+
+			Base_CacheCore::getInstance()->clean();
+			if(!empty($_REQUEST['delete_from_box']))
+			{
+				$this->_redirect('Magazzino-Online/Lista-Prodotti.html');
+				exit();
+			}
+		}
+
+		$beanBasket = new ecm_basket();
+		$basket = $beanBasket->dbGetOneByCustomerAndDate($this->conn, $_SESSION['LoggedUser']['id'], date('Y-m-d'));
+		
+		if(!empty($_REQUEST['id']))
+		{
+			if(empty($basket))
+			{
+				$beanBasket->setId_user($_SESSION['LoggedUser']['id']);
+				$beanBasket->setOperatore(ECM_OPERATORE);
+				$beanBasket->dbStore($this->conn);
+				$basket = $beanBasket->vars();
+			}
+			$_SESSION[session_id()]['ecm_basket'] = $basket['id'];
+
+			$BeanGiacenze = new giacenze();
+			$where = " AND giacenze.id = ".$_REQUEST['id'];		
+			$content = $BeanGiacenze->dbSearch($this->conn, $where);	
+			$BeanContenuti = new content($this->conn, $_REQUEST['id']);
+
+			if(empty($_SESSION[session_id()]['cart']['contents'][ $BeanContenuti->id ]))
+			{
+				$beanBasketMagazzino = new ecm_basket_magazzino();
+				$beanBasketMagazzino->setId_basket($basket['id']);
+				$beanBasketMagazzino->setId_magazzino($_REQUEST['id']);
+				if(empty($_REQUEST['quantita']))
+					$beanBasketMagazzino->setQuantita(1*$content[0]['quantita']);
+				$beanBasketMagazzino->dbStore($this->conn);
+				
+				$BeanMagazzino = new giacenze($this->conn, $_REQUEST['id']);
+				if(empty($_REQUEST['quantita']))
+					$BeanMagazzino->setDisponibilita($BeanMagazzino->getDisponibilita()-(1*$content[0]['quantita']));
+				$BeanMagazzino->dbStore($this->conn);
+				
+				$key = count($_SESSION[session_id()]['basket']);
+				$_SESSION[session_id()]['basket'][$content[0]['id']]['id'] = $content[0]['id'];
+//				if(empty($_REQUEST['quantita']))
+
+				$_SESSION[session_id()]['basket'][$content[0]['id']]['quantita'] = 1*$content[0]['quantita'];
+				$_SESSION[session_id()]['basket'][$content[0]['id']]['sel_quantita'] = 1;
+			}
+			$contenuto = $BeanContenuti->vars();
+			$_SESSION[session_id()]['cart']['contenuto'][ $content[0]['id'] ] = $contenuto;
+			$_SESSION[session_id()]['cart']['contents'][ $content[0]['id'] ] = $content[0];
+			
+			$contentInCart = $_SESSION[session_id()]['cart']['contents'][ $content[0]['id'] ];
+			$contenutoInCart = $_SESSION[session_id()]['cart']['contenuto'][ $_SESSION[session_id()]['basket'][$content[0]['id']]['id'] ];
+
+			$contentInCart['price_it_qty'] = (str_replace(',', '.', $contenuto[$this->key_prezzo])*1)*$content[0]['quantita'];
+			$_SESSION[session_id()]['cart']['contents'][ $content[0]['id'] ] = $contentInCart;
+		}
+
+		if(!empty($_REQUEST['quantita']))
+		{
+			if(!empty($_REQUEST['is_ajax']))
+			{
+				$BeanMagazzino = new giacenze($this->conn, $_REQUEST['id_mag']);
+				$BeanMagazzino->setDisponibilita(($BeanMagazzino->getDisponibilita())-($_REQUEST['quantita']*$BeanMagazzino->getQuantita()));
+				$BeanMagazzino->dbStore($this->conn);
+
+				foreach ($_SESSION[session_id()]['basket'] as $k => $value)
+				{
+					if($value['id'] == $BeanMagazzino->id)
+					{
+						$_SESSION[session_id()]['basket'][$BeanMagazzino->id]['quantita'] = $_REQUEST['quantita']*$BeanMagazzino->getQuantita();
+						$_SESSION[session_id()]['basket'][$BeanMagazzino->id]['sel_quantita'] = $_REQUEST['quantita'];
+						$contentInCart = $_SESSION[session_id()]['cart']['contents'][ $_SESSION[session_id()]['basket'][$BeanMagazzino->id]['id'] ];
+						$contenutoInCart = $_SESSION[session_id()]['cart']['contenuto'][ $_SESSION[session_id()]['basket'][$BeanMagazzino->id]['id'] ];
+							
+						$contentInCart['price_it_qty'] = (str_replace(',', '.', $contenutoInCart[$this->key_prezzo])*($_SESSION[session_id()]['basket'][$BeanMagazzino->id]['sel_quantita']*$BeanMagazzino->getQuantita()));
+						$_SESSION[session_id()]['cart']['contents'][ $_SESSION[session_id()]['basket'][$BeanMagazzino->id]['id'] ] = $contentInCart;
+					}
+				}
+			}
+			else
+			{			
+				foreach ($_REQUEST['quantita'] as $key => $value)
+				{
+					$BeanMagazzino = new giacenze($this->conn, $_SESSION[session_id()]['cart']['contents'][ $_REQUEST['id_to_basket'][$key] ]['id']);
+					
+					if(!empty($_SESSION[session_id()]['basket'][$key]['quantita']))
+						$BeanMagazzino->setDisponibilita(($BeanMagazzino->getDisponibilita())-($_REQUEST['quantita'][$key]*$BeanMagazzino->getQuantita()));
+					else
+						$BeanMagazzino->setDisponibilita( ($BeanMagazzino->getDisponibilita())-($_REQUEST['quantita'][$key]*$BeanMagazzino->getQuantita()) );
+	
+					$BeanMagazzino->dbStore($this->conn);
+					
+					$beanBasketMagazzino = new ecm_basket_magazzino();
+					$basketMagazzino = $beanBasketMagazzino->dbGetOneByBasketAndMagazzino($this->conn, $basket['id'], $_SESSION[session_id()]['cart']['contents'][ $_REQUEST['id_to_basket'][$key] ]['id']);
+					
+					if(!empty($basketMagazzino))
+					{
+						$beanBasketMagazzino->setQuantita($_REQUEST['quantita'][$key]);
+						$beanBasketMagazzino->dbStore($this->conn);
+					}
+	
+					$_SESSION[session_id()]['basket'][$key]['id'] = $_REQUEST['id_to_basket'][$key];
+					$_SESSION[session_id()]['basket'][$key]['quantita'] = $_REQUEST['quantita'][$key];
+					$_SESSION[session_id()]['basket'][$key]['sel_quantita'] = $_REQUEST['quantita'][$key];
+					$contentInCart = $_SESSION[session_id()]['cart']['contents'][ $_SESSION[session_id()]['basket'][$key]['id'] ];
+					$contenutoInCart = $_SESSION[session_id()]['cart']['contenuto'][ $_SESSION[session_id()]['basket'][$key]['id'] ];
+					
+					$contentInCart['price_it_qty'] = (str_replace(',', '.', $contenutoInCart[$this->key_prezzo])*($_SESSION[session_id()]['basket'][$key]['sel_quantita']*$BeanMagazzino->getQuantita()));
+					$_SESSION[session_id()]['cart']['contents'][ $_SESSION[session_id()]['basket'][$key]['id'] ] = $contentInCart;
+				}
+			}
+		}
+
+		$this->tEngine->assign('products', $_SESSION[session_id()]['cart']);
+		$this->tEngine->assign('basket', $_SESSION[session_id()]['basket']);
+
+		if(!empty($_REQUEST['is_ajax']))
+		{
+			echo $this->tEngine->fetch('shared/BoxCart');
+			echo "<script>jQuery('#amount').html( '".count($_SESSION[session_id()]['cart']['contents'])."' );</script>";
+			exit();
+		}
+		else
+		{
+			$this->tEngine->assign('tpl_action', 'ShoppingCart');
+			$this->tEngine->display('Index');
+		}
+	}
+}
+?>

@@ -1,0 +1,6 @@
+Dec 27 09:11:05|5[info]27/12/2014 09:11:05 - [UTENTE = ][REMOTE IP = 95.225.163.88][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0]
+Dec 27 09:11:12|5[info]27/12/2014 09:11:12 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][act = Home][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0]
+Dec 27 09:11:20|5[info]27/12/2014 09:11:20 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][act = ListaClienti][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0]
+Dec 27 09:11:24|5[info]27/12/2014 09:11:24 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][act = CaricaCliente][edit = 1][id = 1][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0]
+Dec 27 09:11:31|5[info]27/12/2014 09:11:31 - [UTENTE = paolo][REMOTE IP = 95.225.163.88][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0]
+Dec 27 16:29:13|5[info]27/12/2014 16:29:13 - [UTENTE = ][REMOTE IP = 66.249.81.144][REQUEST METHOD = GET][USER AGENT = Mozilla/5.0 (Windows NT 6.1; rv:6.0) Gecko/20110814 Firefox/6.0 Google favicon]

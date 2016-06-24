@@ -1,0 +1,31 @@
+<?php
+
+include_once(APP_ROOT."/beans/content.php");
+include_once(APP_ROOT."/beans/giacenze.php");
+
+class AjaxDetailGiacenza extends DBSmartyAction
+{
+	function AjaxDetailGiacenza()
+	{
+		parent::DBSmartyAction();
+
+		$BeanContenuti = new content($this->conn, $_REQUEST['id']);
+		
+		$BeanGiacenze = new giacenze();
+		$data = $BeanGiacenze->dbSearch($this->conn, " AND id_content = ".$_REQUEST['id']);
+		
+		$this->tEngine->assign('data', $data);
+		$this->tEngine->assign('contenuto', $BeanContenuti->vars());
+		
+		if(!empty($_REQUEST['touch']))
+		{
+			$this->tEngine->assign('tpl_action', 'shared/AjaxDetailGiacenza');
+			$this->tEngine->display('Index');
+		}
+		else
+		{
+			echo $this->tEngine->fetch('shared/AjaxDetailGiacenza');
+			exit();
+		}
+	}
+}

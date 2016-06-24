@@ -1,0 +1,382 @@
+<?php
+//ini_set('display_errors', 'On');
+include_once(APP_ROOT.'/beans/category.php');
+include_once(APP_ROOT."/beans/content.php");
+include_once(APP_ROOT."/beans/magazzino.php");
+
+class Search extends DBSmartyAction
+{
+	var $className;
+	var $prefixCacheKey = 'ecm_content_search_';
+
+	var $limit;
+	var $limit_start;
+	var $limit_end;
+
+	function Search()
+	{
+		parent::DBSmartyAction();
+
+		$this->className = get_class($this);
+
+		$this->assignSearchFields();
+		
+		$this->setKeySearchInSession();
+		
+		if(empty($_REQUEST['pageID']))
+		{
+			$this->limit_start = 0;
+			$this->limit_end = $this->rowForPage;
+			$this->limit = ' LIMIT '.$this->limit_start.','.$this->limit_end;
+			$_REQUEST['pageID'] = 1;
+		}
+		else
+		{
+			$this->limit_start = ($this->rowForPage * $_REQUEST['pageID']) - $this->rowForPage;
+			$this->limit_end = $this->rowForPage;
+			$this->limit = ' LIMIT '.$this->limit_start.','.$this->limit_end;
+		}
+		if(!empty($_REQUEST['layout']))
+			$_SESSION[$this->className]['layout'] = $_REQUEST['layout'];
+		
+		if(!empty($_REQUEST['reset']))
+		{
+			$_SESSION[$this->className]['order_by'] = null;
+			$_SESSION[$this->className]['order_type'] = null;
+			$_SESSION[$this->className]['result'] = null;
+		}
+		
+		if(!empty($_REQUEST['only_disp']))
+		{
+			$_SESSION[$this->className]['all_disp'] = false;
+			$_SESSION[$this->className]['only_disp'] = true;
+			
+			$_SESSION[$this->className]['order_by'] = null;
+			$_SESSION[$this->className]['order_type'] = null;
+			
+			$dataList = $this->getDispoData();
+		}
+		elseif($_REQUEST['all_disp'])
+		{
+			$_SESSION[$this->className]['only_disp'] = false;
+			$_SESSION[$this->className]['all_disp'] = true;
+			
+			$_SESSION[$this->className]['order_by'] = null;
+			$_SESSION[$this->className]['order_type'] = null;
+			
+			$dataList = $this->getDefaultData();
+		}
+		else
+			$dataList = $this->getDefaultData();
+
+		$BeanContent = new content();
+		$price_to = $BeanContent->dbFree($this->conn, "SELECT MAX(".$this->key_prezzo.") as MAX FROM content");
+		$price_from = $BeanContent->dbFree($this->conn, "SELECT MIN(".$this->key_prezzo.") as MIN FROM content");
+		
+		$this->tEngine->assign('default_price_from'  , (empty($price_from['MIN'])) ? 0 : round($price_from['MIN']));
+		$this->tEngine->assign('default_price_to'  , round($price_to['MAX']));
+			
+		$p = new MyPager($dataList['content'], $this->rowForPage);
+		$links = $p->getLinks();
+		$this->tEngine->assign('content', $p->getData());
+		
+		$this->tEngine->assign('tot_items'  , $dataList['num_contents']['num']);
+		$this->tEngine->assign('last_page'  , ( round(($dataList['num_contents']['num'] / $this->rowForPage)) == 0)? 1 : round(($dataList['num_contents']['num'] / $this->rowForPage)));
+		$p->pager->_currentPage = $_REQUEST['pageID'];
+
+//		$this->tEngine->assign('tot_items'  , $p->pager->_totalItems);
+		$this->tEngine->assign('curr_page'  , $p->pager->_currentPage);
+//		$this->tEngine->assign('last_page'  , $p->pager->_totalPages);
+		$this->tEngine->assign('numViewPage', $this->numViewPage);
+
+		$this->tEngine->assign('key_search', $_REQUEST['key_search']);
+		
+		if(!empty($_SESSION[$this->className]['all_disp']))
+			$this->tEngine->assign('all_disp', true);
+		if(!empty($_SESSION[$this->className]['only_disp']))
+			$this->tEngine->assign('only_disp', true);
+			
+		if($this->IsMobileDevice)
+		{
+			$this->tEngine->assign('tpl_action', 'Search');
+			$this->tEngine->display('Index');
+		}
+		elseif(empty($_SESSION[$this->className]['layout']) || empty($_REQUEST['is_ajax']))
+		{
+			if(empty($_SESSION[$this->className]['layout']))
+				$this->tEngine->assign('tpl_action', 'SearchListDetailed');
+			else
+			{
+				switch ($_SESSION[$this->className]['layout'])
+				{
+					case 'grid':
+						$this->tEngine->assign('tpl_action', 'SearchListDetailed');
+					break;
+					case 'boxed':
+						$this->tEngine->assign('tpl_action', 'SearchBoxed');
+					break;
+					case 'thumb':
+						$this->tEngine->assign('tpl_action', 'SearchThumb');
+					break;
+				}
+			}			
+			$this->tEngine->display('Index');
+		}
+		else 
+		{
+			switch ($_SESSION[$this->className]['layout'])
+			{
+				case 'grid':
+					echo $this->tEngine->fetch('SearchListDetailed');
+				break;
+				case 'boxed':
+					echo $this->tEngine->fetch('SearchBoxed');
+				break;
+				case 'thumb':
+					echo $this->tEngine->fetch('SearchThumb');
+				break;
+			}
+		}
+	}
+	
+	function setKeySearchInSession()
+	{
+		if($_REQUEST['colore'] == '' && !empty($_REQUEST['go_search']))
+			$_SESSION[$this->className]['colore'] = null;
+		if($_REQUEST['tipo_colore'] == '' && !empty($_REQUEST['go_search']))
+			$_SESSION[$this->className]['tipo_colore'] = null;
+		if($_REQUEST['gm'] == '' && !empty($_REQUEST['go_search']))
+			$_SESSION[$this->className]['gm'] = null;
+		if($_REQUEST['famiglia'] == '' && !empty($_REQUEST['go_search']))
+			$_SESSION[$this->className]['famiglia'] = null;
+		if($_REQUEST['name'] == '' && !empty($_REQUEST['go_search']))
+			$_SESSION[$this->className]['name'] = null;
+		if($_REQUEST['price_from'] == '' && !empty($_REQUEST['go_search']))
+			$_SESSION[$this->className]['price_from'] = null;
+		if($_REQUEST['price_to'] == '' && !empty($_REQUEST['go_search']))
+			$_SESSION[$this->className]['price_to'] = null;
+
+		$is_empty = true;
+		if(!empty($_SESSION[$this->className]['colore']))
+		{
+			$_REQUEST['colore'] = $_SESSION[$this->className]['colore'];
+			$is_empty = false;
+		}
+		if(!empty($_SESSION[$this->className]['tipo_colore']))
+		{
+			$_REQUEST['tipo_colore'] = $_SESSION[$this->className]['tipo_colore'];
+			$is_empty = false;
+		}
+		if(!empty($_SESSION[$this->className]['gm']))
+		{
+			$_REQUEST['gm'] = $_SESSION[$this->className]['gm'];
+			$is_empty = false;
+		}
+		if(!empty($_SESSION[$this->className]['famiglia']))
+		{
+			$_REQUEST['famiglia'] = $_SESSION[$this->className]['famiglia'];
+			$is_empty = false;
+		}
+		if(!empty($_SESSION[$this->className]['name']))
+		{
+			$_REQUEST['name'] = $_SESSION[$this->className]['name'];
+			$is_empty = false;
+		}
+		if(!empty($_SESSION[$this->className]['price_from']))
+		{
+			$_REQUEST['price_from'] = $_SESSION[$this->className]['price_from'];
+			$is_empty = false;
+		}
+		if(!empty($_SESSION[$this->className]['price_to']))
+		{
+			$_REQUEST['price_to'] = $_SESSION[$this->className]['price_to'];
+			$is_empty = false;
+		}
+		if(!$is_empty)
+			$_SERVER['REQUEST_METHOD'] = 'POST';
+	}
+	
+	function getDispoData()	
+	{
+		$BeanContent = new content();
+// 		if( ($_SERVER['REQUEST_METHOD'] == 'POST' || !empty($_REQUEST['order_by'])) && empty($_REQUEST['is_ajax']) )
+		if( ($_SERVER['REQUEST_METHOD'] == 'POST' || !empty($_REQUEST['order_by'])) )
+		{
+			if($_REQUEST['key_search'] == 'Cerca...')
+				$_REQUEST['key_search'] = null;
+
+			if(!empty($_REQUEST['order_by']))
+			{
+				$_SESSION[$this->className]['order_by'] = $_REQUEST['order_by'];
+				$_SESSION[$this->className]['order_type'] = $_REQUEST['order_type'];
+				$_SESSION[$this->className]['result'] = null;
+			}
+			if(!empty($_REQUEST['key_search']))
+			{
+				$where .= " content.nome_it LIKE '%".$_REQUEST['key_search']."%' AND ";
+				$where .= " content.descrizione_it LIKE '%".$_REQUEST['key_search']."%' AND ";
+				$where .= " content.vbn LIKE '%".$_REQUEST['key_search']."%' AND ";
+			}
+			if(!empty($_REQUEST['price_from']) && !empty($_REQUEST['price_to']))
+				$where .= " content.price_it BETWEEN '".$_REQUEST['price_from']."' AND '".$_REQUEST['price_to']."' OR ";
+			elseif(!empty($_REQUEST['price_from']) && empty($_REQUEST['price_to']))
+				$where .= " content.price_it > '".$_REQUEST['price_from']."' OR ";
+			elseif(empty($_REQUEST['price_from']) && !empty($_REQUEST['price_to']))
+				$where .= " content.price_it < '".$_REQUEST['price_to']."' OR ";
+
+			if(!empty($_REQUEST['gm']))
+				$where .= " content.id_gm = ".$_REQUEST['gm']." OR";
+			
+			if(!empty($_REQUEST['colore']))
+				$where .= " C3 LIKE '%".$_REQUEST['colore']."%' AND";
+			if(!empty($_REQUEST['tipo_colore']))
+				$where .= " tipo_colore LIKE '%".$_REQUEST['tipo_colore']."%' OR";
+
+			if(!empty($_REQUEST['famiglia']))
+				$where .= " content.nome_it LIKE '%".$_REQUEST['famiglia']."%' OR content.descrizione_it LIKE '%".$_REQUEST['famiglia']."%' OR";
+				
+			$where = substr($where, 0, -3);
+			
+			if(!empty($where))
+			{
+				$where = " AND (".$where;
+				$where .= ")";
+			}
+			if(!empty($_SESSION[$this->className]['order_by']))
+				$order = ' ORDER BY '.$_SESSION[$this->className]['order_by'].' '.$_SESSION[$this->className]['order_type'];
+			else
+				$order = ' ORDER BY id ASC ';
+			$configCacheKey = $this->prefixCacheKey.'_disp'.md5($where.$order.$this->limit);
+			if (!$content = Base_CacheCore::getInstance()->load($configCacheKey)) 
+			{
+				$content = $BeanContent->dbSearchDisponibili($this->conn, $where.$order.$this->limit);
+				if(!empty($content))
+					Base_CacheCore::getInstance()->save($content, $configCacheKey);
+			}
+		}
+		else
+		{
+			$configCacheKey = $this->prefixCacheKey.'_disp'.md5($this->limit);
+			if (!$content = Base_CacheCore::getInstance()->load($configCacheKey)) 
+			{
+				$order = ' ORDER BY id ASC ';
+				$content = $BeanContent->dbSearchDisponibili($this->conn, $where.$order.$this->limit);
+
+				if(!empty($content))
+					Base_CacheCore::getInstance()->save($content, $configCacheKey);
+			}
+		}
+
+		$num_contents = $BeanContent->dbSearchCountedDisponibili($this->conn, $where);
+// 		$this->assignSearchFields();
+		
+		return array('content'=>$content, 'num_contents'=>$num_contents);		
+	}
+	
+	function assignSearchFields()
+	{
+		if(!empty($_REQUEST['colore']))
+			$_SESSION[$this->className]['colore'] = $_REQUEST['colore'];
+		if(!empty($_REQUEST['tipo_colore']))
+			$_SESSION[$this->className]['tipo_colore'] = $_REQUEST['tipo_colore'];
+		if(!empty($_REQUEST['gm']))
+			$_SESSION[$this->className]['gm'] = $_REQUEST['gm'];
+		if(!empty($_REQUEST['famiglia']))
+			$_SESSION[$this->className]['famiglia'] = $_REQUEST['famiglia'];
+		if(!empty($_REQUEST['name']))
+			$_SESSION[$this->className]['name'] = $_REQUEST['name'];
+		if(!empty($_REQUEST['price_from']))
+			$_SESSION[$this->className]['price_from'] = $_REQUEST['price_from'];
+		if(!empty($_REQUEST['price_to']))
+			$_SESSION[$this->className]['price_to'] = $_REQUEST['price_to'];
+		
+		$assignSearchFields['colore'] = $_SESSION[$this->className]['colore'];
+		$assignSearchFields['tipo_colore'] = $_SESSION[$this->className]['tipo_colore'];
+		$assignSearchFields['gm'] = $_SESSION[$this->className]['gm'];
+		$assignSearchFields['famiglia'] = $_SESSION[$this->className]['famiglia'];
+		$assignSearchFields['name'] = $_SESSION[$this->className]['name'];
+		$assignSearchFields['price_from'] = $_SESSION[$this->className]['price_from'];
+		$assignSearchFields['price_to'] = $_SESSION[$this->className]['price_to'];
+
+		$this->tEngine->assign('search', $assignSearchFields);		
+	}
+	
+	function getDefaultData()
+	{
+		$BeanContent = new content();
+// 		if( ($_SERVER['REQUEST_METHOD'] == 'POST' || !empty($_REQUEST['order_by'])) && empty($_REQUEST['is_ajax']) )
+		if( ($_SERVER['REQUEST_METHOD'] == 'POST' || !empty($_REQUEST['order_by'])) )
+		{
+			if($_REQUEST['key_search'] == 'Cerca...')
+				$_REQUEST['key_search'] = null;			
+			if(!empty($_REQUEST['order_by']))
+			{
+				$_SESSION[$this->className]['order_by'] = $_REQUEST['order_by'];
+				$_SESSION[$this->className]['order_type'] = $_REQUEST['order_type'];
+				$_SESSION[$this->className]['result'] = null;
+			}
+			if(!empty($_REQUEST['key_search']))
+			{
+				$where .= " (content.nome_it LIKE '%".$_REQUEST['key_search']."%' OR ";
+				$where .= " content.descrizione_it LIKE '%".$_REQUEST['key_search']."%' OR ";
+				$where .= " content.C1 LIKE '%".$_REQUEST['key_search']."%' OR ";
+				$where .= " content.vbn LIKE '%".$_REQUEST['key_search']."%') AND ";
+			}
+			if(!empty($_REQUEST['price_from']) && !empty($_REQUEST['price_to']))
+				$where .= " content.".$this->key_prezzo." BETWEEN ".$_REQUEST['price_from']." AND ".$_REQUEST['price_to']." OR ";
+			elseif(!empty($_REQUEST['price_from']) && empty($_REQUEST['price_to']))
+				$where .= " content.".$this->key_prezzo." > ".$_REQUEST['price_from']." OR ";
+			elseif(empty($_REQUEST['price_from']) && !empty($_REQUEST['price_to']))
+				$where .= " content.".$this->key_prezzo." < ".$_REQUEST['price_to']." OR ";
+
+			if(!empty($_REQUEST['gm']))
+				$where .= " content.id_gm = ".$_REQUEST['gm']." AND";
+			
+			if(!empty($_REQUEST['colore']))
+				$where .= " C3 LIKE '%".$_REQUEST['colore']."%' AND";
+			if(!empty($_REQUEST['tipo_colore']))
+				$where .= " tipo_colore LIKE '%".$_REQUEST['tipo_colore']."%' OR";
+
+//			if(!empty($_REQUEST['famiglia']))
+//				$where .= " content.nome_it LIKE '%".$_REQUEST['famiglia']."%' OR content.descrizione_it LIKE '%".$_REQUEST['famiglia']."%' OR";
+				
+			$where = substr($where, 0, -3);
+			
+			if(!empty($where))
+			{
+				$where = " AND (".$where;
+				$where .= ")";
+			}
+			if(!empty($_SESSION[$this->className]['order_by']))
+				$order = ' ORDER BY '.$_SESSION[$this->className]['order_by'].' '.$_SESSION[$this->className]['order_type'];
+			else
+				$order = ' ORDER BY id ASC ';
+				
+			$configCacheKey = $this->prefixCacheKey.'_default'.md5($where.$order.$this->limit);
+			if (!$content = Base_CacheCore::getInstance()->load($configCacheKey)) 
+			{
+				$content = $BeanContent->dbSearch($this->conn, $where.$order.$this->limit);
+				if(!empty($content))
+					Base_CacheCore::getInstance()->save($content, $configCacheKey);
+			}
+		}
+		else
+		{
+			$configCacheKey = $this->prefixCacheKey.'_default'.md5($this->limit);
+			if (!$content = Base_CacheCore::getInstance()->load($configCacheKey)) 
+			{
+				$order = ' ORDER BY id ASC ';
+				$content = $BeanContent->dbSearch($this->conn, $where.$order.$this->limit);
+
+				if(!empty($content))
+					Base_CacheCore::getInstance()->save($content, $configCacheKey);
+			}
+		}
+		
+		$num_contents = $BeanContent->dbSearchCounted($this->conn, $where);
+// 		$this->assignSearchFields();
+		
+		return array('content'=>$content, 'num_contents'=>$num_contents);
+	}
+}
+?>

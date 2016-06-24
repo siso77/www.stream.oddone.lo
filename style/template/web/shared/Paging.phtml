@@ -1,0 +1,58 @@
+<?php  
+
+//$route = $_tplvar['WWW_ROOT'].$_SERVER['REQUEST_URI'];
+
+$_tplvar = $this->getVars();
+if(!empty($assign['keys_search']))
+	$key_search = $assign['keys_search'];
+	
+// if(!empty($assign['order_by']))
+// 	$orderBy = '&order_by='.$assign['order_by'];
+// if(!empty($assign['order_type']))
+// 	$orderType = '&order_type='.$assign['order_type'];
+	
+// if(!empty($route))
+// 	$pagingUrl = $route.'&pageID='.$orderBy.$orderType;
+// else 
+	$pagingUrl = $_tplvar['WWW_ROOT'].'?act='.$_REQUEST['act'].$key_search.$orderBy.$orderType.'&pageID=';
+
+$numViewPages = $_tplvar['numViewPage'];
+$initPages 	  = $_tplvar['curr_page'] - $numViewPages;
+?>
+
+
+
+
+<ol>
+	<?php if($_tplvar['last_page'] > 1 && $_REQUEST['pageID'] > 1):?>
+	<li>
+		<a class="button prev i-prev" href="<?php echo $pagingUrl;?><?php echo $_tplvar['curr_page']-1;?>" title="Indietro"></a>
+	</li>
+	<?php endif;?>
+	
+			<?php 
+				$j = 0;	
+				for($i=$initPages;$i <= $_tplvar['tot_items'];$i++):
+			?>
+				<?php if($j <= ($numViewPages+$numViewPages) && $i > 0 && $j > 0):?>
+				
+					<?php if($i == $_tplvar['curr_page']):?>
+						<li class="current"><span class="button" style="color:#fa6405"><?php echo $i;?></span></li>
+					<?php else:?>
+						<?php if($_tplvar['last_page'] > 1 && $i <= $_tplvar['last_page']):?>
+						<li><a class="button" href="<?php echo $pagingUrl;?><?php echo $i;?>"><?php echo $i;?></a></li>
+						<?php endif;?>
+					<?php endif;?>
+					
+				<?php endif;?>
+			<?php 
+				$j++;
+				endfor;
+			?>	
+	<?php if($_tplvar['last_page'] > 1 && $_REQUEST['pageID'] < $_tplvar['last_page']):?>
+	<li>
+		<a class="button next i-next" href="<?php echo $pagingUrl;?><?php echo $_tplvar['curr_page']+1?>" title="Avanti"></a>
+	</li>
+	<?php endif;?>
+</ol>
+
