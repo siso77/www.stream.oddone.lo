@@ -3,6 +3,7 @@ include_once(APP_ROOT.'/beans/category.php');
 include_once(APP_ROOT.'/beans/images.php');
 include_once(APP_ROOT."/beans/content.php");
 include_once(APP_ROOT."/beans/fornitore.php");
+include_once(APP_ROOT."/beans/fornitore_srl.php");
 // include_once(APP_ROOT."/beans/color.php");
 // include_once(APP_ROOT."/beans/sizes.php");
 // include_once(APP_ROOT."/beans/percent_discount.php");
@@ -33,6 +34,10 @@ class CaricaMagazzino extends DBSmartyAction
 		$BeanFornitore = new fornitore();
 		$fornitori = $BeanFornitore->dbGetAll($this->conn, 'nome', 'ASC');
 		$this->tEngine->assign('fornitori', $fornitori);
+
+		$BeanFornitoreSrl = new fornitore_srl();
+		$fornitori_srl = $BeanFornitoreSrl->dbGetAll($this->conn, 'nome', 'ASC');
+		$this->tEngine->assign('fornitori_srl', $fornitori_srl);
 		
 		$BeanImages = new images();
 		if(!empty($_REQUEST['id_content']))
@@ -97,6 +102,7 @@ class CaricaMagazzino extends DBSmartyAction
 			$BeanGiacenze->setProduttore($_REQUEST['id_produttore']);
 			$BeanGiacenze->setId_gm($_REQUEST['id_categoria']);
 			$BeanGiacenze->setId_fornitore($_REQUEST['id_fornitore']);
+			$BeanGiacenze->setId_fornitore_srl($_REQUEST['id_fornitore_srl']);
 			$BeanGiacenze->setQuantita_mazzo($_REQUEST['qta_minima']);
 			$BeanGiacenze->setQta_minima($_REQUEST['qta_minima']);
 			$BeanGiacenze->setQta_min_ordine($_REQUEST['qta_min_ordine']);

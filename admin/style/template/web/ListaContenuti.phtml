@@ -133,7 +133,7 @@ if(!empty($_tplvar['id_brand']))
 						</td>                        
 						<td>Fornitore</td>                        
 						<td>operatore</td>
-						<td nowrap="nowrap">
+						<td nowrap="nowrap" style="min-width: 80px;">
 						<?php
 						$assign['key_session'] = 'ListaContenuti';
 						$assign['order_by'] = 'giacenze.visibile';
@@ -148,28 +148,28 @@ if(!empty($_tplvar['id_brand']))
                         <td>cancella</td>
 					</tr>
 					<script>
-					function swapCheckbox(div_id, action, id)
+					function swapCheckbox(div_id, action, id, lang)
 					{
-						$('#loading_'+div_id).show();
-						$('#loading_'+div_id).css('position', 'relative');
-						
-						$('#'+div_id).css('position', 'absolute');
-						$('#'+div_id).hide();
+						$('#loading_'+div_id+'_'+lang).show();
+						$('#loading_'+div_id+'_'+lang).css('position', 'relative');
+
+						$('#'+div_id+'_'+lang).css('position', 'absolute');
+						$('#'+div_id+'_'+lang).hide();
 						$.ajax({
 							  url: '<?php echo $_tplvar['WWW_ROOT']?>?act=AjaxSetOption',
 							  type: 'POST',
 							  dataType: 'html',
-							  data: 'id_content='+id+'&action='+action,
+							  data: 'id_content='+id+'&action='+action+'&lang='+lang,
 							  success: function(html){
-								  if($('#'+div_id).css('background-color') == 'rgb(0, 128, 0)')
-									  $('#'+div_id).css('background-color', 'red');
+								  if($('#'+div_id+'_'+lang).css('background-color') == 'rgb(0, 128, 0)')
+									  $('#'+div_id+'_'+lang).css('background-color', 'red');
 								  else
-								  	$('#'+div_id).css('background-color', 'green');
+								  	$('#'+div_id+'_'+lang).css('background-color', 'green');
 
-								  $('#'+div_id).css('position', 'relative');
-								  $('#'+div_id).show();
-								  $('#loading_'+div_id).css('position', 'absolute');
-								  $('#loading_'+div_id).hide();
+								  $('#'+div_id+'_'+lang).css('position', 'relative');
+								  $('#'+div_id+'_'+lang).show();
+								  $('#loading_'+div_id+'_'+lang).css('position', 'absolute');
+								  $('#loading_'+div_id+'_'+lang).hide();
 							  }
 							});	
 					}
@@ -292,13 +292,38 @@ if(!empty($_tplvar['id_brand']))
 										});"><?php echo $flug;?></a>
 							<div id="giacenze_<?php echo $value['id'];?>" style="border:1px solid #993300;background-color:#000000;left:20px;display:none;position:absolute;z-index:1000"></div>
 							-->
-							
-							<div id="div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>" 
-									style="height:15px;width:15px;background-color:<?php if($value['visibile'] == 1):?>green<?php else:?>red<?php endif;?>;cursor:pointer;" 
-									onclick="swapCheckbox('div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>', 'visibile', '<?php echo $value['id_gicenza'];?>');">&nbsp;</div>
-							<div id="loading_div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>" style="position:absolute;display:none;">
+							<div id="div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>_it" 
+									style="float:left;margin-right:5px;height:15px;width:15px;background-color:<?php if($value['visibile'] == 1):?>green<?php else:?>red<?php endif;?>;cursor:pointer;" 
+									onclick="swapCheckbox('div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>', 'visibile', '<?php echo $value['id_gicenza'];?>', 'it');">
+							<span style="color:#fff;font-size:10px;">IT</span></div>
+							<div id="loading_div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>_it" style="position:absolute;display:none;">
 								<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/loading.gif" width="30">
 							</div>
+
+							<div id="div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>_en" 
+									style="float:left;margin-right:5px;height:15px;width:15px;background-color:<?php if($value['visibile_en'] == 1):?>green<?php else:?>red<?php endif;?>;cursor:pointer;" 
+									onclick="swapCheckbox('div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>', 'visibile', '<?php echo $value['id_gicenza'];?>', 'en');">
+							<span style="color:#fff;font-size:10px;">EN</span></div>
+							<div id="loading_div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>_en" style="position:absolute;display:none;">
+								<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/loading.gif" width="30">
+							</div>
+
+							<div id="div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>_de" 
+									style="float:left;margin-right:5px;height:15px;width:15px;background-color:<?php if($value['visibile_de'] == 1):?>green<?php else:?>red<?php endif;?>;cursor:pointer;" 
+									onclick="swapCheckbox('div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>', 'visibile', '<?php echo $value['id_gicenza'];?>', 'de');">
+							<span style="color:#fff;font-size:10px;">DE</span></div>
+							<div id="loading_div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>_de" style="position:absolute;display:none;">
+								<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/loading.gif" width="30">
+							</div>
+
+							<div id="div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>_fr" 
+									style="float:left;margin-right:5px;height:15px;width:15px;background-color:<?php if($value['visibile_fr'] == 1):?>green<?php else:?>red<?php endif;?>;cursor:pointer;" 
+									onclick="swapCheckbox('div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>', 'visibile', '<?php echo $value['id_gicenza'];?>', 'fr');">
+							<span style="color:#fff;font-size:10px;">FR</span></div>
+							<div id="loading_div_is_in_ecommerce_<?php echo $value['id_gicenza'];?>_fr" style="position:absolute;display:none;">
+								<img src="<?php echo $_tplvar['WWW_ROOT'].$_tplvar['IMG_DIR']?>/loading.gif" width="30">
+							</div>
+
 
 						</td>
                                                

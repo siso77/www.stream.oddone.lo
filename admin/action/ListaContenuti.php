@@ -244,9 +244,8 @@ class ListaContenuti extends DBSmartyAction
 			$BeanGruppi = $BeanGruppi->vars();
 			
 			$data[$key]['bar_code'] = $val['bar_code'];
-			if($_SESSION['LoggedUser']['username'] == 'siso'){
-				$data[$key]['vbn'] = $val['vbn'];
-			}
+			$data[$key]['vbn'] = $val['vbn'];
+
 			if(empty($val['nome_'.$_REQUEST['lang']]))
 				$data[$key]['nome'] = utf8_encode($val['nome_it']);
 			else
@@ -278,7 +277,8 @@ class ListaContenuti extends DBSmartyAction
 			
 			$BeanFornitori = new fornitore($this->conn, $val['id_fornitore']);				
 			$data[$key]['fornitore'] = $BeanFornitori->nome;
-		}		
+		}
+		
 		$this->exportExcelData($data, $fieldToDisplay, 'lista_content_'.date('d_m_Y'));
 	}
 

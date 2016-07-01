@@ -7,6 +7,7 @@ class giacenze extends BeanBase
 	var $bar_code;
 	var $id_content;
 	var $id_fornitore;
+	var $id_fornitore_srl;
 	var $C1;
 	var $C2;
 	var $C3;
@@ -39,6 +40,9 @@ class giacenze extends BeanBase
 	
 	var $prezzo_acquisto;
 	var $visibile;
+	var $visibile_en;
+	var $visibile_fr;
+	var $visibile_de;
 	var $in_home;
 	var $qta_minima;
 	var $qta_pianale;
@@ -355,6 +359,17 @@ $this->setID($id);
 		$this->id_fornitore = (int)  $value;
 	}
 	
+	function getId_fornitore_srl(){return $this->id_fornitore_srl;}
+	
+	function setId_fornitore_srl($value= null)
+	{
+		if(strlen($value) > 11)
+			$value = substr($value, 0, 11);
+	
+	
+		$this->id_fornitore_srl = (int)  $value;
+	}
+	
 	function getC1(){return $this->C1;}
 	
 	function setC1($value= null)
@@ -631,6 +646,39 @@ $this->setID($id);
 	
 	
 		$this->visibile = (string)  mysql_real_escape_string($value);
+	}
+	
+	function getVisibile_en(){return $this->visibile_en;}
+	
+	function setVisibile_en($value= null)
+	{
+		if(strlen($value) > 255)
+			$value = substr($value, 0, 255);
+	
+	
+		$this->visibile_en = (string)  mysql_real_escape_string($value);
+	}
+	
+	function getVisibile_fr(){return $this->visibile_fr;}
+	
+	function setVisibile_fr($value= null)
+	{
+		if(strlen($value) > 255)
+			$value = substr($value, 0, 255);
+	
+	
+		$this->visibile_fr = (string)  mysql_real_escape_string($value);
+	}
+	
+	function getVisibile_de(){return $this->visibile_de;}
+	
+	function setVisibile_de($value= null)
+	{
+		if(strlen($value) > 255)
+			$value = substr($value, 0, 255);
+	
+	
+		$this->visibile_de = (string)  mysql_real_escape_string($value);
 	}
 	
 	function getIn_home(){return $this->in_home;}

@@ -53,7 +53,8 @@ foreach($_tplvar['cmb_user_type'] as $key => $val)
     	<a href="<?php echo $_tplvar['WWW_ROOT']?>?act=SliderHomePage">Slider Home Page</a>
     </li>
     <?php if($permessi['ecommerce']):?>
-    <li><a href="#">Ordini</a>
+    <li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=Orders">Ordini</a>
+    <li><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=Charts">Carrelli</a>
         <ul>
 			<!-- 
         	<li>

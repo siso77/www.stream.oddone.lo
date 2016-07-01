@@ -91,8 +91,10 @@ function sendFilter(obj)
 							
                            <td>MODIFICA</td>
                            <td>CANCELLA</td>
+                           <td>ORDIN. WEB</td>
 						</tr>
-						
+<form action="<?php echo $_tplvar['WWW_ROOT']?>?act=<?php echo $_tplvar['action_class_name']?>" method="post">
+
 					<?php foreach ($_tplvar['list'] as $value):?>
 					<tr>
 						<td width="120"><b><?php echo $value['name']?></b></td>
@@ -101,10 +103,19 @@ function sendFilter(obj)
 						<td width="120"><?php echo $value['description_en']?></td>
 						<td width="100"><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=CaricaCategoria&edit=1&id=<?php echo $value['id']?>">MODIFICA</a></td>
 						<td width="100"><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=<?php echo $_tplvar['action_class_name']?>&delete=1&id=<?php echo $value['id']?>">CANCELLA</a></td>
+						<td width="100">
+						
+							<select name="ordinamento[<?php echo $value['id']?>]">
+								<option value="0"> Nessuno </option>
+								<?php for ($mul = 1; $mul <= 100; ++$mul):?>
+								<option value="<?php echo $mul;?>"<?php if($value['order_number'] == $mul):?>selected="selected"<?php endif;?>><?php echo $mul;?></option>
+								<?php endfor;?>
+								</select>
+					</td>
 					</tr>
 					<?php if(is_array($value['sub_category'])):?>
 					<tr>
-						<td colspan="6">
+						<td colspan="7">
 							<table width="100%">
 							<?php foreach ($value['sub_category'] as $val):?>
 							<tr>
@@ -114,6 +125,15 @@ function sendFilter(obj)
 								<td width="120"><?php echo $val['description_en']?></td>
 								<td width="100"><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=CaricaCategoria&edit=1&id=<?php echo $val['id']?>">MODIFICA</a></td>
 								<td width="100"><a href="<?php echo $_tplvar['WWW_ROOT']?>?act=<?php echo $_tplvar['action_class_name']?>&delete=1&id=<?php echo $val['id']?>">CANCELLA</a></td>
+								<td width="100">
+
+								<select name="ordinamento[<?php echo $val['id']?>]">
+								<option value="0"> Nessuno </option>
+								<?php for ($mul = 1; $mul <= 100; ++$mul):?>
+								<option value="<?php echo $mul;?>"<?php if($val['order_number'] == $mul):?>selected="selected"<?php endif;?>><?php echo $mul;?></option>
+								<?php endfor;?>
+								</select>
+							</td>
 							</tr>
 							<?php endforeach;?>
 							</table>
@@ -122,7 +142,8 @@ function sendFilter(obj)
 					<?php endif;?>
 					<?php endforeach;?>
 				</table>
-				
+				<input style="float: right;width: 90px;margin-right: 60px;" type="submit" value="Salva">
+</form>				
                 <!-- Page Navigation -->
                 <?php
                 if(!empty($_REQUEST['order_by'])) 

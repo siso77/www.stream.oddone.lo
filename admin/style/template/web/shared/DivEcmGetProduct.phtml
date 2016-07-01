@@ -34,80 +34,37 @@
 			
 <?php endif;?>
 <?php if(!empty($_tplvar['data'])):?>
-	<table style="width:490px;vertical-align: top;">
+	<table style="width:590px;vertical-align: top;border-spacing: 15px;border: 1px solid black;">
 	<tr>
-		<td colspan="2" valign="top" align="center" style="font-size:22px">Dettaglio Prodotti Acquistati</td>
+		<td colspan="8" valign="top" align="center" style="font-size:22px">Dettaglio Prodotti Acquistati</td>
 	</tr>
-	<?php foreach($_tplvar['data'] as $value):?>
 	<tr> 
-		<td>CODICE</td>
-		<td><?php echo $value['magazzino']['bar_code']?></td>
+		<td><h4>VARIET&Agrave;</h4></td>
+		<td><h4>QUANTIT&Agrave;</h4></td>
+		<td><h4>PREZZO</h4></td>
+		<td><h4>IMPORTO PAGATO</h4></td>
 	</tr>
+	<?php foreach($_tplvar['data'] as $key => $value):?>
 	<tr>
-		<td>QUANTITA'</td>
-		<td><?php echo $value['quantita']?>&nbsp;</td>
+		<td><?php echo $value['content']['nome_it']?></td>
+		<?php if ($value['box_type'] == 'pianale'):?>
+		<?php $quantita = $value['quantita']*$value['giacenze']['qta_pianale']?>
+		<?php elseif ($value['box_type'] == 'carrello'):?>
+		<?php $quantita = $value['quantita']*$value['giacenze']['qta_carrello']?>
+		<?php elseif ($value['box_type'] == 'confezione'):?>
+		<?php $quantita = $value['quantita']*$value['giacenze']['qta_minima']?>
+		<?php endif;?>
+		<td><?php echo $quantita?></td>
+		<td><?php echo Currency::FormatEuro(round(str_replace(',', '.', $value['importo'])/$quantita, 2, PHP_ROUND_HALF_UP))?></td>
+		<td><?php echo round(str_replace(',', '.', $value['importo']), 2, PHP_ROUND_HALF_UP)?></td>
 	</tr>
-	<tr>
-		<td>PREZZO</td>
-		<td><?php echo $this->getFormatPrice($value['magazzino']['price_it'])?>&nbsp;</td>
-	</tr>
-	<tr>
-		<td>PREZZO SCONTATO</td>
-		<td><?php echo $this->getFormatPrice($value['magazzino']['price_discounted_it'])?>&nbsp;</td>
-	</tr>
-	<tr>
-		<td>IMPORTO PAGATO</td>
-		<td><?php echo $this->getFormatPrice($value['importo'])?>&nbsp;</td>
-	</tr>
-	<tr>
-		<td>CATEGORIA</td>
-		<td><?php echo $value['content']['name']?>&nbsp;</td>
-	</tr>
-	<!--<tr>
-		<td>FORNITORE</td>
-		<td><?php echo $value['magazzino']['fornitore']?>&nbsp;</td>
-	</tr>
-	--><tr>
-		<td>MISURA</td>
-		<td><?php echo $value['magazzino']['size']?></td>
-	</tr>
-	<tr>
-		<td>COLORE</td>
-		<td><?php echo $value['magazzino']['color']?></td>
-	</tr>
-	<!--<tr>
-		<td nowrap="nowrap">COLORE 2</td>
-		<td><?php echo $this->getColorFromIdContent($value['magazzino']['id_color_2'])?></td>
-	</tr>
-	<tr>
-		<td nowrap="nowrap">COLORE 3</td>
-		<td><?php echo $this->getColorFromIdContent($value['magazzino']['id_color_3'])?></td>
-	</tr>
-	<tr>
-		<td>PERCENTUALE SCONTO</td>
-		<td><?php echo $value['content']['content_percent_sconto']?>%</td>
-	</tr>
-	<tr>
-		<td>DDT</td>
-		<td><?php echo str_replace('|', ' / ', $value['magazzino']['ddt'])?></td>
-	</tr>
-	<tr>
-		<td>FATT. CARICO</td>
-		<td><?php echo str_replace('|', ' / ', $value['magazzino']['fattura_carico'])?></td>
-	</tr>
-	<tr>
-	</tr>
-	<tr>
-		<td>PREZZO D'ACQUISTO</td>
-		<td><?php echo $value['magazzino']['prezzo_acquisto']?></td>
-	</tr>
-	
-	<tr>
-		<td colspan="2" style="border:1px solid #fff;vertical-align: bottom;">
-			<?php echo $this->getImageFromIdContent($value['content']['id_content'], 'Large_')?>		
-		</td>
-	</tr>
-	-->
 	<?php endforeach;?>
+	<tr>
+		<td><b>Totale + Iva + Sped</b></td>
+		<td></td>
+		<td></td>
+		<td><b><?php echo round(str_replace(',', '.', $_tplvar['data'][0]['importo_ivato']), 2, PHP_ROUND_HALF_UP)?></b></td>
+	</tr>	
 </table>
 <?php endif;?>
+

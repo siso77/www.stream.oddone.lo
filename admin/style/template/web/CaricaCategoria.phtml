@@ -67,6 +67,17 @@
 						</fieldset>
 						
 						<fieldset>
+							<label>Ordinamento</label>
+							
+							<select name="order" style="width:92%;">
+							<option value="0"> Nessuno </option>
+								<?php for ($mul = 1; $mul <= 100; ++$mul):?>
+								<option value="<?php echo $mul;?>"<?php if($_tplvar['data']['order_number'] == $mul):?>selected="selected"<?php endif;?>><?php echo $mul;?></option>
+								<?php endfor;?>
+							</select>							
+						</fieldset>
+						
+						<fieldset>
 							<label>IVA</label>
 							<select name="iva" style="width:92%;">
 							<?php foreach ($_tplvar['cmb_iva'] as $iva):?>
@@ -74,7 +85,6 @@
 							<?php endforeach;?>
 							</select>
 						</fieldset>
-
 				</div>
 			</div>
 			

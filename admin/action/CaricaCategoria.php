@@ -45,6 +45,9 @@ class CaricaCategoria extends DBSmartyAction
 			else
 				$BeanCategory->setUrl("idCategory=".$BeanCategory->getId());
 				
+			if (!empty($_REQUEST['order']))
+				$BeanCategory->setOrder_number($_REQUEST['order']);
+				
 			$BeanCategory->dbStore($this->conn);
 
 			$params = '&id='.$id.'&edit=1';

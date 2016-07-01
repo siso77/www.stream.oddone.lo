@@ -15,11 +15,33 @@ class AjaxSetOption extends DBSmartyAction
 				case 'visibile':
 					
 					$BeanGiacenza = new giacenze($this->conn, $_REQUEST['id_content']);
-
-					if($BeanGiacenza->visibile == 1)
-						$BeanGiacenza->setVisibile(0);
-					else
-						$BeanGiacenza->setVisibile(1);
+					switch ($_REQUEST['lang'])
+					{
+						case "it":
+							if($BeanGiacenza->visibile == 1)
+								$BeanGiacenza->setVisibile(0);
+							else
+								$BeanGiacenza->setVisibile(1);
+						break;
+						case "de":
+							if($BeanGiacenza->visibile_de == 1)
+								$BeanGiacenza->setVisibile_de(0);
+							else
+								$BeanGiacenza->setVisibile_de(1);
+						break;
+						case "fr":
+							if($BeanGiacenza->visibile_fr == 1)
+								$BeanGiacenza->setVisibile_fr(0);
+							else
+								$BeanGiacenza->setVisibile_fr(1);
+						break;
+						case "en":
+							if($BeanGiacenza->visibile_en == 1)
+								$BeanGiacenza->setVisibile_en(0);
+							else
+								$BeanGiacenza->setVisibile_en(1);
+						break;
+					}
 					$BeanGiacenza->dbStore($this->conn);
 					exit();
 					

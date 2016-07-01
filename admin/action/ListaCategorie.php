@@ -15,7 +15,16 @@ class ListaCategorie extends DBSmartyAction
 			$this->exportExcel();
 		if(!empty($_REQUEST['reset']))	
 			unset($_SESSION['reset']);
-		
+
+		if(!empty($_REQUEST['ordinamento']))
+		{
+			foreach ($_REQUEST['ordinamento'] as $id => $val)
+			{
+				$BeanCategory = new gruppi_merceologici($this->conn, $id);
+				$BeanCategory->setOrder_number($val);
+				$BeanCategory->dbStore($this->conn);				
+			}
+		}
 		if(!empty($_REQUEST['delete']))
 		{
 			$BeanCategory = new gruppi_merceologici();
@@ -40,6 +49,11 @@ class ListaCategorie extends DBSmartyAction
 			{
 				$_SESSION[$this->className]['order_by'] = $_REQUEST['order_by'];
 				$_SESSION[$this->className]['order_type'] = $_REQUEST['order_type'];				
+			}
+			else 
+			{	
+				$_SESSION[$this->className]['order_by'] = 'order_number';
+				$_SESSION[$this->className]['order_type'] = 'ASC';
 			}
 			if(empty($_SESSION[$this->className]['order_by']))
 			{

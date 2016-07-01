@@ -7,6 +7,7 @@ class giacenze extends BeanBase
 	var $bar_code;
 	var $id_content;
 	var $id_fornitore;
+	var $id_fornitore_srl;
 	var $C1;
 	var $C2;
 	var $C3;
@@ -353,6 +354,17 @@ $this->setID($id);
 	
 	
 		$this->id_fornitore = (int)  $value;
+	}
+	
+	function getId_fornitore_srl(){return $this->id_fornitore_srl;}
+	
+	function setId_fornitore_srl($value= null)
+	{
+		if(strlen($value) > 11)
+			$value = substr($value, 0, 11);
+	
+	
+		$this->id_fornitore_srl = (int)  $value;
 	}
 	
 	function getC1(){return $this->C1;}

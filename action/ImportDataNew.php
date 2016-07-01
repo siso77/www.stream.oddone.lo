@@ -52,6 +52,8 @@ new configureSystem();
 	$operator = 'StreamImportProcedure';
 	
 	$flagFile = APP_ROOT."/FlorSysIntegration/In/finito.txt";
+	$flagFileSrl = APP_ROOT."/FlorSysIntegration/In2/finito.txt";
+	
 	$flagIntFile = APP_ROOT."/FlorSysIntegration/In/start.txt";
 	
 	if(is_file(APP_ROOT."/FlorSysIntegration/In/CLIENTI.CSV"))
@@ -64,6 +66,10 @@ new configureSystem();
 		$fileArticle = APP_ROOT."/FlorSysIntegration/In/ARTICOLI.CSV";
 	if(is_file(APP_ROOT."/FlorSysIntegration/In/FORNITORI.CSV"))
 		$fileFornitori = APP_ROOT."/FlorSysIntegration/In/FORNITORI.CSV";
+	
+	if(is_file(APP_ROOT."/FlorSysIntegration/In2/FORNITORI.CSV"))
+		$fileFornitoriSrl = APP_ROOT."/FlorSysIntegration/In2/FORNITORI.CSV";
+	
 	if(is_file(APP_ROOT."/FlorSysIntegration/In/DESTINAZIONI.CSV"))
 		$fileDestinazioni = APP_ROOT."/FlorSysIntegration/In/DESTINAZIONI.CSV";
 	
@@ -71,11 +77,11 @@ new configureSystem();
 	$email_customer_logo = WWW_ROOT.'themes/uploads/2013/03/logo1.png';
 
 	$debugTime = new debugTime();
-	Start($flagFile, $fileCustomer, $fileFornitori, $fileContent, $fileFamily, $fileArticle, $fileDestinazioni, $flagIntFile);
+	Start($flagFile, $fileCustomer, $fileFornitori, $fileContent, $fileFamily, $fileArticle, $fileDestinazioni, $fileFornitoriSrl, $flagIntFile,$flagFileSrl);
 	$debugTime->OutPutDebugTime('Esecuzione avvenuta in sec: ');
 	
 	
-	function Start($flagFile = null, $fileCustomer = null, $fileFornitori = null, $fileContent = null, $fileFamily = null, $fileArticle = null, $fileDestinazioni = null, $flagInizioFile = null)
+	function Start($flagFile = null, $fileCustomer = null, $fileFornitori = null, $fileContent = null, $fileFamily = null, $fileArticle = null, $fileDestinazioni = null, $fileFornitoriSrl = null, $flagInizioFile = null,$flagFileSrl = null)
 	{
 		if(is_file($flagInizioFile))
 		{
@@ -130,6 +136,15 @@ new configureSystem();
 					unlink($fileFornitori);
 					$isImport = true;
 				}
+				
+				if(!empty($fileFornitoriSrl))
+				{
+					chmod($fileFornitori, 0777);
+					importFornitoriSrl($fileFornitoriSrl);
+					unlink($fileFornitoriSrl);
+					$isImport = true;
+				}
+				
 				if(!empty($fileDestinazioni))
 				{
 					chmod($fileDestinazioni, 0777);
@@ -143,6 +158,7 @@ new configureSystem();
 
 				// CANCELLO IL FILE SEMAFORO
 				unlink($flagFile);
+				unlink($flagFileSrl);
 				unlink($flagIntFile);
 			}
 		}
@@ -442,6 +458,51 @@ new configureSystem();
 		}
 	}
 
+	function importFornitoriSrl($File)
+	{
+		global $conn;
+		global $operator;
+		global $separator;
+		require_once(APP_ROOT.'/beans/fornitore_srl.php');
+	
+		$fh = fopen($File, 'rb');
+		$key = 0;
+		while ( ($data = fgetcsv($fh, 1000, $separator)) !== false)
+		{
+			if($data[0] == '?')
+				continue;
+				
+			$BeanFornitori = new fornitore_srl();
+			$exists = $BeanFornitori->dbGetOneByName($conn, $data[1]);
+			if(empty($exists))
+			{
+				$exists = null;
+				$exists = $BeanFornitori->dbGetOneByCode($conn, $data[0]);
+				if(empty($exists))
+				{
+					$BeanFornitori->setNome($data[1]);
+					$BeanFornitori->setCodice_fornitore($data[0]);
+					$BeanFornitori->setIndirizzo($data[4].' - '.$data[2]);
+					$BeanFornitori->setCap($data[3]);
+					$BeanFornitori->setProvincia($data[5]);
+					$BeanFornitori->setOperatore('ImportProcedure');
+					$BeanFornitori->dbStore($conn);
+				}
+			}
+			else
+			{
+				$BeanFornitori = new fornitore_srl($conn, $exists['id']);
+				$BeanFornitori->setNome($data[1]);
+				$BeanFornitori->setCodice_fornitore($data[0]);
+				$BeanFornitori->setIndirizzo($data[4].' - '.$data[2]);
+				$BeanFornitori->setCap($data[3]);
+				$BeanFornitori->setProvincia($data[5]);
+				$BeanFornitori->setOperatore('ImportProcedure');
+				$BeanFornitori->dbStore($conn);
+			}				
+		}
+	}
+	
 	function importArticoli($File)
 	{
 		global $conn;
@@ -466,26 +527,36 @@ new configureSystem();
 				if($r=mysql_fetch_assoc($res))
 				{
 					$query = "UPDATE  content SET
-						vbn =  '".$data[5]."',
+						vbn = '".$data[5]."',
+						codice_articolo = '".$data[0]."',
 						operatore =  '".$operator."_articoli'
 						WHERE  content.id =".$r['id'].";";
 					mysql_query($query, $conn->connection);
 				}
 			}
 
+			$result = mysql_query("SELECT * FROM content WHERE codice_articolo = '".$data[0]."'", $conn->connection);			
+			if($r=mysql_fetch_assoc($result))
+			{
+				$query = "UPDATE  content SET
+						codice_articolo = '".$data[5]."',
+						operatore =  '".$operator."_articoli'
+						WHERE  content.id =".$r['id'].";";
+				mysql_query($query, $conn->connection);
+			}
+				
 			$result = mysql_query("SELECT * FROM content_adhoc WHERE vbn = '".$data[0]."'", $conn->connection);
 			if($row=mysql_fetch_assoc($result))
 			{				
 				$query = "UPDATE  content_adhoc SET
 						id_gm =  '".$id_gm."',
 						id_famiglia =  '".$id_famiglia."',
-						id_settore =  '".$id_settore."',
-						id_reparto =  '".$id_reparto."',
 						nome_it =  '".$data[1]."',
 						descrizione_it =  '".$data[1]."',
 						nome_en =  '".$data[1]."',
 						descrizione_en =  '".$data[1]."',
 						vbn =  '".$data[0]."',
+						codice_articolo = '".$data[0]."',
 						prezzo_0 =  '".str_replace(',', '.', $data[12])."',
 						prezzo_1 =  '".str_replace(',', '.', $data[14])."',
 						prezzo_2 =  '".str_replace(',', '.', $data[15])."',
@@ -497,7 +568,7 @@ new configureSystem();
 						prezzo_8 =  '".str_replace(',', '.', $data[21])."',
 						prezzo_9 =  '".str_replace(',', '.', $data[22])."',
 						operatore =  '".$operator."_articoli'
-						WHERE  content.id =".$row['id'].";";
+						WHERE  id =".$row['id'].";";
 				mysql_query($query, $conn->connection);
 			}
 			else

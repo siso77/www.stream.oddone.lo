@@ -55,8 +55,8 @@ class PHPExcelImplement
 				}
 				else
 				{
-					if($field == 'vbn')
-						$this->objPHPExcel->getActiveSheet()->getStyle($this->alphaChars[$alphaIndex].$i)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER);
+// 					if($field == 'vbn')
+// 						$this->objPHPExcel->getActiveSheet()->getStyle($this->alphaChars[$alphaIndex].$i)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER);
 
 					$this->objPHPExcel->setActiveSheetIndex(0)->setCellValue($this->alphaChars[$alphaIndex].$i, $dataCell);
 				}
