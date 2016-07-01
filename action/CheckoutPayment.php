@@ -145,11 +145,10 @@ class CheckoutPayment extends DBSmartyMailAction
 
 				if(!empty($_SESSION[session_id()]['basket']))
 				{
-					
 					$sconto = '-'.$_SESSION['LoggedUser']['sconto'][0]['percentuale'];
 
 					include_once(APP_ROOT.'/beans/fornitore.php');
-
+					include_once(APP_ROOT.'/beans/fornitore_srl.php');
 					$tmpSess = $_SESSION[session_id()]['basket'];
 					unset($tmpSess['ecm_id_ordine']);
 					unset($tmpSess['ecm_basket']);
@@ -159,7 +158,11 @@ class CheckoutPayment extends DBSmartyMailAction
 					unset($tmpSess['perc_occupazione']);
 					$csvSeparator = ';';
 						
-					$fp = fopen(APP_ROOT.'/FlorSysIntegration/Out/'.$BeanCustomer->customer_code.'_'.date('dmY').'.CSV', 'w+');
+					if(strtoupper($_SESSION['customer_data']['stato']) != 'IT')
+						$fp = fopen(APP_ROOT.'/FlorSysIntegration/Out2/'.$BeanCustomer->customer_code.'_'.date('dmY').'.CSV', 'w+');
+					else
+						$fp = fopen(APP_ROOT.'/FlorSysIntegration/Out/'.$BeanCustomer->customer_code.'_'.date('dmY').'.CSV', 'w+');
+					
 					$str = str_replace(';','-',$_SESSION['LoggedUser']['customer_data']['customer_code']).$csvSeparator; // CUSTOMER CODE
 					
 					if(!empty($_SESSION[session_id()]['final_data_basket']['codice_nuova_destinazione']))
@@ -201,7 +204,10 @@ class CheckoutPayment extends DBSmartyMailAction
 					}
 					foreach ($tmpSess as $key => $value)
 					{
-						$BeanFornitori = new fornitore($this->conn, $value['giacenza']['id_fornitore']);
+						if(strtoupper($_SESSION['customer_data']['stato']) != 'IT')
+							$BeanFornitori = new fornitore_srl($this->conn, $value['giacenza']['id_fornitore_srl']);
+						else
+							$BeanFornitori = new fornitore($this->conn, $value['giacenza']['id_fornitore']);
 						$fornitore = $BeanFornitori->vars();
 						
 						$str .= str_replace(';','-',$value['giacenza']['bar_code']).$csvSeparator;// COD ART
@@ -879,9 +885,14 @@ class CheckoutPayment extends DBSmartyMailAction
 								<td align="center">'.$product['giacenza']['qta_minima'].'</td>
 								<td align="center">'.$qta_tot.'</td>
 								<td align="center">'.Currency::FormatEuro($this->tEngine->getPrezzo($product['giacenza'])).'</td>';
-
+						if ($_SESSION['LoggedUser']['customer_data']['stato'] != 'IT'){
+						$html .= '<td align="center">'.Currency::FormatEuro( $this->tEngine->getPrezzo($product['giacenza']) * $qta_tot).'</td>
+								<td>0%</td>';
+						}
+						else {
 						$html .= '<td align="center">'.Currency::FormatEuro( $this->tEngine->getPrezzo($product['giacenza']) * $qta_tot).'</td>
 								<td>'.$product['contenuto']['cod_iva'].'%</td>';
+						}
 						if(!empty($product['note']) && strtolower($product['note']) != 'inserisci una nota sul prodotto')
 							$html .='<td>'.$product['note'].'</td>';
 						$html .='</tr>
@@ -943,6 +954,9 @@ class CheckoutPayment extends DBSmartyMailAction
 						{
 							$html .= '<tr style="color:#000000;">';
 							$html .= '<td align="right">IVA</td>';
+							if ($_SESSION['LoggedUser']['customer_data']['stato'] != 'IT')
+							$html .= '<td>'.Currency::FormatEuro(round(0, 2)).'</td>';
+							else
 							$html .= '<td>'.Currency::FormatEuro(round($tot_iva, 2)).'</td>';
 							$html .= '<td>&nbsp;</td>';
 							$html .= '</tr>';
@@ -956,6 +970,9 @@ class CheckoutPayment extends DBSmartyMailAction
 
 						$html .= '<tr style="color:#000000;">';
 						$html .= '<td align="right">Totale</td>';
+						if ($_SESSION['LoggedUser']['customer_data']['stato'] != 'IT')
+						$html .= '<td>'.Currency::FormatEuro($subTotale).'</td>';
+						else
 						$html .= '<td>'.Currency::FormatEuro($subTotale+$tot_iva).'</td>';
 						$html .= '<td>&nbsp;</td>';
 						$html .= '</tr>';
@@ -988,7 +1005,6 @@ class CheckoutPayment extends DBSmartyMailAction
 				$BeanEcmOrdiniMagazzino->dbStore($this->conn);			
 			}
 
-			
 if($_SESSION['LoggedUser']['username'] == 'siso')
 {
 // _dump($this->tEngine->assignment);
