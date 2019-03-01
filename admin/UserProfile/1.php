@@ -84,5 +84,7 @@ $profileActions = array(
 	'NuovoSconto',
 	'TestPdf',
 	'SliderHomePage',
-	'ListaVerificaContenuti'
+	'ListaVerificaContenuti',
+	'ListaVerificaContenutiSrl',
+	'Charts',
 );

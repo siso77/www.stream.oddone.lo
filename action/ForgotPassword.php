@@ -20,24 +20,16 @@ class ForgotPassword extends DBSmartyMailAction
 			{
 				$BeanUsersAnag = new users_anag();
 				$BeanUsersAnag->dbGetOneByEmail($this->conn, $_REQUEST['email']);
-				
+				if(empty($BeanUsersAnag->id))
+					$this->_redirect('?act=ForgotPassword&user_not_found=1');
+
 				$BeanUsers = new users();
 				$BeanUsers->dbGetOneByIdAnag($this->conn, $BeanUsersAnag->id);
 				
 // 				$BeanUsers->dbGetOneByUsername($this->conn, $_REQUEST['email']);
-				
-				if($_REQUEST['secret_response'] == $BeanUsers->secret_response)
-				{
-					$this->SendEmail($BeanUsers);
-					$this->tEngine->assign('confirm_reset_password', true);
-				}
-				else
-				{
-					$this->tEngine->assign('step', 2);
-					$this->tEngine->assign('error_secret_response', true);
-					$this->tEngine->assign('secret_question', $BeanUsers->secret_question);
-					$this->tEngine->assign('email', $_REQUEST['email']);
-				}
+
+				$this->SendEmail($BeanUsers);
+				$this->tEngine->assign('confirm_reset_password', true);
 			}
 			else 
 			{

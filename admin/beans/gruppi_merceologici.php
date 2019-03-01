@@ -15,6 +15,7 @@ class gruppi_merceologici extends BeanBase
 	var $url;
 	var $parent_id;
 	var $iva;
+	var $order_number;
 	
 	function gruppi_merceologici($conn=null, $id=null)
 	{
@@ -248,7 +249,7 @@ $this->setID($id);
 	{ 
 		if(!is_array($value)) 
 			$value=array(); 	
-		
+
 		$props = $this->vars(); 
 		foreach($props as $k=>$v) 
 		{ 
@@ -329,7 +330,6 @@ $this->setID($id);
 			$values[$row['id']]['sub_category']=$sub_cat;
 			$sub_cat = array();
 		}
-	
 		$result->free();
 		return $values;
 	}
@@ -509,7 +509,18 @@ $this->setID($id);
 	
 	
 		$this->parent_id = (int)$value;
-	}			
+	}
+
+	function getOrder_number(){return $this->order_number;}
+	
+	function setOrder_number($value= null)
+	{
+		if(strlen($value) > 11)
+			$value = substr($value, 0, 11);
+	
+	
+		$this->order_number = (int)$value;
+	}
 	
 	function getIva(){return $this->iva;}
 	

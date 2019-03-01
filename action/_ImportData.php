@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ERROR);
-ini_set('display_errors', 'On');
 ini_set("max_execution_time", "360000");
 
 include_once(APP_ROOT."/libs/ext/Excel/reader.php");
@@ -455,7 +453,7 @@ class ImportData extends DBSmartyMailAction
 				
 			$BeanContent->setC3($exp[0]); // COLORE
 			
-			$BeanContent->setC4($data[6]); // QUALITÀ/ALTEZZA/VASO/GRAMMATURA
+			$BeanContent->setC4($data[6]); // QUALITï¿½/ALTEZZA/VASO/GRAMMATURA
 			$exp = explode(' ', $data[7]);
 			$BeanContent->setC5($exp[0]); // PAESE PROVENIENZA
 			
@@ -620,7 +618,7 @@ class ImportData extends DBSmartyMailAction
 // 			$tipoColore = $exp[1];
 // 			$BeanContent->setC3($exp[0]); // COLORE
 
-// 			$BeanContent->setC4(null); // QUALITÀ/ALTEZZA/VASO/GRAMMATURA
+// 			$BeanContent->setC4(null); // QUALITï¿½/ALTEZZA/VASO/GRAMMATURA
 // 			$BeanContent->setC5(null); // PAESE PROVENIENZA
 
 // 			$BeanContent->setTipo_colore($tipoColore); // PAESE PROVENIENZA

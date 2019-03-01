@@ -11,9 +11,9 @@
     <pro>
 	    <Db_type>mysql</Db_type>
 	    <Server>localhost</Server>
-	    <Database>stream_oddone</Database>
-	    <User>stream_oddone</User>
-    	<Password>!0dd0n32014#</Password>
+	    <Database>oddone_stream</Database>
+	    <User>oddone_stream</User>
+    	<Password>2iQTj1nL9l</Password>
     </pro>
   </database>
   <SO>

@@ -11,6 +11,18 @@ class SendToFriends extends DBSmartyMailAction
 	{
 		parent::DBSmartyMailAction();
 		
+		require_once(APP_ROOT.'/libs/ext/recaptcha-php/recaptchalib.php');
+		$privatekey = GOOGLE_RECAPCHA_PRIVATE_KEY;
+		$resp = recaptcha_check_answer ($privatekey,
+				$_SERVER["REMOTE_ADDR"],
+				$_REQUEST["recaptcha_challenge_field"],
+				$_REQUEST["recaptcha_response_field"]);
+
+		if (!$resp->is_valid)
+		{
+			$this->_redirect('?error_captcha=1');
+			exit();
+		}
 		$this->className = get_class($this);
 		if(!empty($_REQUEST['id_giacenza']))
 		$BeanGiacenze = new giacenze($this->conn, $_REQUEST['id_giacenza']);

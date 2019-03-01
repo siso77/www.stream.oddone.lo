@@ -1,9 +1,10 @@
 <?php
-ini_set('error_reporting', E_ALL);
-error_reporting(E_ALL);
-
 if(isset($_SERVER['HTTP_SHOW_ERROR']))
+{
 	ini_set('display_errors', 'On');
+        ini_set('error_reporting', E_ERROR);
+        error_reporting(E_ERROR);
+}
 else
 	ini_set('display_errors', 'Off');
 

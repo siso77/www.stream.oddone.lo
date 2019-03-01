@@ -12,13 +12,15 @@ define( 'SEO_CONFIG_FILENAME', 'seo.ini' );
 if(!isset($_SERVER['APPLICATION_ENV']))
 	$_SERVER['APPLICATION_ENV'] = 'pro';
 
-ini_set('error_reporting', E_ALL);
-error_reporting(E_ALL);
 
 if(isset($_SERVER['HTTP_SHOW_ERROR']))
-	ini_set('display_errors', 'On');
+{
+    ini_set('display_errors', 'On');
+    ini_set('error_reporting', E_ERROR);
+    error_reporting(E_ERROR);
+}
 else
-	ini_set('display_errors', 'Off');
+    ini_set('display_errors', 'Off');
 
 ini_set('memory_limit','512M');
 
@@ -89,7 +91,7 @@ class Bootstrap
 		
 		if((!$_SESSION['LoggedUser'] || $_SESSION['LoggedUser'] == array()) && !$bypassProfiledAction)
 		{
-			$this->act = DEFAULT_ACTION;
+			$this->act = 'Login';
 		}
 		Session::set('action', $this->getCurrentAction());
 		
@@ -99,7 +101,7 @@ class Bootstrap
 			include_once(APP_ROOT.'/UserProfile/'.$_SESSION['LoggedUser']['id_type'].'.php');
 			
 		$_SESSION['profiledActions'] = $profileActions;
-		
+
 		if(in_array($this->getCurrentAction(), $profileActions) || $this->getCurrentAction() == 'Logout' || $bypassProfiledAction)
 		{
 			$controlerNamePath = APP_ROOT.'/action/'.$this->getCurrentAction().'.php';

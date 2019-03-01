@@ -70,6 +70,9 @@ new configureSystem();
 	if(is_file(APP_ROOT."/FlorSysIntegration/In2/FORNITORI.CSV"))
 		$fileFornitoriSrl = APP_ROOT."/FlorSysIntegration/In2/FORNITORI.CSV";
 	
+	if(is_file(APP_ROOT."/FlorSysIntegration/In2/ARTICOLI.CSV"))
+		$fileArticoliSrl = APP_ROOT."/FlorSysIntegration/In2/ARTICOLI.CSV";
+	
 	if(is_file(APP_ROOT."/FlorSysIntegration/In/DESTINAZIONI.CSV"))
 		$fileDestinazioni = APP_ROOT."/FlorSysIntegration/In/DESTINAZIONI.CSV";
 	
@@ -77,22 +80,22 @@ new configureSystem();
 	$email_customer_logo = WWW_ROOT.'themes/uploads/2013/03/logo1.png';
 
 	$debugTime = new debugTime();
-	Start($flagFile, $fileCustomer, $fileFornitori, $fileContent, $fileFamily, $fileArticle, $fileDestinazioni, $fileFornitoriSrl, $flagIntFile,$flagFileSrl);
+	Start($flagFile, $fileCustomer, $fileFornitori, $fileContent, $fileFamily, $fileArticle, $fileDestinazioni, $fileFornitoriSrl, $fileArticoliSrl, $flagIntFile,$flagFileSrl);
 	$debugTime->OutPutDebugTime('Esecuzione avvenuta in sec: ');
 	
 	
-	function Start($flagFile = null, $fileCustomer = null, $fileFornitori = null, $fileContent = null, $fileFamily = null, $fileArticle = null, $fileDestinazioni = null, $fileFornitoriSrl = null, $flagInizioFile = null,$flagFileSrl = null)
+	function Start($flagFile = null, $fileCustomer = null, $fileFornitori = null, $fileContent = null, $fileFamily = null, $fileArticle = null, $fileDestinazioni = null, $fileFornitoriSrl = null, $fileArticoliSrl = null, $flagInizioFile = null,$flagFileSrl = null)
 	{
-		if(is_file($flagInizioFile))
+		if(is_file($flagIntFile))
 		{
 			date_default_timezone_set('Europe/Dublin');
-			$start_time = date('Y-m-d H:i:s', filemtime($flagInizioFile)); // fill this in with actual time in this format
+			$start_time = date('Y-m-d H:i:s', filemtime($flagIntFile)); // fill this in with actual time in this format
 			$end_time = date('Y-m-d H:i:s'); // fill this in with actual time in this format
 			$start = new DateTime($start_time);
 			$interval = $start->diff(new DateTime($end_time));
 			if($interval->h > 0 || $interval->d > 0)
 			{
-				unlink($flagInizioFile);
+				unlink($flagIntFile);
 				$flagInizioFile = null;
 			}
 		}
@@ -118,6 +121,14 @@ new configureSystem();
 					chmod($fileArticle, 0777);
 					importArticoli($fileArticle);
 					unlink($fileArticle);
+					$isImport = true;
+				}
+				
+				if(!empty($fileArticoliSrl))
+				{
+					chmod($fileArticoliSrl, 0777);
+					importArticoliSrl($fileArticoliSrl);
+					unlink($fileArticoliSrl);
 					$isImport = true;
 				}
 				
@@ -502,7 +513,120 @@ new configureSystem();
 			}				
 		}
 	}
-	
+	function importArticoliSrl($File)
+	{
+		global $conn;
+		global $operator;
+		global $separator;
+		
+		$fh = fopen($File, 'rb');
+		$key = 0;
+
+		// 		if(date('H') < 2)
+		// 			mysql_query("DELETE FROM content_srl_adhoc WHERE operatore = 'StreamImportProcedure_articoli'",$conn->connection);
+		
+		while ( ($data = fgetcsv($fh, 1000, $separator)) !== false)
+		{
+			if(empty($data[0]) || $data[0] == '(' || $data[0] == ') ON [PRIMARY]' || $data[0] == '.' || $data[0] == '---->')
+				continue;
+			if(substr($data[5], 0,2) == '99')
+				continue;
+		
+			$result = mysql_query("SELECT * FROM content_srl_adhoc WHERE vbn = '".$data[0]."'", $conn->connection);
+			if($row=mysql_fetch_assoc($result))
+			{
+				$query = "UPDATE  content_srl_adhoc SET
+							id_gm =  '".$id_gm."',
+							id_famiglia =  '".$id_famiglia."',
+							nome_it =  '".$data[1]."',
+							descrizione_it =  '".$data[1]."',
+							nome_en =  '".$data[1]."',
+							descrizione_en =  '".$data[1]."',
+							vbn =  '".$data[0]."',
+							codice_articolo = '".$data[5]."',
+							prezzo_0 =  '".str_replace(',', '.', $data[12])."',
+							prezzo_1 =  '".str_replace(',', '.', $data[14])."',
+							prezzo_2 =  '".str_replace(',', '.', $data[15])."',
+							prezzo_3 =  '".str_replace(',', '.', $data[16])."',
+							prezzo_4 =  '".str_replace(',', '.', $data[17])."',
+							prezzo_5 =  '".str_replace(',', '.', $data[18])."',
+							prezzo_6 =  '".str_replace(',', '.', $data[19])."',
+							prezzo_7 =  '".str_replace(',', '.', $data[20])."',
+							prezzo_8 =  '".str_replace(',', '.', $data[21])."',
+							prezzo_9 =  '".str_replace(',', '.', $data[22])."',
+							operatore =  '".$operator."_articoli'
+							WHERE  id =".$row['id'].";";
+				mysql_query($query, $conn->connection);
+			}
+			else
+			{
+				$id_gm = 1;
+				$id_famiglia = 1;
+				$id_settore = 1;
+				$id_reparto = 1;
+				$query = "INSERT INTO content_srl_adhoc (
+						vbn,
+						nome_it,
+						descrizione_it,
+						nome_en,
+						descrizione_en,
+						id_gm,
+						id_famiglia,
+						C1,
+						C2,
+						C3,
+						C4,
+						C5,
+						tipo_colore,
+						prezzo_0,
+						prezzo_1,
+						prezzo_2,
+						prezzo_3,
+						prezzo_4,
+						prezzo_5,
+						prezzo_6,
+						prezzo_7,
+						prezzo_8,
+						prezzo_9,
+						cod_iva,
+						have_image,
+						is_active,
+						data_inserimento_riga,
+						data_modifica_riga,
+						operatore) VALUES
+						('".$data[0]."',
+						'".mysql_real_escape_string($data[1])."',
+						'".mysql_real_escape_string($data[1])."',
+						'".mysql_real_escape_string($data[1])."',
+						'".mysql_real_escape_string($data[1])."',
+						".$id_gm.",
+						".$id_famiglia.",
+						'',
+						'',
+						'',
+						'',
+						'',
+						'',
+						'".str_replace(',', '.', $data[12])."',
+						'".str_replace(',', '.', $data[14])."',
+						'".str_replace(',', '.', $data[15])."',
+						'".str_replace(',', '.', $data[16])."',
+						'".str_replace(',', '.', $data[17])."',
+						'".str_replace(',', '.', $data[18])."',
+						'".str_replace(',', '.', $data[19])."',
+						'".str_replace(',', '.', $data[20])."',
+						'".str_replace(',', '.', $data[21])."',
+						'".str_replace(',', '.', $data[22])."',
+						'',
+						".((int)$have_image).",
+						1,
+						'".date('Y-m-d H:i:s')."',
+						'".date('Y-m-d H:i:s')."',
+						'".$operator."_articoli')";
+				mysql_query($query, $conn->connection);
+			}
+		}
+	}
 	function importArticoli($File)
 	{
 		global $conn;
@@ -518,6 +642,8 @@ new configureSystem();
 		while ( ($data = fgetcsv($fh, 1000, $separator)) !== false)
 		{
 			if(empty($data[0]) || $data[0] == '(' || $data[0] == ') ON [PRIMARY]' || $data[0] == '.' || $data[0] == '---->')
+				continue;
+			if(substr($data[5], 0,2) == '99')
 				continue;
 
 			$result = mysql_query("SELECT * FROM giacenze WHERE bar_code = '".$data[0]."'", $conn->connection);
@@ -535,15 +661,16 @@ new configureSystem();
 				}
 			}
 
-			$result = mysql_query("SELECT * FROM content WHERE codice_articolo = '".$data[0]."'", $conn->connection);			
-			if($r=mysql_fetch_assoc($result))
-			{
-				$query = "UPDATE  content SET
-						codice_articolo = '".$data[5]."',
-						operatore =  '".$operator."_articoli'
-						WHERE  content.id =".$r['id'].";";
-				mysql_query($query, $conn->connection);
-			}
+// 			$result = mysql_query("SELECT * FROM content WHERE codice_articolo = '".$data[0]."'", $conn->connection);			
+// 			if($r=mysql_fetch_assoc($result))
+// 			{
+// 				$query = "UPDATE  content SET
+// 						vbn = '".$data[5]."',
+// 						codice_articolo = '".$data[5]."',
+// 						operatore =  '".$operator."_articoli'
+// 						WHERE  content.id =".$r['id'].";";
+// 				mysql_query($query, $conn->connection);
+// 			}
 				
 			$result = mysql_query("SELECT * FROM content_adhoc WHERE vbn = '".$data[0]."'", $conn->connection);
 			if($row=mysql_fetch_assoc($result))

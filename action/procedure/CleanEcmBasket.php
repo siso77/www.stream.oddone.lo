@@ -85,7 +85,7 @@ new configureSystem();
 				}
 			}
 // 			storeMonitor();
-			sendEmailConfirmation();
+// 			sendEmailConfirmation();
 		}
 	}
 

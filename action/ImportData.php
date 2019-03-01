@@ -5,8 +5,8 @@ define( 'APPLICATION_CONFIG_FILENAME', 'config.xml' );
 if(!isset($_SERVER['APPLICATION_ENV']))
 	$_SERVER['APPLICATION_ENV'] = 'pro';
 
-error_reporting(E_ALL);
-// ini_set('display_errors', true);
+//error_reporting(E_ALL);
+ ini_set('display_errors', false);
 ini_set("max_execution_time", "360000");
 
 include_once(APP_ROOT.'/libs/Dump.php');

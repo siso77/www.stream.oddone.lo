@@ -320,7 +320,6 @@ class Search extends DBSmartyAction
 				$where .= " content.descrizione_en LIKE '%".$_SESSION[$this->className]['key_search']."%' OR ";
 				$where .= " giacenze.bar_code LIKE '%".$_SESSION[$this->className]['key_search']."%' OR ";
 				$where .= " content.vbn LIKE '%".$_SESSION[$this->className]['key_search']."%' ) AND";
-				$_SESSION[$this->className]['order_type'] = 'DESC';
 			}
 			if(!empty($_SESSION[$this->className]['key_alpha']))
 				$where .= " content.nome_".$_SESSION['lang']." LIKE '".$_SESSION[$this->className]['key_alpha']."%' AND";
@@ -383,20 +382,20 @@ class Search extends DBSmartyAction
 
 			//nuova logica alex 7-6-16
 			
-//			if ($_SESSION['lang'] == 'it')
-//			$where.= ' AND giacenze.visibile = 1';
-//			if ($_SESSION['lang'] == 'en')
-//			$where.= ' AND giacenze.visibile_en = 1';
-//			if ($_SESSION['lang'] == 'fr')
-//			$where.= ' AND giacenze.visibile_fr = 1';
-//			if ($_SESSION['lang'] == 'de')
-//			$where.= ' AND giacenze.visibile_de = 1';
+			if ($_SESSION['lang'] == 'it')
+			$where.= ' AND giacenze.visibile = 1';
+			if ($_SESSION['lang'] == 'en')
+			$where.= ' AND giacenze.visibile_en = 1';
+			if ($_SESSION['lang'] == 'fr')
+			$where.= ' AND giacenze.visibile_fr = 1';
+			if ($_SESSION['lang'] == 'de')
+			$where.= ' AND giacenze.visibile_de = 1';
 			
 			//fine nuova logica
 			
 			//vecchia logica
 			
-			$where.= ' AND giacenze.visibile = 1';
+//			$where.= ' AND giacenze.visibile = 1';
 			
 			// fine vecchia logica
 			

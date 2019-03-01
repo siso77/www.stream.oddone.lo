@@ -1,11 +1,14 @@
 <?php
-ini_set('error_reporting', E_ERROR);
-error_reporting(E_ERROR);
 
 if(isset($_SERVER['HTTP_SHOW_ERROR']))
-	ini_set('display_errors', true);
+{
+    ini_set('display_errors', true);
+    
+    ini_set('error_reporting', E_ERROR);
+    error_reporting(E_ERROR);
+}
 else
-	ini_set('display_errors', false);
+    ini_set('display_errors', false);
 
 include_once(APP_ROOT."/libs/ext/pear/Mail.php");
 include_once(APP_ROOT."/libs/ext/pear/Mail/mime.php");
@@ -310,29 +313,33 @@ class Action
 // 		}		
 // 		$this->tEngine->assign('cmb_famiglie', $famiglie);
 		
-// 		$configCacheKey = 'menu_categorie';
-// 		if (!$menu = Base_CacheCore::getInstance()->load($configCacheKey))
-// 		{
+		$configCacheKey = 'menu_categorie';
+		if (!$menu = Base_CacheCore::getInstance()->load($configCacheKey))
+		{
 			include_once(APP_ROOT."/beans/gruppi_merceologici.php");
 			$BeanGm = new gruppi_merceologici();
 			$menu = $BeanGm->dbGetForCombo($this->conn, ' ORDER BY gruppo ASC');
-// 			if(!empty($menu) && USE_ZEND_CACHE)
-// 				Base_CacheCore::getInstance()->save($menu, $configCacheKey);
-// 		}
+			if(!empty($menu) && USE_ZEND_CACHE)
+				Base_CacheCore::getInstance()->save($menu, $configCacheKey);
+		}
 		$this->tEngine->assign('menu', $menu);
 		
 		
-// 		$configCacheKey = 'gruppi_merceologici';
-// 		if (!$gm = Base_CacheCore::getInstance()->load($configCacheKey)) 
-// 		{
+		$configCacheKey = 'gruppi_merceologici';
+		if (!$gm = Base_CacheCore::getInstance()->load($configCacheKey)) 
+		{
 			include_once(APP_ROOT."/beans/gruppi_merceologici.php");
 			$BeanGM = new gruppi_merceologici();
 			//$gm = $BeanGM->dbGetRootCategory(MyDB::connect());
-			$gm = $BeanGM->dbGetCategoryTree(MyDB::connect());
-
-// 			if(!empty($gm) && USE_ZEND_CACHE)
-// 				Base_CacheCore::getInstance()->save($gm, $configCacheKey);
-// 		}
+			$gm = $BeanGM->dbGetCategoryTree(MyDB::connect(), 'order_number');
+							
+// 			include_once(APP_ROOT."/beans/gruppi_merceologici.php");
+// 			$BeanGm = new gruppi_merceologici();
+// 			$gm = $BeanGm->dbGetForCombo($this->conn, ' ORDER BY gruppo ASC');
+			if(!empty($gm) && USE_ZEND_CACHE)
+				Base_CacheCore::getInstance()->save($gm, $configCacheKey);
+		}
+		
 		$this->tEngine->assign('cmb_gm', $gm);
 		
 		$configCacheKey = 'colori';
@@ -1017,7 +1024,7 @@ class DBMailAction extends DBAction
 	function default_configure_mail()
 	{
 		$this->params["host"]  = EMAIL_ADMIN_HOST;
-		//$this->params["port"] = 25;
+		$this->params["port"] = EMAIL_ADMIN_PORT;
 		$this->params["auth"]  = true;
 		$this->params["username"]  = EMAIL_ADMIN_USERNAME;
 		$this->params["password"]  = EMAIL_ADMIN_PASSWORD;
@@ -1113,7 +1120,7 @@ class SmartyMailAction extends SmartyAction
 	function default_configure_mail()
 	{
 		$this->params["host"]  = EMAIL_ADMIN_HOST;
-		//$this->params["port"] = 25;
+		$this->params["port"] = EMAIL_ADMIN_PORT;
 		$this->params["auth"]  = true;
 		$this->params["username"]  = EMAIL_ADMIN_USERNAME;
 		$this->params["password"]  = EMAIL_ADMIN_PASSWORD;
@@ -1218,7 +1225,7 @@ class DBSmartyMailAction extends DBSmartyAction
 	function default_configure_mail()
 	{	
 		$this->params["host"]  = EMAIL_ADMIN_HOST;
-		//$this->params["port"] = 25;
+		$this->params["port"] = EMAIL_ADMIN_PORT;
 		$this->params["auth"]  = true;
 		$this->params["username"]  = EMAIL_ADMIN_USERNAME;
 		$this->params["password"]  = EMAIL_ADMIN_PASSWORD;

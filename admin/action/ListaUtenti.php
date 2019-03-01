@@ -19,10 +19,10 @@ class ListaUtenti extends DBSmartyAction
 			$BeanUtenti = new users();
 			$BeanUtenti->dbDelete($this->conn,array($_REQUEST['id']), true);
 		}
-				
-		if($_SERVER['REQUEST_METHOD'] == 'POST')
+
+		if($_SERVER['REQUEST_METHOD'] == 'POST' || $_REQUEST['key_search'] != 'Cerca la parola chiave')
 		{
-			if(!empty($_REQUEST['search']) && $_REQUEST['key_search'] != 'Cerca la parola chiave')
+			if(!empty($_REQUEST['search']) || $_REQUEST['key_search'] != 'Cerca la parola chiave')
 			{
 				$_SESSION[$this->className]['result'] = null;
 				$_SESSION[$this->className]['key_search'] = $_REQUEST['key_search'];

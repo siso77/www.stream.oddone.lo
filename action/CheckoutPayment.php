@@ -157,11 +157,11 @@ class CheckoutPayment extends DBSmartyMailAction
 					unset($tmpSess['n_carrelli']);
 					unset($tmpSess['perc_occupazione']);
 					$csvSeparator = ';';
-						
-					if(strtoupper($_SESSION['customer_data']['stato']) != 'IT')
-						$fp = fopen(APP_ROOT.'/FlorSysIntegration/Out2/'.$BeanCustomer->customer_code.'_'.date('dmY').'.CSV', 'w+');
-					else
-						$fp = fopen(APP_ROOT.'/FlorSysIntegration/Out/'.$BeanCustomer->customer_code.'_'.date('dmY').'.CSV', 'w+');
+
+					//if(strtoupper($_SESSION['customer_data']['stato']) != 'IT')
+						//$fp = fopen(APP_ROOT.'/FlorSysIntegration/Out2/'.$BeanCustomer->customer_code.'_'.date('dmY').'.CSV', 'w+');
+					//else
+					$fp = fopen(APP_ROOT.'/FlorSysIntegration/Out/'.$BeanCustomer->customer_code.'_'.date('dmY').'.CSV', 'w+');
 					
 					$str = str_replace(';','-',$_SESSION['LoggedUser']['customer_data']['customer_code']).$csvSeparator; // CUSTOMER CODE
 					
@@ -204,14 +204,23 @@ class CheckoutPayment extends DBSmartyMailAction
 					}
 					foreach ($tmpSess as $key => $value)
 					{
-						if(strtoupper($_SESSION['customer_data']['stato']) != 'IT')
+						if(strtoupper($_SESSION['LoggedUser']['customer_data']['stato']) != 'IT')
 							$BeanFornitori = new fornitore_srl($this->conn, $value['giacenza']['id_fornitore_srl']);
 						else
 							$BeanFornitori = new fornitore($this->conn, $value['giacenza']['id_fornitore']);
 						$fornitore = $BeanFornitori->vars();
-						
+
 						$str .= str_replace(';','-',$value['giacenza']['bar_code']).$csvSeparator;// COD ART
-						$str .= str_replace(';','-',$value['contenuto']['nome_it']).$csvSeparator;// NOME ART
+						
+						if(strtoupper($_SESSION['lang']) == 'IT')
+							$str .= utf8_encode(str_replace(';','-',$value['contenuto']['nome_it'])).$csvSeparator;// NOME ART
+						elseif(strtoupper($_SESSION['lang']) == 'FR')
+							$str .= utf8_encode(str_replace(';','-',$value['contenuto']['nome_fr'])).$csvSeparator;// NOME ART
+						elseif(strtoupper($_SESSION['lang']) == 'EN')
+							$str .= utf8_encode(str_replace(';','-',$value['contenuto']['nome_en'])).$csvSeparator;// NOME ART
+						elseif(strtoupper($_SESSION['lang']) == 'DE')
+							$str .= utf8_encode(str_replace(';','-',$value['contenuto']['nome_de'])).$csvSeparator;// NOME ART
+						
 						$str .= $value['giacenza']['qta_minima'].$csvSeparator;// QTA CONFEZIONE
 						$str .= $value['giacenza']['qta_pianale'].$csvSeparator;// QTA PIANALE
 						$str .= $value['giacenza']['qta_carrello'].$csvSeparator;// QTA CARRELLO
@@ -272,7 +281,7 @@ class CheckoutPayment extends DBSmartyMailAction
 							$str .= $prezzoScontato.$csvSeparator;// PREZZO SCONTATO
 							$str .= $this->FormatEuro( (str_replace(",", ".", $prezzoScontato)*$qta_tot) ).$csvSeparator;// PREZZO RIGA
 						}
-						if($value['note'] != 'Inserisci una nota sul prodotto')
+						if($value['note'] != 'Inserisci una nota sul prodotto' && $value['note'] != 'Un particulier sur le produits')
 						{
 							$value['note'] = preg_replace('~[\r\n]+~', ' ', $value['note']);
 								
@@ -879,9 +888,18 @@ class CheckoutPayment extends DBSmartyMailAction
 							<tr style="color:#000000;">
 								<td align="center">'.number_format(round($qta_tot / $product['giacenza']['qta_carrello'],2), 2, ',', ' ').'</td>
 								<td align="center">'.number_format(round($qta_tot / $product['giacenza']['qta_pianale'],2), 2, ',', ' ').'</td>
-								<td nowrap="nowrap">'.$BeanGiacenze['bar_code'].'</td>
-								<td nowrap="nowrap">'.substr($Content['nome_it'],0,20).'</td>
-								<td align="center">'.$qta_selected.'</td>
+								<td nowrap="nowrap">'.$BeanGiacenze['bar_code'].'</td>';
+
+						if(strtoupper($_SESSION['lang']) == 'IT')
+							$html .='<td nowrap="nowrap">'.substr($Content['nome_it'],0,20).'</td>';
+						elseif(strtoupper($_SESSION['lang']) == 'FR')
+							$html .='<td nowrap="nowrap">'.substr($Content['nome_fr'],0,20).'</td>';
+						elseif(strtoupper($_SESSION['lang']) == 'EN')
+							$html .='<td nowrap="nowrap">'.substr($Content['nome_en'],0,20).'</td>';
+						elseif(strtoupper($_SESSION['lang']) == 'DE')
+							$html .='<td nowrap="nowrap">'.substr($Content['nome_de'],0,20).'</td>';
+						
+						$html .='<td align="center">'.$qta_selected.'</td>
 								<td align="center">'.$product['giacenza']['qta_minima'].'</td>
 								<td align="center">'.$qta_tot.'</td>
 								<td align="center">'.Currency::FormatEuro($this->tEngine->getPrezzo($product['giacenza'])).'</td>';
@@ -893,7 +911,7 @@ class CheckoutPayment extends DBSmartyMailAction
 						$html .= '<td align="center">'.Currency::FormatEuro( $this->tEngine->getPrezzo($product['giacenza']) * $qta_tot).'</td>
 								<td>'.$product['contenuto']['cod_iva'].'%</td>';
 						}
-						if(!empty($product['note']) && strtolower($product['note']) != 'inserisci una nota sul prodotto')
+						if(!empty($product['note']) && strtolower($product['note']) != 'inserisci una nota sul prodotto' && $product['note'] != 'Un particulier sur le produits')
 							$html .='<td>'.$product['note'].'</td>';
 						$html .='</tr>
 						';
@@ -1014,8 +1032,8 @@ if($_SESSION['LoggedUser']['username'] == 'siso')
 //_dump($val);
 //_dump($price_it_qty);	
 //_dump($BeanEcmOrdini);		
-//echo($html);
-//exit();
+// echo($html);
+// exit();
 }
 		$this->setAttachment($this->attachedOrder);
 		/*********************** EMAIL PER L'ESERCENTE ***********************/
@@ -1030,7 +1048,7 @@ if($_SESSION['LoggedUser']['username'] == 'siso')
 		$this->setHtmlText($html.$html_footer);
 		$this->mail_factory();
 		$is_send = $this->sendMail(EMAIL_ADMIN_TO);
-		$is_send = $this->sendMail('siso77@gmail.com');
+		//$is_send = $this->sendMail('siso77@gmail.com');
 		
 		/*********************** EMAIL PER L'ESERCENTE ***********************/
 		$this->setAttachment('-');
@@ -1048,14 +1066,14 @@ if($_SESSION['LoggedUser']['username'] == 'siso')
 		$this->mail_factory();
 
  		$is_send = $this->sendMail($userAnag['email']);
-		$is_send = $this->sendMail('siso77@gmail.com');
+		//$is_send = $this->sendMail('siso77@gmail.com');
 		/*********************** EMAIL PER L'UTENTE ***********************/
 
 		if(PEAR::isError($is_send))
 		{
-			print_r($is_send);
-			echo "Errore nell'invio della mail!";
-			exit;
+// 			print_r($is_send);
+// 			echo "Errore nell'invio della mail!";
+// 			exit;
 		}
 		
 		return $is_send;

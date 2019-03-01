@@ -13,7 +13,14 @@ class CaricaCategoria extends DBSmartyAction
 		
 		if(!empty($_REQUEST['clean_cache']))
 		{
-			Base_CacheCore::getInstance()->clean();
+			
+			$d = dir(str_replace('admin', '', APP_ROOT).'cache/');
+			while (false !== ($entry = $d->read())) {
+				if($entry != '.' && $entry != '..')
+					unlink($d->path.$entry);
+			}
+			$d->close();
+			//Base_CacheCore::getInstance()->clean();
 			$this->_redirect('?act=ListaContenuti');
 		}
 		

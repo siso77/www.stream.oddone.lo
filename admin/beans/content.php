@@ -294,13 +294,98 @@ class content extends BeanBase
 		}
 	}
 	
+	function dbGetVerificaCodiciSrl($db=null, $search = null)
+	{
+		$where = '';
+		if(!empty($search))
+			$where = ' WHERE '.$search;
+	
+		$query="SELECT
+					content.id,
+					content.id_famiglia,
+					content.id_gm,
+					content.nome_it,
+					content.nome_en,
+					content.nome_fr,
+					content.descrizione_it,
+					content.descrizione_en,
+					content.descrizione_fr,
+					content.vbn,
+					content.C1,
+					content.C2,
+					content.C3,
+					content.C4,
+					content.C5,
+					content.tipo_colore,
+					content.prezzo_0,
+					content.prezzo_1,
+					content.prezzo_2,
+					content.prezzo_3,
+					content.prezzo_4,
+					content.prezzo_5,
+					content.prezzo_6,
+					content.prezzo_7,
+					content.prezzo_8,
+					content.prezzo_9,
+					content.cod_iva,
+					content.note,
+					content.have_image,
+					gruppi_merceologici.gruppo,
+					gruppi_merceologici.name_en,
+					gruppi_merceologici.name_fr,
+					giacenze.id as id_gicenza,
+					giacenze.bar_code,
+					giacenze.bar_code,
+					giacenze.id_fornitore,
+					giacenze.prezzo_0 as prezzo_giac,
+					giacenze.prezzo_acquisto,
+					giacenze.visibile,
+					giacenze.qta_minima,
+					giacenze.qta_pianale,
+					giacenze.qta_carrello,
+					giacenze.qta_min_ordine,
+					giacenze.quantita,
+					giacenze.quantita_mazzo,
+					giacenze.disponibilita,
+					giacenze.stato,
+					giacenze.promo,
+					giacenze.in_home,
+					giacenze.operatore
+				FROM
+					content
+				INNER JOIN gruppi_merceologici ON content.id_gm = gruppi_merceologici.id
+				INNER JOIN giacenze ON giacenze.id_content = content.id
+				WHERE content.is_active = 1 ".$where;
+		$result=$db->query($query);
+
+		if(get_class($result) == "DB_Error")
+			return $this->_showErrorNoQuery("File: ".__FILE__."<BR> Class: ".get_class($this)."<BR>Line: ".__LINE__."<BR>Query: <BR>".$query);
+	
+		//		Loggo la query sql
+		$this->BeanLog("query", $query);
+		//		Loggo la query sql
+	
+		while($row=$result->fetchRow(DB_FETCHMODE_ASSOC))
+		{
+			$res=$db->query("SELECT * FROM content_srl_adhoc WHERE vbn = '".$row['bar_code']."'");
+
+			if(!$r=$res->fetchRow(DB_FETCHMODE_ASSOC))
+			{
+				$values[]=$row;
+			}
+		}
+		$result->free();
+
+		return $values;
+	}
+	
 	function dbGetVerificaCodici($db=null, $search = null)
 	{
 		$where = '';
 		if(!empty($search))
 			$where = ' WHERE '.$search;
 		
-$query="SELECT
+		$query="SELECT
 					content.id,
 					content.id_famiglia,
 					content.id_gm,
@@ -372,12 +457,9 @@ $query="SELECT
 			{
 				$values[]=$row;
 			}
-
-			
 		}
 		$result->free();
 		return $values;
-		
 	}
 
 	function dbSearch($db=null, $search=null)
@@ -491,6 +573,9 @@ $query="SELECT
 					giacenze.prezzo_0 as prezzo_giac,
 					giacenze.prezzo_acquisto,
 					giacenze.visibile,
+					giacenze.visibile_en,
+					giacenze.visibile_fr,
+					giacenze.visibile_de,
 					giacenze.qta_minima,
 					giacenze.qta_pianale,
 					giacenze.qta_carrello,

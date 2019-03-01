@@ -122,9 +122,14 @@
 	<EMAIL_ADMIN_TO>albenga@oddone.biz </EMAIL_ADMIN_TO>
 	<EMAIL_ADMIN_FROM>albenga@oddone.biz </EMAIL_ADMIN_FROM>
     <EMAIL_ADMIN>frontend@integra-services.it</EMAIL_ADMIN>
-    <EMAIL_ADMIN_HOST>integra-services.it</EMAIL_ADMIN_HOST>
-    <EMAIL_ADMIN_USERNAME>frontend@integra-services.it</EMAIL_ADMIN_USERNAME>
-    <EMAIL_ADMIN_PASSWORD>!fr0nt3nd#</EMAIL_ADMIN_PASSWORD>
+    <EMAIL_ADMIN_HOST>smtp25.elasticemail.com</EMAIL_ADMIN_HOST>
+    <EMAIL_ADMIN_PORT>25</EMAIL_ADMIN_PORT>
+    <EMAIL_ADMIN_USERNAME>webagent@florsistemi.it</EMAIL_ADMIN_USERNAME>
+    <EMAIL_ADMIN_PASSWORD>745d9275-cbd3-4ed5-b8ae-aeb4f4e80d92</EMAIL_ADMIN_PASSWORD>    
+<!--     <EMAIL_ADMIN_HOST>integra-services.it</EMAIL_ADMIN_HOST> -->
+<!--     <EMAIL_ADMIN_PORT>25</EMAIL_ADMIN_PORT> -->
+<!--     <EMAIL_ADMIN_USERNAME>frontend@integra-services.it</EMAIL_ADMIN_USERNAME> -->
+<!--     <EMAIL_ADMIN_PASSWORD>!fr0nt3nd#</EMAIL_ADMIN_PASSWORD> -->
 
     <IMPORT_FOTO_EMAIL_ADMIN_HOST>oddone.florsistemi.it</IMPORT_FOTO_EMAIL_ADMIN_HOST>
     <IMPORT_FOTO_EMAIL_ADMIN_USERNAME>term_oddone@integra-services.it</IMPORT_FOTO_EMAIL_ADMIN_USERNAME>

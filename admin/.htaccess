@@ -1,5 +1,5 @@
 RewriteEngine On
-SetEnv APPLICATION_ENV dev
+SetEnv APPLICATION_ENV pro
 
 #php_value memory_limit 12800M
 #php_value error_reporting 128

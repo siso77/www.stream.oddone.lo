@@ -42,9 +42,13 @@ class Login extends DBSmartyAction
 				
 			$BeanSpeseSpedizione = new spese_spedizione();
 			$_SESSION['LoggedUser']['spese_spedizione_peso'] = $BeanSpeseSpedizione->dbGetAll($this->conn, $BeanCustomer->id);
-				
+
 			$_SESSION['LoggedUser']['userType'] = $userType['name'];
-			$this->_redirect('?act=ShoppingCart');
+			
+			if($_SESSION['LoggedUser']['customer_data']['stato'] != 'IT')
+				$lang = '&lang='.strtolower($_SESSION['LoggedUser']['customer_data']['stato']);
+				
+			$this->_redirect('?act=ShoppingCart'.$lang);
 		}
 				
 		if(!$this->tEngine->isValidForm($_REQUEST))
@@ -96,22 +100,19 @@ class Login extends DBSmartyAction
 				$_SESSION['LoggedUser']['spese_spedizione_peso'] = $BeanSpeseSpedizione->dbGetAll($this->conn, $BeanCustomer->id);
 				
 				$_SESSION['LoggedUser']['userType'] = $userType['name'];
+				
+				if($_SESSION['LoggedUser']['customer_data']['stato'] != 'IT')
+					$lang = '&lang='.strtolower($_SESSION['LoggedUser']['customer_data']['stato']);
 
 				if(!empty($_REQUEST['return_uri']))
 					$_SESSION[session_id()]['return_uri'] = $_REQUEST['return_uri'];
 
 				if(!empty($_SESSION[session_id()]['return']))
-				{
-					$this->_redirect('?act='.$_SESSION[session_id()]['return']);
-					echo $_SESSION[session_id()]['return'];
-				}
+					$this->_redirect('?act='.$_SESSION[session_id()]['return'].$lang);
 				elseif(!empty($_SESSION[session_id()]['return_uri']))
-				{
-// 					echo $_SESSION[session_id()]['return_uri'];
-					$this->_redirect($_SESSION[session_id()]['return_uri']);
-				}
+					$this->_redirect($_SESSION[session_id()]['return_uri'].$lang);
 				else
-					$this->_redirect('Magazzino-Online/Lista-Prodotti.html');
+					$this->_redirect('?act=Search'.$lang);
 				exit();
 			}
 			else
